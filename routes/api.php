@@ -21,3 +21,7 @@ Route::prefix('/auth')->group(function () {
     Route::post('/register', 'AuthController@register');
     Route::post('/login', 'AuthController@login');
 });
+
+Route::prefix('/tracks')->group(function () {
+    Route::post('/', 'TrackController@store');
+});
