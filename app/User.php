@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+use Illuminate\Http\Request;
+
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
@@ -47,5 +49,15 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function tracks()
+    {
+        return $this->hasMany(Track::class);
+    }
+
+    public function createTrack(Request $request)
+    {
+        return $this->tracks()->create([ 'name' => $request->name ]);
     }
 }

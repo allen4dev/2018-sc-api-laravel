@@ -4,35 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Requests\RegisterRequest;
+
+use App\Http\Responses;
+
 use JWTAuth;
 use App\User;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            "username" => "required|string",
-            "email" => "required|email|unique:users",
-            "password" => "required|string|min:6"
-        ]);
-
-        $user = User::create([
-            "username" => $request->username,
-            "email"    => $request->email,
-            "password" => bcrypt($request->password),
-        ]);
+        $user = $request->registerUser();
 
         $token = JWTAuth::fromUser($user);
 
-        return response()->json([
-            "data" => [
-                "attributes" => [
-                    "id" => $user->id,
-                    'token' => $token,
-                ]
-            ],
-        ], 201);
+        $type = 'auth';
+        $attributes = [ "id" => $user->id, 'token' => $token ];
+        $status = 201;
+
+        return Responses::format($type, $attributes, $status);
     }
 
     public function login(Request $request)
@@ -47,13 +38,10 @@ class AuthController extends Controller
         // ToDo: Handle invalid credentials
         $token = auth()->attempt($credentials);
 
-        return response()->json([
-            'data' => [
-                'attributes' => [
-                    'id' => auth()->id(),
-                    'token' => $token,
-                ]
-            ]
-        ], 200);
+        $type = 'auth';
+        $attributes = [ 'id' => auth()->id(), 'token' => $token ];
+        $status = 200;
+
+        return Responses::format($type, $attributes, $status);
     }
 }

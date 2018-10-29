@@ -14,10 +14,7 @@ class TrackController extends Controller
             'name' => 'string|min:2',
         ]);
 
-        $track = Track::create([
-            'name' => $request->name,
-            'user_id' => auth()->id(),
-        ]);
+        $track = auth()->user()->createTrack($request);
 
         return response()->json([
             'data' => [

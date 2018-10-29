@@ -11,6 +11,13 @@ class CreateTracksTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_create_tracks()
+    {
+        $this->json('POST', '/api/tracks', [])
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_create_tracks()
     {
         $this->signin();
