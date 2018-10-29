@@ -34,4 +34,26 @@ class AuthController extends Controller
             ],
         ], 201);
     }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $credentials = $request->only(['email', 'password']);
+
+        // ToDo: Handle invalid credentials
+        $token = auth()->attempt($credentials);
+
+        return response()->json([
+            'data' => [
+                'attributes' => [
+                    'id' => auth()->id(),
+                    'token' => $token,
+                ]
+            ]
+        ], 200);
+    }
 }

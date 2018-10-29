@@ -33,4 +33,25 @@ class AuthTest extends TestCase
             "email" => $credentials['email'],
         ]);
     }
+
+    /** @test */
+    public function a_user_can_be_logged_in_with_his_credentials()
+    {
+        $credentials = [
+            'email' => 'allen@example.test',
+            'password' => 'secret',
+            'username' => 'Allen Walker'
+        ];
+
+        $this->json('POST', '/api/auth/register', $credentials);
+        
+        $this->json('POST', '/api/auth/login', [
+            'email' => $credentials['email'],
+            'password' => $credentials['password']
+        ])
+        ->assertStatus(200)
+        ->assertJsonStructure([ 'data' => [
+            'attributes' => [ 'id', 'token' ]
+        ]]);
+    }
 }
