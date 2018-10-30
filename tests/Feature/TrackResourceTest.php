@@ -17,7 +17,7 @@ class TrackResourceTest extends TestCase
     {
         $track = create(Track::class);
 
-        $this->json('GET', $track->path())
+        $this->fetchTrack($track)
             ->assertJson([
                 'data' => [
                     'type' => 'tracks',
@@ -35,11 +35,36 @@ class TrackResourceTest extends TestCase
     {
         $track = create(Track::class);
 
-        $this->json('GET', $track->path())
+        $this->fetchTrack($track)
             ->assertJson([ 'data' => [
                 'links' => [
                     'self' => route('tracks.show', [ 'id' => $track->id ])
                 ]
             ]]);
+    }
+
+    /** @test */
+    public function it_should_contain_a_relationships_object_under_data_containing_a_user_identifier_rosource()
+    {
+        $this->signin();
+
+        $track = create(Track::class, [ 'user_id' => auth()->id() ]);
+
+        $this->fetchTrack($track)
+            ->assertJson(['data' => [
+                'relationships' => [
+                    'user' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id' => (string) auth()->id()
+                        ]
+                    ]
+                ]
+            ]]);
+    }
+
+    public function fetchTrack($track)
+    {
+        return $this->json('GET', $track->path());
     }
 }
