@@ -18,6 +18,10 @@ Route::prefix('/auth')->group(function () {
     Route::post('/login', 'AuthController@login');
 });
 
+Route::prefix('/users')->group(function () {
+    Route::get('/{user}', 'UserController@show')->name('users.show');
+});
+
 Route::prefix('/tracks')->group(function () {
     Route::post('/', 'TrackController@store')->middleware('auth:api');
     Route::get('/{track}', 'TrackController@show')->name('tracks.show');

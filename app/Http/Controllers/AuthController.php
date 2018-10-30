@@ -36,7 +36,10 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         // ToDo: Handle invalid credentials
-        $token = auth()->attempt($credentials);
+        if (! $token = auth()->attempt($credentials) ) {
+            return Responses::format('auth', ['error' => 'handle auth error'], '401');
+        }
+        
 
         $type = 'auth';
         $attributes = [ 'id' => (string) auth()->id(), 'token' => $token ];

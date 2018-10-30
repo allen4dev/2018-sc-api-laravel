@@ -15,6 +15,9 @@ class UserIdentifierResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'links' => [
+                'self' => route('users.show', [ 'id' => $this->id ]),
+            ],
             'data' => [
                 'type' => 'users',
                 'id'   => (string) $this->id,

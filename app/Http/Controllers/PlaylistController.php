@@ -23,11 +23,6 @@ class PlaylistController extends Controller
 
         $playlist = auth()->user()->createPlaylist($request->only('title'));
 
-        return response()->json([
-            'data' => [
-                'type' => 'playlists',
-                'id'   => (string) $playlist->id,
-            ]
-        ], 201);
+        return new PlaylistResource($playlist);;
     }
 }
