@@ -19,6 +19,9 @@ class PlaylistResource extends JsonResource
             'id'   => (string) $this->id,
             'attributes' => [
                 'title' => $this->title,
+            ],
+            'links' => [
+                'self' => route('playlists.show', [ 'id' => $this->id ]),
             ]
         ];
     }
