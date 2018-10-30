@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use App\Track;
+
 class CreateTracksTest extends TestCase
 {
     use RefreshDatabase;
@@ -22,7 +24,7 @@ class CreateTracksTest extends TestCase
     {
         $this->signin();
 
-        $track = [ 'name' => 'My awesome track' ];
+        $track = raw(Track::class);
 
         $this->json('POST', '/api/tracks', $track)
             ->assertStatus(201)

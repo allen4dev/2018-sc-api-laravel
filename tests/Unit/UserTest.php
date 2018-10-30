@@ -22,4 +22,15 @@ class UserTest extends TestCase
             $user->tracks
         );
     }
+
+    /** @test */
+    public function it_has_many_playlists()
+    {
+        $user = create(User::class);
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $user->playlists
+        );
+    }
 }
