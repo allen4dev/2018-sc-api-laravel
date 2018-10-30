@@ -12,4 +12,9 @@ class Track extends Model
     {
         return "/api/tracks/{$this->id}";
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -23,7 +23,8 @@ class TrackResource extends JsonResource
             ],
             'links' => [
                 'self' => route('tracks.show', [ 'id' => $this->id ]),
-            ]
+            ],
+            'relationships' => new TrackRelationshipsResource($this),
         ];
     }
 }

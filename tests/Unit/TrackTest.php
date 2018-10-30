@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use App\User;
 use App\Track;
 
 class TrackTest extends TestCase
@@ -18,5 +19,13 @@ class TrackTest extends TestCase
         $track = create(Track::class);
 
         $this->assertEquals("/api/tracks/{$track->id}", $track->path());
+    }
+
+    /** @test */
+    public function it_belongs_to_a_user()
+    {
+        $track = create(Track::class);
+
+        $this->assertInstanceOf(User::class, $track->user);
     }
 }

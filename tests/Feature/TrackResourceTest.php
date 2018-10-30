@@ -42,4 +42,22 @@ class TrackResourceTest extends TestCase
                 ]
             ]]);
     }
+
+    /** @test */
+    public function it_should_contain_a_relationships_object_under_data_containing_a_user_resource_identifier()
+    {
+        $track = create(Track::class);
+
+        $this->json('GET', $track->path())
+            ->assertJson(['data' => [
+                'relationships' => [
+                    'user' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id'   => (string) $track->user_id,
+                        ]
+                    ]
+                ]
+            ]]);
+    }
 }
