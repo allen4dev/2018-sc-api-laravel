@@ -6,15 +6,13 @@ use Illuminate\Http\Request;
 
 class PlaylistController extends Controller
 {
-    public function store()
+    public function store(Request $request)
     {
-        request()->validate([
+        $request->validate([
             'title' => 'required|string|min:2',
         ]);
 
-        $playlist = auth()->user()->playlists()->create([
-            'title' => request('title'),
-        ]);
+        $playlist = auth()->user()->createPlaylist($request->only('title'));
 
         return response()->json([
             'data' => [

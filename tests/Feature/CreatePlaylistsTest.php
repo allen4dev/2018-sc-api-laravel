@@ -13,6 +13,13 @@ class CreatePlaylistsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_create_playlists()
+    {
+        $this->json('POST' ,'api/playlists', [])
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_create_playlists()
     {
         $this->signin();

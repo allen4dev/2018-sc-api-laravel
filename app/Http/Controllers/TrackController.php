@@ -16,7 +16,7 @@ class TrackController extends Controller
             'name' => 'string|min:2',
         ]);
 
-        $track = auth()->user()->createTrack($request);
+        $track = auth()->user()->createTrack($request->only('name'));
 
         return new TrackResource($track);
     }
