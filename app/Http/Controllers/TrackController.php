@@ -23,4 +23,14 @@ class TrackController extends Controller
             ]
         ], 201);
     }
+
+    public function show(Track $track)
+    {
+        return response()->json([
+            'data' => [
+                'type' => 'tracks',
+                'id'   => (string) $track->id,
+            ]
+        ], 200);
+    }
 }

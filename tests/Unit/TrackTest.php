@@ -6,20 +6,17 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\User;
+use App\Track;
 
 class TrackTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function it_has_many_tracks()
+    public function it_has_a_path()
     {
-        $user = create(User::class);
+        $track = create(Track::class);
 
-        $this->assertInstanceOf(
-            'Illuminate\Database\Eloquent\Collection',
-            $user->tracks
-        );
+        $this->assertEquals("/api/tracks/{$track->id}", $track->path());
     }
 }
