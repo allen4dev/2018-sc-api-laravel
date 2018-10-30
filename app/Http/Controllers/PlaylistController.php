@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Resources\PlaylistResource;
+
 use App\Playlist;
 
 class PlaylistController extends Controller
 {
     public function show(Playlist $playlist)
     {
-        return response()->json([
-            'data' => [ 'type' => 'playlists', 'id' => (string) $playlist->id]
-        ], 200);
+        return new PlaylistResource($playlist);
     }
 
     public function store(Request $request)
