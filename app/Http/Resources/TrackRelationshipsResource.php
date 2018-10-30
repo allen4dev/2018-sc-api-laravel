@@ -15,9 +15,7 @@ class TrackRelationshipsResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'user' => [
-                'data' => new UserIdentifierResource($this->user)
-            ],
+            'user' => new UserIdentifierResource($this->user),
         ];
     }
 }

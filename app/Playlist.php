@@ -12,4 +12,9 @@ class Playlist extends Model
     {
         return '/api/playlists/' . $this->id;
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

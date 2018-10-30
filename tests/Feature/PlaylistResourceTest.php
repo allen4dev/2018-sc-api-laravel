@@ -40,6 +40,23 @@ class PlaylistResourceTest extends TestCase
             ]]);
     }
 
+    /** @test */
+    public function it_should_contain_a_relationships_object_under_data_containing_a_user_identifier_rosource()
+    {
+        $this->signin();
+
+        $playlist = create(Playlist::class, [ 'user_id' => auth()->id() ]);
+
+        $this->fetchPlaylist($playlist)
+            ->assertJson(['data' => [
+                'relationships' => [
+                    'user' => [
+                        'data' => [ 'type' => 'users', 'id' => (string) auth()->id() ]
+                    ]
+                ]]
+            ]);
+    }
+
     public function fetchPlaylist($playlist)
     {
         return $this->json('GET', $playlist->path());
