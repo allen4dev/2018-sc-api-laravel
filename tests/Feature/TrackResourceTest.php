@@ -23,7 +23,7 @@ class TrackResourceTest extends TestCase
                     'type' => 'tracks',
                     'id'   => (string) $track->id,
                     'attributes' => [
-                        'name' => $track->name,
+                        'title' => $track->title,
                         'published' => $track->published,
                     ]
                 ]

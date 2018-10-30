@@ -13,10 +13,10 @@ class TrackController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'string|min:2',
+            'title' => 'string|min:2',
         ]);
 
-        $track = auth()->user()->createTrack($request->only('name'));
+        $track = auth()->user()->createTrack($request->only('title'));
 
         return new TrackResource($track);
     }

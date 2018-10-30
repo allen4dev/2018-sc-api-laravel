@@ -7,7 +7,7 @@ $factory->define(App\Track::class, function (Faker $faker) {
         'user_id' => function () {
             return create(App\User::class)->id;
         },
-        'name' => $faker->sentence,
+        'title' => $faker->sentence,
         'published' => false,
     ];
 });

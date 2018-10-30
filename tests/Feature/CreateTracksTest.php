@@ -36,7 +36,7 @@ class CreateTracksTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('tracks', [
-            'name' => $track['name'],
+            'title' => $track['title'],
             'user_id' => auth()->id(),
         ]);
     }

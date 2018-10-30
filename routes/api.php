@@ -25,4 +25,5 @@ Route::prefix('/tracks')->group(function () {
 
 Route::prefix('/playlists')->group(function () {
     Route::post('/', 'PlaylistController@store')->middleware('auth:api');
+    Route::get('/{playlist}', 'PlaylistController@show');
 });

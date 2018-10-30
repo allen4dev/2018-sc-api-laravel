@@ -14,7 +14,7 @@ class TrackTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_has_a_path()
+    public function it_knows_his_path()
     {
         $track = create(Track::class);
 

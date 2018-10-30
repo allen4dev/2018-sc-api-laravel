@@ -20,7 +20,7 @@ class AuthController extends Controller
         $token = JWTAuth::fromUser($user);
 
         $type = 'auth';
-        $attributes = [ "id" => $user->id, 'token' => $token ];
+        $attributes = [ 'id' => (string) $user->id, 'token' => $token ];
         $status = 201;
 
         return Responses::format($type, $attributes, $status);
@@ -39,7 +39,7 @@ class AuthController extends Controller
         $token = auth()->attempt($credentials);
 
         $type = 'auth';
-        $attributes = [ 'id' => auth()->id(), 'token' => $token ];
+        $attributes = [ 'id' => (string) auth()->id(), 'token' => $token ];
         $status = 200;
 
         return Responses::format($type, $attributes, $status);
