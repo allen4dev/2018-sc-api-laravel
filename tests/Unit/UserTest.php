@@ -13,6 +13,14 @@ class UserTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function it_knows_his_path()
+    {
+        $user = create(User::class);
+
+        $this->assertEquals('/api/users/1', $user->path());
+    }
+
+    /** @test */
     public function it_has_many_tracks()
     {
         $user = create(User::class);

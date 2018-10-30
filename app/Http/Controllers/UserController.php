@@ -10,6 +10,10 @@ class UserController extends Controller
 {
     public function show(User $user)
     {
-        # code...
+        return response()->json([
+            'data' => [
+                'type' => 'users', 'id' => (string) $user->id
+            ]
+        ], 200);
     }
 }

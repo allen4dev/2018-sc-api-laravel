@@ -49,6 +49,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function path()
+    {
+        return '/api/users/' . $this->id;
+    }
+
     public function tracks()
     {
         return $this->hasMany(Track::class);
