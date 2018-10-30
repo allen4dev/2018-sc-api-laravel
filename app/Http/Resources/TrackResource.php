@@ -20,6 +20,9 @@ class TrackResource extends JsonResource
             'attributes' => [
                 'name' => $this->name,
                 'published' => $this->published,
+            ],
+            'links' => [
+                'self' => route('tracks.show', [ 'id' => $this->id ]),
             ]
         ];
     }

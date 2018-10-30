@@ -20,5 +20,5 @@ Route::prefix('/auth')->group(function () {
 
 Route::prefix('/tracks')->group(function () {
     Route::post('/', 'TrackController@store')->middleware('auth:api');
-    Route::get('/{track}', 'TrackController@show');
+    Route::get('/{track}', 'TrackController@show')->name('tracks.show');
 });
