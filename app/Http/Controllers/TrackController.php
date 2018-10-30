@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Resources\TrackResource;
+
 use App\Track;
 
 class TrackController extends Controller
@@ -16,21 +18,11 @@ class TrackController extends Controller
 
         $track = auth()->user()->createTrack($request);
 
-        return response()->json([
-            'data' => [
-                'type' => 'tracks',
-                'id'   => (string) $track->id,
-            ]
-        ], 201);
+        return new TrackResource($track);
     }
 
     public function show(Track $track)
     {
-        return response()->json([
-            'data' => [
-                'type' => 'tracks',
-                'id'   => (string) $track->id,
-            ]
-        ], 200);
+        return new TrackResource($track);
     }
 }
