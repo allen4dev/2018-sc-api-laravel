@@ -41,4 +41,15 @@ class UserTest extends TestCase
             $user->playlists
         );
     }
+
+     /** @test */
+    public function it_has_many_albums()
+    {
+        $user = create(User::class);
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $user->albums
+        );
+    }
 }

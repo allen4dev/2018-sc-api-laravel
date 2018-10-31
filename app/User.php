@@ -64,6 +64,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Playlist::class);
     }
 
+    public function albums()
+    {
+        return $this->hasMany(Album::class);
+    }
+
     public function createTrack($details)
     {
         return $this->tracks()->create($details);
@@ -72,5 +77,10 @@ class User extends Authenticatable implements JWTSubject
     public function createPlaylist($details)
     {
         return $this->playlists()->create($details);
+    }
+
+    public function createAlbum($details)
+    {
+        return $this->albums()->create($details);
     }
 }
