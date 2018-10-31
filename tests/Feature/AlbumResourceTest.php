@@ -40,6 +40,26 @@ class AlbumResourceTest extends TestCase
             ]]);
     }
 
+    /** @test */
+    public function it_should_contain_a_relationships_object_under_data_containing_identifiers_for_his_related_information()
+    {
+        $this->signin();
+
+        $album = create(Album::class, [ 'user_id' => auth()->id() ]);
+        
+        $this->fetchAlbum($album)
+            ->assertJson(['data' => [
+                'relationships' => [
+                    'user' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id'   => (string) auth()->id(),
+                        ]
+                    ]
+                ]
+            ]]);
+    }
+
     public function fetchAlbum($album)
     {
         return $this->json('GET', $album->path());

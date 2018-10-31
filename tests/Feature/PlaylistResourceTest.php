@@ -41,7 +41,7 @@ class PlaylistResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_should_contain_a_relationships_object_under_data_containing_a_user_identifier_rosource()
+    public function it_should_contain_a_relationships_object_under_data_containing_identifiers_for_his_related_information()
     {
         $this->signin();
 

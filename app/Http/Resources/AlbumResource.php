@@ -22,7 +22,8 @@ class AlbumResource extends JsonResource
             ],
             'links' => [
                 'self' => route('albums.show', ['id' => $this->id]),
-            ]
+            ],
+            'relationships' => new AlbumRelationshipsResource($this),
         ];
     }
 }

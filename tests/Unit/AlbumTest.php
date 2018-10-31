@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Album;
+use App\User;
 
 class AlbumTest extends TestCase
 {
@@ -18,5 +19,13 @@ class AlbumTest extends TestCase
         $album = create(Album::class);
 
         $this->assertEquals('/api/albums/1', $album->path());
+    }
+
+    /** @test */
+    public function it_belongs_to_one_user()
+    {
+        $album = create(Album::class);
+
+        $this->assertInstanceOf(User::class, $album->user);
     }
 }
