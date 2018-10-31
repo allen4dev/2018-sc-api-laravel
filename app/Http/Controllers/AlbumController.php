@@ -4,18 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Resources\AlbumResource;
+
 use App\Album;
 
 class AlbumController extends Controller
 {
     public function show(Album $album)
     {
-        return response()->json([
-            'data' => [
-                'type' => 'albums',
-                'id'   => (string) $album->id,
-            ]
-        ], 200);
+        return new AlbumResource($album);
     }
 
     public function store()
@@ -26,11 +23,6 @@ class AlbumController extends Controller
 
         $album = auth()->user()->createAlbum(request()->only('title'));
 
-        return response()->json([
-            'data' => [
-                'type' => 'albums',
-                'id'   => (string) $album->id,
-            ]
-        ], 201);
+        return new AlbumResource($album);
     }
 }
