@@ -27,6 +27,8 @@ Route::prefix('/tracks')->group(function () {
     Route::get('/{track}', 'TrackController@show')->name('tracks.show');
     
     Route::patch('/{track}/publish', 'PublishTrackController@update');
+
+    Route::post('/{track}/replies', 'ReplyController@store');
 });
 
 Route::prefix('/playlists')->group(function () {

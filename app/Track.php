@@ -21,4 +21,14 @@ class Track extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    public function reply($details)
+    {
+        return $this->replies()->create($details);
+    }
 }

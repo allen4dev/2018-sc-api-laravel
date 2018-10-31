@@ -28,4 +28,15 @@ class TrackTest extends TestCase
 
         $this->assertInstanceOf(User::class, $track->user);
     }
+
+    /** @test */
+    public function it_has_many_replies()
+    {
+        $track = create(Track::class);
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $track->replies
+        );
+    }
 }
