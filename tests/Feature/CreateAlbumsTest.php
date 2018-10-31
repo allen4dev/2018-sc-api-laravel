@@ -13,6 +13,13 @@ class CreateAlbumsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_create_albums()
+    {
+        $this->json('POST', '/api/albums', [])
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_create_albums()
     {
         $this->signin();

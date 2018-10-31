@@ -4,8 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Album;
+
 class AlbumController extends Controller
 {
+    public function show(Album $album)
+    {
+        return response()->json([
+            'data' => [
+                'type' => 'albums',
+                'id'   => (string) $album->id,
+            ]
+        ], 200);
+    }
+
     public function store()
     {
         request()->validate([
