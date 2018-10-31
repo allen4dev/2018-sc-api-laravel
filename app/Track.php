@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Track extends Model
 {
-    protected $fillable = [ 'title' ];
+    protected $fillable = [ 'title', 'published' ];
 
     public function path()
     {
