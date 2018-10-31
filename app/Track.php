@@ -8,6 +8,10 @@ class Track extends Model
 {
     protected $fillable = [ 'title', 'published' ];
 
+    protected $casts = [
+        'user_id' => 'int',
+    ];
+    
     public function path()
     {
         return '/api/tracks/' . $this->id;

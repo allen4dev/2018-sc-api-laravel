@@ -15,11 +15,13 @@ class PublishTracksTest extends TestCase
     /** @test */
     public function authorized_users_can_publish_his_tracks()
     {
+        $this->withoutExceptionHandling();
+
         $this->signin();
 
         $track = create(Track::class, [ 'user_id' => auth()->id() ]);
 
-        $this->json('PATCH', $track->path() . '/publish')
+        $this->publishTrack($track)
             ->assertStatus(200)
             ->assertJson(['data' => [
                 'type' => 'tracks',
@@ -29,8 +31,6 @@ class PublishTracksTest extends TestCase
                 ]
             ]]);
 
-        // the tracks table should not contain anymore a record with the previous id unpublished
-        // and instead should contain  a record with the previous id published
         $this->assertDatabaseMissing('tracks', [
             'id' => $track->id,
             'published' => false,
@@ -40,5 +40,21 @@ class PublishTracksTest extends TestCase
             'id' => $track->id,
             'published' => true,
         ]);
+    }
+
+    /** @test */
+    public function unauthorized_users_cannot_publish_tracks_from_other_users()
+    {
+        $this->signin();
+        
+        $track = create(Track::class);
+
+        $this->publishTrack($track)
+            ->assertStatus(403);
+    }
+
+    public function publishTrack($track)
+    {
+        return $this->json('PATCH', $track->path() . '/publish');
     }
 }
