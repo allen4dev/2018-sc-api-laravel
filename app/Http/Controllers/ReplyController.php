@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Resources\ReplyResource;
 use App\Track;
 
 class ReplyController extends Controller
@@ -16,9 +17,6 @@ class ReplyController extends Controller
 
         $reply = $track->reply(request()->only('body'));
 
-        return response()->json(['data' => [
-            'type' => 'replies',
-            'id'   => (string) $reply->id,
-        ]], '201');
+        return new ReplyResource($reply);
     }
 }
