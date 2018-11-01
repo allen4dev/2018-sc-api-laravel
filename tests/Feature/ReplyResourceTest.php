@@ -32,6 +32,17 @@ class ReplyResourceTest extends TestCase
             ]]);
     }
 
+    /** @test */
+    public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
+    {
+        $reply = create(Reply::class);
+
+        $this->json('GET', $reply->path())
+            ->assertJson(['data' => [
+                'links' => [ 'self' => route('replies.show', [ 'id' => $reply->id ]) ]
+            ]]);
+    }
+
     public function replyTrack($track, $details)
     {
         return $this->json('POST', $track->path() . '/replies', $details);

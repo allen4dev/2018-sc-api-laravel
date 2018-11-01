@@ -31,6 +31,10 @@ Route::prefix('/tracks')->group(function () {
     Route::post('/{track}/replies', 'ReplyController@store');
 });
 
+Route::prefix('/replies')->group(function () {
+    Route::get('/{reply}', 'ReplyController@show')->name('replies.show');
+});
+
 Route::prefix('/playlists')->group(function () {
     Route::post('/', 'PlaylistController@store')->middleware('auth:api');
     Route::get('/{playlist}', 'PlaylistController@show')->name('playlists.show');

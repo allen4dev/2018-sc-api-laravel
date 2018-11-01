@@ -19,7 +19,10 @@ class ReplyResource extends JsonResource
             'id'   => (string) $this->id,
             'attributes' => [
                 'body' => $this->body,
-            ]
+            ],
+            'links' => [
+                'self' => route('replies.show', [ 'id' => $this->id ]),
+            ],
         ];
     }
 }
