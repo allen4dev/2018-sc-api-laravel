@@ -80,6 +80,17 @@ class ReplyResourceTest extends TestCase
             ]]);
     }
 
+    /** @test */
+    public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
+    {
+        $track = create(Track::class);
+
+        $this->fetchTrackReplies($track)
+            ->assertJson([ 'links' => [
+                'self' => route('replies.index', [ 'id' => $track->id ]),
+            ]]);
+    }
+
     public function replyTrack($track, $details)
     {
         return $this->json('POST', $track->path() . '/replies', $details);

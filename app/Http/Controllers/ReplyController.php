@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\ReplyResource;
+use App\Http\Resources\ReplyCollection;
 
 use App\Track;
 use App\Reply;
@@ -13,7 +14,7 @@ class ReplyController extends Controller
 {
     public function index(Track $track)
     {
-        return ReplyResource::collection($track->replies);
+        return new ReplyCollection($track->replies()->paginate(), $track);
     }
 
     public function show(Reply $reply)

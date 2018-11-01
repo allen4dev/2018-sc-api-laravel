@@ -28,7 +28,7 @@ Route::prefix('/tracks')->group(function () {
     
     Route::patch('/{track}/publish', 'PublishTrackController@update');
 
-    Route::get('/{track}/replies', 'ReplyController@index');
+    Route::get('/{track}/replies', 'ReplyController@index')->name('replies.index');
     Route::post('/{track}/replies', 'ReplyController@store')->middleware('auth:api');
 });
 
