@@ -13,6 +13,13 @@ class ReplyTracksTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_reply_tracks()
+    {
+        $this->json('POST', '/api/tracks/1/replies', [])
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_reply_a_track()
     {
         $this->signin();

@@ -11,6 +11,11 @@ use App\Reply;
 
 class ReplyController extends Controller
 {
+    public function index(Track $track)
+    {
+        return ReplyResource::collection($track->replies);
+    }
+
     public function show(Reply $reply)
     {
         return new ReplyResource($reply);
