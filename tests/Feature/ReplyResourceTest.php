@@ -59,8 +59,34 @@ class ReplyResourceTest extends TestCase
             ]]);
     }
 
+    /** @test */
+    public function a_collection_should_contain_a_list_of_reply_resources_under_a_data_object()
+    {
+        $track = create(Track::class);
+
+        $replyOne = create(Reply::class, [ 'track_id' => $track->id ]);
+        $replyTwo = create(Reply::class, [ 'track_id' => $track->id ]);
+
+        $this->fetchTrackReplies($track)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'replies',
+                    'id'   => (string) $replyOne->id,
+                ],
+                [
+                    'type' => 'replies',
+                    'id'   => (string) $replyTwo->id,
+                ],
+            ]]);
+    }
+
     public function replyTrack($track, $details)
     {
         return $this->json('POST', $track->path() . '/replies', $details);
+    }
+
+    public function fetchTrackReplies($track)
+    {
+        return $this->json('GET', $track->path() . '/replies');
     }
 }
