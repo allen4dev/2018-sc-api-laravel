@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Track;
+use App\Reply;
 
 class TrackResourceTest extends TestCase
 {
@@ -61,6 +62,40 @@ class TrackResourceTest extends TestCase
                     ]
                 ]
             ]]);
+    }
+
+    /** @test */
+    public function a_track_identifier_should_contain_a_data_with_a_type_and_the_id_of_the_track()
+    {
+        $reply = create(Reply::class);
+
+        $this->json('GET', $reply->path())
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        'track' => [
+                            'data' => [ 'type' => 'tracks', 'id' => (string) $reply->track_id ]
+                        ]
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function a_track_identifier_should_contain_a_links_object_containing_a_url_to_the_track_path()
+    {
+        $reply = create(Reply::class);
+
+        $this->json('GET', $reply->path())
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        'track' => [
+                            'links' => [ 'self' => route('tracks.show', [ 'id' => $reply->id ]) ],
+                        ]
+                    ]
+                ]
+            ]);
     }
 
     public function fetchTrack($track)

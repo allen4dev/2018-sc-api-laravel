@@ -43,23 +43,18 @@ class ReplyResourceTest extends TestCase
             ]]);
     }
 
+    /** @test */
     public function it_should_contain_a_relationships_object_under_data_containing_a_user_and_track_identifiers()
     {
-        $this->withoutExceptionHandling();
-
         $this->signin();
 
-        $track = create(Track::class);
-        $reply = create(Reply::class, [ 'track_id' => $track->id, 2 ]);
+        $reply = create(Reply::class);
 
         $this->json('GET', $reply->path())
             ->assertJson(['data' => [
                 'relationships' => [
-                    'user' => [ 'type' => 'users', 'id' => (string) auth()->id() ],
-                    'replies' => [
-                        [ 'type' => 'replies', 'id' => '1' ],
-                        [ 'type' => 'replies', 'id' => '2' ],
-                    ]
+                    'user'  => [ 'data' => [ 'type' => 'users', 'id' => (string) $reply->user_id ] ],
+                    'track' => [ 'data' => [ 'type' => 'tracks', 'id' => (string) $reply->track_id ] ],
                 ]
             ]]);
     }

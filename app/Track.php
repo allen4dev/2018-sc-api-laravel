@@ -29,6 +29,9 @@ class Track extends Model
 
     public function reply($details)
     {
-        return $this->replies()->create($details);
+        return $this->replies()->create([
+            'user_id' => auth()->id(),
+            'body'   => $details['body'],
+        ]);
     }
 }

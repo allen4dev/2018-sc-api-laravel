@@ -23,6 +23,7 @@ class ReplyResource extends JsonResource
             'links' => [
                 'self' => route('replies.show', [ 'id' => $this->id ]),
             ],
+            'relationships' => new ReplyRelationshipsResource($this),
         ];
     }
 }
