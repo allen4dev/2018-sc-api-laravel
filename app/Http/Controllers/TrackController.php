@@ -25,4 +25,11 @@ class TrackController extends Controller
     {
         return new TrackResource($track);
     }
+
+    public function destroy(Track $track)
+    {
+        $track->delete();
+
+        return response()->json()->setStatusCode(204);
+    }
 }

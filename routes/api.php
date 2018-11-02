@@ -25,6 +25,7 @@ Route::prefix('/users')->group(function () {
 Route::prefix('/tracks')->group(function () {
     Route::post('/', 'TrackController@store')->middleware('auth:api');
     Route::get('/{track}', 'TrackController@show')->name('tracks.show');
+    Route::delete('/{track}', 'TrackController@destroy');
     
     Route::patch('/{track}/publish', 'PublishTrackController@update');
 
