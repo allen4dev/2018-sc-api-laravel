@@ -29,4 +29,19 @@ class DeleteTracksTest extends TestCase
             'user_id' => auth()->id(),
         ]);
     }
+
+    /** @test */
+    public function only_authorized_users_can_delete_his_tracks()
+    {
+        $track = create(Track::class);
+
+        $this->json('DELETE', $track->path())
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('tracks', [
+            'id' => $track->id,
+            'user_id' => $track->user_id,
+            'title' => $track->title,
+        ]);
+    }
 }

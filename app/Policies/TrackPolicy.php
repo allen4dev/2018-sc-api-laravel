@@ -54,7 +54,7 @@ class TrackPolicy
      */
     public function delete(User $user, Track $track)
     {
-        //
+        return $user->id === $track->user_id;
     }
 
     /**

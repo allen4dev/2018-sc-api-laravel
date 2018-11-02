@@ -28,6 +28,8 @@ class TrackController extends Controller
 
     public function destroy(Track $track)
     {
+        $this->authorize('delete', $track);
+
         $track->delete();
 
         return response()->json()->setStatusCode(204);
