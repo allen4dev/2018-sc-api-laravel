@@ -27,6 +27,11 @@ class Track extends Model
         return $this->hasMany(Reply::class);
     }
 
+    public function favorites()
+    {
+        return $this->morphMany(Favorite::class, 'favorited');
+    }
+
     public function reply($details)
     {
         return $this->replies()->create([
