@@ -39,4 +39,23 @@ class Track extends Model
             'body'   => $details['body'],
         ]);
     }
+
+    public function favorite()
+    {
+        $attributes = [
+            'user_id' => auth()->id(),
+            'type' => 'track',        
+        ];
+
+        if (! $this->isFavorited($attributes)) {
+            $this->favorites()->create($attributes);
+        }
+
+        return $this;
+    }
+
+    protected function isFavorited($attributes)
+    {
+        return $this->favorites()->where($attributes)->exists();
+    }
 }

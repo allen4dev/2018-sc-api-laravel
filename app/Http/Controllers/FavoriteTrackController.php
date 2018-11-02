@@ -12,10 +12,7 @@ class FavoriteTrackController extends Controller
 {
     public function store(Track $track)
     {
-        $track->favorites()->create([
-            'user_id' => auth()->id(),
-            'type' => 'track',        
-        ]);
+        $track->favorite();
 
         return new TrackResource($track);
     }
