@@ -19,6 +19,12 @@ class CreateRepliesTable extends Migration
             $table->unsignedInteger('track_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();
+
+            $table
+                ->foreign('track_id')
+                ->references('id')
+                ->on('tracks')
+                ->onDelete('cascade');
         });
     }
 

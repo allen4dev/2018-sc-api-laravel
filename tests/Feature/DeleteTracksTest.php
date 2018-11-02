@@ -44,4 +44,20 @@ class DeleteTracksTest extends TestCase
             'title' => $track->title,
         ]);
     }
+
+    /** @test */
+    public function after_delete_a_track_his_replies_should_also_be_deleted()
+    {
+        $this->signin();
+        
+        $track = create(Track::class, [ 'user_id' => auth()->id() ]);
+        $reply = create(Reply::class, [ 'track_id' => $track->id ]);
+
+        $this->json('DELETE', $track->path());
+        
+        $this->assertDatabaseMissing('replies', [
+            'id' => $reply->id,
+            'track_id' => $track->id,
+        ]);
+    }
 }
