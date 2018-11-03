@@ -40,6 +40,8 @@ class DeleteTracksTest extends TestCase
     /** @test */
     public function only_authorized_users_can_delete_his_tracks()
     {
+        $this->signin();
+        
         $track = create(Track::class);
 
         $this->json('DELETE', $track->path())

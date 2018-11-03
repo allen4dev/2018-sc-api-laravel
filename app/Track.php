@@ -4,8 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Favoritable;
+
 class Track extends Model
 {
+    use Favoritable;
+
     protected $fillable = [ 'title', 'published' ];
 
     protected $casts = [
@@ -27,10 +31,7 @@ class Track extends Model
         return $this->hasMany(Reply::class);
     }
 
-    public function favorites()
-    {
-        return $this->morphMany(Favorite::class, 'favorited');
-    }
+    
 
     public function reply($details)
     {
@@ -38,24 +39,5 @@ class Track extends Model
             'user_id' => auth()->id(),
             'body'   => $details['body'],
         ]);
-    }
-
-    public function favorite()
-    {
-        $attributes = [
-            'user_id' => auth()->id(),
-            'type' => 'track',        
-        ];
-
-        if (! $this->isFavorited($attributes)) {
-            $this->favorites()->create($attributes);
-        }
-
-        return $this;
-    }
-
-    protected function isFavorited($attributes)
-    {
-        return $this->favorites()->where($attributes)->exists();
     }
 }

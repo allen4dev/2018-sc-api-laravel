@@ -4,8 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Favoritable;
+
 class Playlist extends Model
 {
+    use Favoritable;
+
     protected $fillable = [ 'title' ];
 
     public function path()
