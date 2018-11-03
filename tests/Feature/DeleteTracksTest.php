@@ -14,6 +14,13 @@ class DeleteTracksTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_delete_tracks()
+    {
+        $this->json('DELETE', '/api/tracks/1')
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_delete_his_tracks()
     {
         $this->signin();
