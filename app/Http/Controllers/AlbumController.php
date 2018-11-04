@@ -25,4 +25,11 @@ class AlbumController extends Controller
 
         return new AlbumResource($album);
     }
+
+    public function update(Album $album)
+    {
+        $album->update([ 'published' => true ]);
+
+        return new AlbumResource($album);
+    }
 }
