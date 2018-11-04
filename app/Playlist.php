@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\Favoritable;
 
+use App\Track;
+
 class Playlist extends Model
 {
     use Favoritable;
@@ -20,5 +22,17 @@ class Playlist extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function tracks()
+    {
+        return $this->belongsToMany(Track::class);
+    }
+
+    public function addTrack(Track $track)
+    {
+        $this->tracks()->attach($track->id, [ 'user_id' => auth()->id() ]);
+
+        return $this;
     }
 }

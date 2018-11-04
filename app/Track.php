@@ -31,7 +31,10 @@ class Track extends Model
         return $this->hasMany(Reply::class);
     }
 
-    
+    public function playlists()
+    {
+        return $this->belongsToMany(Playlist::class);
+    }
 
     public function reply($details)
     {
