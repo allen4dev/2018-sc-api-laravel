@@ -16,6 +16,13 @@ class RemoveTracksFromListTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_remove_tracks_from_a_resource()
+    {
+        $this->json('DELETE', '/api/playlists/1/tracks/999/remove')
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_remove_a_track_from_his_playlist()
     {
         $this->signin();

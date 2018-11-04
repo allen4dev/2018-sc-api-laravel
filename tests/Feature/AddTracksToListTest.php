@@ -14,6 +14,13 @@ class AddTracksToListTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_add_tracks_to_a_resource()
+    {
+        $this->json('POST', '/api/playlists/1/tracks/999/add')
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_add_tracks_to_his_playlist()
     {
         $this->signin();
