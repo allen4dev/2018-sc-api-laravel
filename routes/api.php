@@ -42,6 +42,7 @@ Route::prefix('/replies')->group(function () {
 Route::prefix('/playlists')->group(function () {
     Route::post('/', 'PlaylistController@store')->middleware('auth:api');
     Route::get('/{playlist}', 'PlaylistController@show')->name('playlists.show');
+    Route::delete('/{playlist}', 'PlaylistController@destroy');
 
     Route::post('/{playlist}/favorite', 'FavoritePlaylistController@store')->middleware('auth:api');
     

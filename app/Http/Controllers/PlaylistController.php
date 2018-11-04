@@ -25,4 +25,11 @@ class PlaylistController extends Controller
 
         return new PlaylistResource($playlist);;
     }
+
+    public function destroy(Playlist $playlist)
+    {
+        $playlist->delete();
+
+        return response()->json([], 204);
+    }
 }
