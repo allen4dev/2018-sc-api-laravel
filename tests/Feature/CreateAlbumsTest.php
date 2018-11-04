@@ -23,8 +23,6 @@ class CreateAlbumsTest extends TestCase
     /** @test */
     public function a_user_can_create_albums()
     {
-        $this->withoutExceptionHandling();
-
         $this->signin();
 
         $album = raw(Album::class);
@@ -42,5 +40,25 @@ class CreateAlbumsTest extends TestCase
             'id'    => 1,
             'title' => $album['title'],
         ]);
+    }
+
+    /** @test */
+    public function after_create_an_album_the_sended_tracks_should_be_related_to_the_album()
+    {
+        $this->signin();
+
+        $album = raw(Album::class);
+
+        $tracks = create(Track::class, [ 'user_id' => auth()->id() ], 2);
+
+        $this->json('POST', '/api/albums', [ 'details' => $album, 'tracks' => $tracks->pluck('id') ]);
+
+        $tracks->map(function ($track) {
+            $this->assertDatabaseHas('tracks', [
+                'id'       => $track->id,
+                'user_id'  => auth()->id(),
+                'album_id' => 1,
+            ]);
+        });
     }
 }

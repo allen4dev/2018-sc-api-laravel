@@ -83,6 +83,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $album = $this->albums()->create($input['details']);
 
+        Track::whereIn('id', $input['tracks'])->update([ 'album_id' => $album->id ]);
 
         return $album;
     }
