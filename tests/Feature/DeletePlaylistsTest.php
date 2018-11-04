@@ -13,6 +13,13 @@ class DeletePlaylistsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_delete_playlists()
+    {
+        $this->json('DELETE', '/api/playlists/1')
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_delete_his_playlist()
     {
         $this->signin();
