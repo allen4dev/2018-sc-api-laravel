@@ -19,6 +19,7 @@ class AlbumResource extends JsonResource
             'id' => (string) $this->id,
             'attributes' => [
                 'title' => $this->title,
+                'published' => $this->published,
             ],
             'links' => [
                 'self' => route('albums.show', ['id' => $this->id]),

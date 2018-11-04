@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Album extends Model
 {
     protected $fillable = [ 'title', 'published' ];
+    protected $casts = [ 'user_id' => 'int' ];
 
     public function path()
     {

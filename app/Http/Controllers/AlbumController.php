@@ -28,6 +28,8 @@ class AlbumController extends Controller
 
     public function update(Album $album)
     {
+        $this->authorize('update', $album);
+
         $album->update([ 'published' => true ]);
 
         return new AlbumResource($album);

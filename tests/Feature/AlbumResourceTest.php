@@ -24,6 +24,7 @@ class AlbumResourceTest extends TestCase
                     'id'   => (string) $album->id,
                     'attributes' => [
                         'title' => $album->title,
+                        'published' => $album->published,
                     ]
                 ]
             ]);
