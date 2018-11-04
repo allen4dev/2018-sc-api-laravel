@@ -53,6 +53,7 @@ Route::prefix('/playlists')->group(function () {
 Route::prefix('/albums')->group(function () {
     Route::post('/', 'AlbumController@store')->middleware('auth:api');
     Route::get('/{album}', 'AlbumController@show')->name('albums.show');
+    Route::delete('/{album}', 'AlbumController@destroy');
 
     Route::patch('/{album}/publish', 'AlbumController@update')->middleware('auth:api');
 

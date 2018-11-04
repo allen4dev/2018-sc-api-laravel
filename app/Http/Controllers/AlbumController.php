@@ -35,4 +35,11 @@ class AlbumController extends Controller
 
         return new AlbumResource($album);
     }
+
+    public function destroy(Album $album)
+    {
+        $album->delete();
+
+        return response()->json([], 204);
+    }
 }
