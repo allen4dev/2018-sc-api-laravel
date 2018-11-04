@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use App\Album;
 use App\Playlist;
 use App\Track;
 
@@ -79,6 +80,28 @@ class FavoritesTest extends TestCase
             'type'    => 'playlist',
             'favorited_id'   => $playlist->id,
             'favorited_type' => Playlist::class,
+        ]);
+    }
+
+    /** @test */
+    public function a_user_can_favorite_an_album()
+    {
+        $this->signin();
+
+        $album = create(Album::class);
+
+        $this->favoriteResource($album)
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'albums',
+                'id'   => (string) $album->id,
+            ]]);
+        
+        $this->assertDataBaseHas('favorites', [
+            'user_id' => auth()->id(),
+            'type'    => 'album',
+            'favorited_id'   => $album->id,
+            'favorited_type' => Album::class,
         ]);
     }
 

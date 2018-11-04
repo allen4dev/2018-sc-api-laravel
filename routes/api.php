@@ -55,4 +55,6 @@ Route::prefix('/albums')->group(function () {
     Route::get('/{album}', 'AlbumController@show')->name('albums.show');
 
     Route::patch('/{album}/publish', 'AlbumController@update')->middleware('auth:api');
+
+    Route::post('/{album}/favorite', 'FavoriteAlbumController@store')->middleware('auth:api');
 });

@@ -4,9 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Favoritable;
+
 class Album extends Model
 {
-    protected $fillable = [ 'title', 'published' ];
+    use Favoritable;
+
+    protected $fillable = [ 'title', 'published', 'user_id' ];
     protected $casts = [ 'user_id' => 'int' ];
 
     public function path()
