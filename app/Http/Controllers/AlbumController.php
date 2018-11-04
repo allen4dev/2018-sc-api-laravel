@@ -15,13 +15,14 @@ class AlbumController extends Controller
         return new AlbumResource($album);
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        request()->validate([
-            'title' => 'required|string',
+        $request->validate([
+            'details.title' => 'required|string',
+            'tracks.*'  => 'required||integer',
         ]);
 
-        $album = auth()->user()->createAlbum(request()->only('title'));
+        $album = auth()->user()->createAlbum($request->only([ 'details', 'tracks' ]));
 
         return new AlbumResource($album);
     }

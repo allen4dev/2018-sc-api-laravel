@@ -28,4 +28,15 @@ class AlbumTest extends TestCase
 
         $this->assertInstanceOf(User::class, $album->user);
     }
+
+    /** @test */
+    public function it_has_many_tracks()
+    {
+        $album = create(Album::class);
+
+        return $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $album->tracks
+        );
+    }
 }

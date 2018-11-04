@@ -18,6 +18,7 @@ class CreateTracksTable extends Migration
             $table->string('title');
             $table->boolean('published')->default(false);
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('album_id')->nullable();
             $table->timestamps();
         });
     }

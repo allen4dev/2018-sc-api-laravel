@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Playlist;
 use App\Track;
 
-class RemoveTracksFromListTest extends TestCase
+class RemoveTracksFromPlaylistTest extends TestCase
 {
     use RefreshDatabase;
 

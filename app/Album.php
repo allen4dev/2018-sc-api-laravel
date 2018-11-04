@@ -22,4 +22,9 @@ class Album extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function tracks()
+    {
+        return $this->hasMany(Track::class);
+    }
 }

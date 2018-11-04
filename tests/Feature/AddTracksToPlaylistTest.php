@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Track;
 use App\Playlist;
 
-class AddTracksToListTest extends TestCase
+class AddTracksToPlaylistTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Album;
+use App\Track;
 
 class CreateAlbumsTest extends TestCase
 {
@@ -22,11 +23,15 @@ class CreateAlbumsTest extends TestCase
     /** @test */
     public function a_user_can_create_albums()
     {
+        $this->withoutExceptionHandling();
+
         $this->signin();
 
         $album = raw(Album::class);
 
-        $this->json('POST', '/api/albums', $album)
+        $tracks = create(Track::class, [ 'user_id' => auth()->id() ], 2);
+
+        $this->json('POST', '/api/albums', [ 'details' => $album, 'tracks' => $tracks->pluck('id') ])
             ->assertStatus(201)
             ->assertJson(['data' => [
                 'type' => 'albums',
