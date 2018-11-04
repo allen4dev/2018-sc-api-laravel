@@ -20,6 +20,8 @@ Route::prefix('/auth')->group(function () {
 
 Route::prefix('/users')->group(function () {
     Route::get('/{user}', 'UserController@show')->name('users.show');
+
+    Route::get('/{user}/tracks', 'UserTracksController@index');
 });
 
 Route::prefix('/tracks')->group(function () {
