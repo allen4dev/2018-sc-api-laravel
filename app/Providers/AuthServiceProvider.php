@@ -5,8 +5,10 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+use App\Policies\PlaylistPolicy;
 use App\Policies\TrackPolicy;
 
+use App\Playlist;
 use App\Track;
 
 class AuthServiceProvider extends ServiceProvider
@@ -18,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Track::class => TrackPolicy::class,
+        Playlist::class => PlaylistPolicy::class,
     ];
 
     /**

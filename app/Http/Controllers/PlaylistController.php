@@ -28,6 +28,8 @@ class PlaylistController extends Controller
 
     public function destroy(Playlist $playlist)
     {
+        $this->authorize('delete', $playlist);
+
         $playlist->delete();
 
         return response()->json([], 204);

@@ -13,6 +13,7 @@ class Playlist extends Model
     use Favoritable;
 
     protected $fillable = [ 'title' ];
+    protected $casts = [ 'user_id' => 'int' ];
 
     public function path()
     {

@@ -34,4 +34,20 @@ class DeletePlaylistsTest extends TestCase
             'user_id' => auth()->id(),
         ]);
     }
+
+    /** @test */
+    public function a_user_cannot_delete_other_users_playlists()
+    {
+        $this->signin();
+
+        $playlist = create(Playlist::class);
+
+        $this->json('DELETE', $playlist->path())
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('playlists', [
+            'id' => $playlist->id,
+            'user_id' => $playlist->user_id,
+        ]);
+    }
 }
