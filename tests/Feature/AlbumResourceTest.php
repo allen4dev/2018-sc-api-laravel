@@ -65,8 +65,6 @@ class AlbumResourceTest extends TestCase
     /** @test */
     public function a_collection_should_contain_a_list_of_album_resources_under_a_data_object()
     {
-        $this->withoutExceptionHandling();
-
         $user = create(User::class);
 
         create(Album::class, [ 'user_id' => $user->id ], 2);
@@ -82,6 +80,17 @@ class AlbumResourceTest extends TestCase
                     'id'   => '2',
                 ],
             ]]);
+    }
+
+    /** @test */
+    public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
+    {
+        $user = create(User::class);
+
+        $this->json('GET', $user->path() . '/albums')
+            ->assertJson([
+                'links' => [ 'self' => route('users.albums', [ 'id' => $user->id ]) ],
+            ]);
     }
 
     public function fetchAlbum($album)

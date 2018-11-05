@@ -6,6 +6,15 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class AlbumCollection extends ResourceCollection
 {
+    protected $route;
+
+    public function __construct($resource, $route)
+    {
+        $this->route = $route;
+
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource collection into an array.
      *
@@ -16,6 +25,9 @@ class AlbumCollection extends ResourceCollection
     {
         return [
             'data' => AlbumResource::collection($this->collection),
+            'links' => [
+                'self' => $this->route,
+            ],
         ];
     }
 }
