@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Playlist;
+use App\User;
 
 class PlaylistResourceTest extends TestCase
 {
@@ -55,6 +56,28 @@ class PlaylistResourceTest extends TestCase
                     ]
                 ]]
             ]);
+    }
+
+    /** @test */
+    public function a_collection_should_contain_a_list_of_playlist_resources_under_a_data_object()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = create(User::class);
+
+        create(Playlist::class, [ 'user_id' => $user->id ], 2);
+
+        $this->json('GET', $user->path() . '/playlists')
+            ->assertJson(['data' => [
+                [
+                    'type' => 'playlists',
+                    'id' => '1',
+                ],
+                [
+                    'type' => 'playlists',
+                    'id' => '2',
+                ],
+            ]]);
     }
 
     public function fetchPlaylist($playlist)
