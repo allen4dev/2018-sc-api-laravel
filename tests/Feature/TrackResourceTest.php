@@ -128,6 +128,21 @@ class TrackResourceTest extends TestCase
             ]]);
     }
 
+    /** @test */
+    public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
+    {
+        $user = create(User::class);
+
+        $tracks = create(Track::class, [ 'user_id' => $user->id ], 2);
+
+        $this->json('GET', $user->path() . '/tracks')
+            ->assertJson([
+                'links' => [
+                    'self' => route('users.tracks', [ 'user_id' => $user->id ]),
+                ],
+            ]);
+    }
+
     public function fetchTrack($track)
     {
         return $this->json('GET', $track->path());

@@ -12,6 +12,8 @@ class UserTracksController extends Controller
 {
     public function index(User $user)
     {
-        return new TrackCollection($user->tracks()->paginate());
+        $route = route('users.tracks', [ 'id' => $user->id ]);
+
+        return new TrackCollection($user->tracks()->paginate(), $route);
     }
 }
