@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Album;
+use App\User;
 
 class AlbumResourceTest extends TestCase
 {
@@ -58,6 +59,28 @@ class AlbumResourceTest extends TestCase
                         ]
                     ]
                 ]
+            ]]);
+    }
+
+    /** @test */
+    public function a_collection_should_contain_a_list_of_album_resources_under_a_data_object()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = create(User::class);
+
+        create(Album::class, [ 'user_id' => $user->id ], 2);
+
+        $this->json('GET', $user->path() . '/albums')
+            ->assertJson(['data' => [
+                [
+                    'type' => 'albums',
+                    'id'   => '1',
+                ],
+                [
+                    'type' => 'albums',
+                    'id'   => '2',
+                ],
             ]]);
     }
 
