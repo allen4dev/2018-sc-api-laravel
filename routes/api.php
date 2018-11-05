@@ -22,6 +22,7 @@ Route::prefix('/users')->group(function () {
     Route::get('/{user}', 'UserController@show')->name('users.show');
 
     Route::get('/{user}/tracks', 'UserTracksController@index');
+    Route::get('/{user}/playlists', 'UserPlaylistsController@index');
 });
 
 Route::prefix('/tracks')->group(function () {
