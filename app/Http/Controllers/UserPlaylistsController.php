@@ -12,6 +12,6 @@ class UserPlaylistsController extends Controller
 {
     public function index(User $user)
     {
-        return new PlaylistCollection($user->playlists);
+        return new PlaylistCollection($user->playlists, route('users.playlists', [ 'id' => $user->id ]));
     }
 }
