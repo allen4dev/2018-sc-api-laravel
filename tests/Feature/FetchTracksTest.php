@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Track;
+use App\User;
 
 class FetchTracksTest extends TestCase
 {
@@ -30,12 +31,12 @@ class FetchTracksTest extends TestCase
     /** @test */
     public function guests_can_fetch_all_tracks_from_a_user()
     {
-        $this->signin();
+        $user = create(User::class);
 
-        $tracksByUser = create(Track::class, [ 'user_id' => auth()->id() ], 2);
+        $tracksByUser = create(Track::class, [ 'user_id' => $user->id ], 2);
         $trackNotByUser = create(Track::class);
 
-        $this->json('GET', auth()->user()->path() . '/tracks')
+        $this->json('GET', $user->path() . '/tracks')
             ->assertStatus(200)
             ->assertJson(['data' => [
                 [

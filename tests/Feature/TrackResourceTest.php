@@ -6,8 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\Track;
 use App\Reply;
+use App\Track;
+use App\User;
 
 class TrackResourceTest extends TestCase
 {
@@ -96,6 +97,35 @@ class TrackResourceTest extends TestCase
                     ]
                 ]
             ]);
+    }
+
+    /** @test */
+    public function a_collection_should_contain_a_list_of_track_resources_under_a_data_object()
+    {
+        $user = create(User::class);
+
+        $trackOne = create(Track::class, [ 'user_id' => $user->id ]);
+        $trackTwo = create(Track::class, [ 'user_id' => $user->id ]);
+
+        $this->json('GET', $user->path() . '/tracks')
+            ->assertJson(['data' => [
+                [
+                    'type' => 'tracks',
+                    'id'   => (string) $trackOne->id,
+                    'attributes' => [
+                        'title' => $trackOne->title,
+                        // more fields
+                    ],
+                ],
+                [
+                    'type' => 'tracks',
+                    'id'   => (string) $trackTwo->id,
+                    'attributes' => [
+                        'title' => $trackTwo->title,
+                        // more fields
+                    ],
+                ],
+            ]]);
     }
 
     public function fetchTrack($track)
