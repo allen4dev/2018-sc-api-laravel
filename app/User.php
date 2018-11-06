@@ -71,12 +71,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function followers()
     {
-        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id');
+        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id');
     }
 
-    public function following()
+    public function followings()
     {
-        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id');
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id');
     }
 
     public function createTrack($details)
@@ -96,5 +96,21 @@ class User extends Authenticatable implements JWTSubject
         Track::whereIn('id', $input['tracks'])->update([ 'album_id' => $album->id ]);
 
         return $album;
+    }
+
+    public function follow()
+    {
+        $attributes = [ 'following_id' => $this->id ];
+
+        if (! $this->isFollowing($attributes)) {
+            $this->followers()->attach(auth()->id());
+        }
+
+        return $this;
+    }
+
+    protected function isFollowing($attributes)
+    {
+        return auth()->user()->followings()->where($attributes)->exists();
     }
 }

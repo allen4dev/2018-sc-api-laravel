@@ -12,7 +12,7 @@ class FollowersController extends Controller
 {
     public function store(User $user)
     {
-        auth()->user()->followers()->attach($user->id);
+        $user->follow();
 
         return new UserResource($user);
     }

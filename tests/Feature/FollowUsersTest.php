@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\User;
 
-class FollowUserTest extends TestCase
+class FollowUsersTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -19,7 +19,7 @@ class FollowUserTest extends TestCase
 
         $userToFollow = create(User::class);
 
-        $this->json('POST', $userToFollow->path() . '/follow')
+        $this->follow($userToFollow)
             ->assertStatus(200)
             ->assertJson(['data' => [
                 'type' => 'users',
@@ -30,5 +30,27 @@ class FollowUserTest extends TestCase
             'follower_id'  => auth()->id(),
             'following_id' => $userToFollow->id
         ]);
+    }
+
+    /** @test */
+    public function a_user_cannot_follow_more_than_once_the_same_user()
+    {
+        $this->signin();
+
+        $userToFollow = create(User::class);
+
+        try {
+            $this->follow($userToFollow);
+            $this->follow($userToFollow);
+        } catch (Exception $e) {
+            $this->fail('Did not expect to follow the same user more than once.');
+        }
+
+        $this->assertCount(1, $userToFollow->followers);
+    }
+
+    public function follow($user)
+    {
+        return $this->json('POST', $user->path() . '/follow');
     }
 }
