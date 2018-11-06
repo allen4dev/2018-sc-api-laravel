@@ -11,6 +11,13 @@ class DeleteUsersTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_delete_users_profiles()
+    {
+        $this->json('DELETE', '/api/users/1')
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_delete_his_profile()
     {
         $this->signin();
