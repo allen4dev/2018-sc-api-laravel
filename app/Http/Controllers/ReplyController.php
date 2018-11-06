@@ -28,6 +28,8 @@ class ReplyController extends Controller
             'body' => 'required|string|min:5',
         ]);
 
+        $this->authorize('reply', $track);
+
         $reply = $track->reply(request()->only('body'));
 
         return new ReplyResource($reply);

@@ -13,7 +13,8 @@ class Track extends Model
     protected $fillable = [ 'title', 'published' ];
 
     protected $casts = [
-        'user_id' => 'int',
+        'user_id'   => 'int',
+        'published' => 'boolean',
     ];
     
     public function path()

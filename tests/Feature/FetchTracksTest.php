@@ -53,4 +53,22 @@ class FetchTracksTest extends TestCase
         $this->json('GET', $track->path())
             ->assertStatus(403);
     }
+
+    /** @test */
+    public function guests_can_fetch_all_published_tracks_from_a_user()
+    {
+        $user = create(User::class);
+
+        $publishedTrack    = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
+        $unpublishedTracks = create(Track::class, [ 'user_id' => $user->id ], 2);
+
+        $this->json('GET', $user->path() . '/tracks')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'tracks',
+                    'id'   => '1',
+                ],
+            ]]);
+    }
 }

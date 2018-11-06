@@ -20,11 +20,11 @@ class ReplyTracksTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_reply_a_track()
+    public function a_user_can_reply_a_published_track()
     {
         $this->signin();
 
-        $track = create(Track::class);
+        $track = create(Track::class, [ 'published' => true ]);
         $details = [ 'body' => 'An awful song' ];
 
         $this->json('POST', $track->path() . '/replies', $details)
@@ -38,5 +38,18 @@ class ReplyTracksTest extends TestCase
             'track_id' => $track->id,
             'body'     => $details['body']
         ]);
+    }
+
+    /** @test */
+    public function a_user_cannot_reply_unpublished_tracks()
+    {
+        $this->signin();
+
+        $track = create(Track::class);
+
+        $details = [ 'body' => 'An awful song' ];
+        
+        $this->json('POST', $track->path() . '/replies', $details)
+            ->assertStatus(403);
     }
 }

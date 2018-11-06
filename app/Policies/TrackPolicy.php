@@ -80,4 +80,9 @@ class TrackPolicy
     {
         //
     }
+
+    public function reply(User $user, Track $track)
+    {
+        return $track->published;
+    }
 }

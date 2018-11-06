@@ -17,7 +17,7 @@ class TrackResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
     {
-        $track = create(Track::class);
+        $track = create(Track::class, [ 'published' => true ]);
 
         $this->fetchTrack($track)
             ->assertJson([
@@ -35,7 +35,7 @@ class TrackResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
     {
-        $track = create(Track::class);
+        $track = create(Track::class, [ 'published' => true ]);
 
         $this->fetchTrack($track)
             ->assertJson([ 'data' => [
@@ -102,10 +102,11 @@ class TrackResourceTest extends TestCase
     /** @test */
     public function a_collection_should_contain_a_list_of_track_resources_under_a_data_object()
     {
+        $this->withoutExceptionHandling();
         $user = create(User::class);
 
-        $trackOne = create(Track::class, [ 'user_id' => $user->id ]);
-        $trackTwo = create(Track::class, [ 'user_id' => $user->id ]);
+        $trackOne = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
+        $trackTwo = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
 
         $this->json('GET', $user->path() . '/tracks')
             ->assertJson(['data' => [

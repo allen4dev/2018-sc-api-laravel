@@ -18,7 +18,7 @@ class ReplyResourceTest extends TestCase
     {
         $this->signin();
 
-        $track = create(Track::class);
+        $track = create(Track::class, [ 'published' => true ]);
 
         $details = raw(Reply::class);
 
