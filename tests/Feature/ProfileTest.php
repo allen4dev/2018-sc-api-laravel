@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Album;
 use App\Playlist;
 use App\Track;
@@ -77,8 +79,30 @@ class ProfileTest extends TestCase
     }
 
     /** @test */
-    public function testExample()
+    public function guests_can_fetch_all_users_who_a_user_is_following()
     {
-        $this->assertTrue(true);
+        $user = create(User::class);
+
+        $followedUsers = create(User::class, [], 2);
+        $notFollowedUser = create(User::class);
+
+        $values = $followedUsers->map(function ($followed) use ( $user ) {
+            return [ 'follower_id' => $user->id, 'following_id' => $followed->id ];
+        });
+
+        Db::table('followers')->insert($values->toArray());
+
+        $this->json('GET', $user->path() . '/following')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'users',
+                    'id'   => '2',
+                ],
+                [
+                    'type' => 'users',
+                    'id'   => '3',
+                ],
+            ]]);
     }
 }
