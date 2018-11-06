@@ -8,10 +8,10 @@ use App\Http\Resources\UserCollection;
 
 use App\User;
 
-class UserFollowersController extends Controller
+class UserFollowingsController extends Controller
 {
     public function index(User $user)
     {
-        return new UserCollection($user->followers()->paginate(), route('users.followers', $user->id));
+        return new UserCollection($user->followings()->paginate(), route('users.following', $user->id));
     }
 }
