@@ -27,26 +27,4 @@ class FetchTracksTest extends TestCase
                 ]
             ]);
     }
-
-    /** @test */
-    public function guests_can_fetch_all_tracks_from_a_user()
-    {
-        $user = create(User::class);
-
-        $tracksByUser = create(Track::class, [ 'user_id' => $user->id ], 2);
-        $trackNotByUser = create(Track::class);
-
-        $this->json('GET', $user->path() . '/tracks')
-            ->assertStatus(200)
-            ->assertJson(['data' => [
-                [
-                    'type' => 'tracks',
-                    'id'   => '1',
-                ],
-                [
-                    'type' => 'tracks',
-                    'id'   => '2',
-                ],
-            ]]);
-    }
 }
