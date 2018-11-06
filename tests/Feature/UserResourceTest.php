@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Track;
 use App\User;
 
@@ -68,6 +70,41 @@ class UserResourceTest extends TestCase
                         ]
                     ]
                 ]
+            ]);
+    }
+
+    /** @test */
+    public function a_collection_should_contain_a_list_of_user_resources_under_a_data_object()
+    {
+
+        $user = create(User::class);
+
+        $followedUser = create(User::class);
+
+        Db::table('followers')->insert([
+            'follower_id'  => $user->id,
+            'following_id' => $followedUser->id,
+        ]);
+
+        $this->json('GET', $user->path() . '/following')
+            ->assertJson(['data' => [
+                [
+                    'type' => 'users',
+                    'id'   => (string) $followedUser->id,
+                ],
+            ]]);
+    }
+
+    /** @test */
+    public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
+    {
+        $user = create(User::class);
+
+        $this->json('GET', $user->path() . '/following')
+            ->assertJson([
+                'links' => [
+                    'self' => route('users.following', [ 'id' => $user->id ]),
+                ],
             ]);
     }
 }

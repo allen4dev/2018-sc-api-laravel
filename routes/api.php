@@ -24,7 +24,7 @@ Route::prefix('/users')->group(function () {
     Route::get('/{user}/tracks', 'UserTracksController@index')->name('users.tracks');
     Route::get('/{user}/playlists', 'UserPlaylistsController@index')->name('users.playlists');
     Route::get('/{user}/albums', 'UserAlbumsController@index')->name('users.albums');
-    Route::get('/{user}/following', 'UserFollowersController@index');
+    Route::get('/{user}/following', 'UserFollowersController@index')->name('users.following');
 
     Route::post('/{user}/follow', 'FollowersController@store');
     Route::delete('/{user}/unfollow', 'FollowersController@destroy');
