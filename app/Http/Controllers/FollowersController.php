@@ -16,4 +16,11 @@ class FollowersController extends Controller
 
         return new UserResource($user);
     }
+
+    public function destroy(User $user)
+    {
+        $user->unfollow();
+
+        return new UserResource($user);
+    }
 }

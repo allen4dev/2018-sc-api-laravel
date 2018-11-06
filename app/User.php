@@ -100,17 +100,24 @@ class User extends Authenticatable implements JWTSubject
 
     public function follow()
     {
-        $attributes = [ 'following_id' => $this->id ];
-
-        if (! $this->isFollowing($attributes)) {
+        if (! $this->isFollowing()) {
             $this->followers()->attach(auth()->id());
         }
 
         return $this;
     }
 
-    protected function isFollowing($attributes)
+    public function unfollow()
     {
+        if ($this->isFollowing()) {
+            auth()->user()->followings()->detach($this->id);
+        }
+    }
+
+    protected function isFollowing()
+    {
+        $attributes = [ 'following_id' => $this->id ];
+
         return auth()->user()->followings()->where($attributes)->exists();
     }
 }

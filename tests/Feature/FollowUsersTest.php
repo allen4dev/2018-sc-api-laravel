@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\User;
 
 class FollowUsersTest extends TestCase
@@ -49,8 +51,35 @@ class FollowUsersTest extends TestCase
         $this->assertCount(1, $userToFollow->followers);
     }
 
+    /** @test */
+    public function a_user_can_unfollow_a_currently_followed_user()
+    {
+        $this->signin();
+
+        $userToUnfollow = create(User::class);
+        
+        Db::table('followers')->insert([
+            'follower_id'  => auth()->id(),
+            'following_id' => $userToUnfollow->id,
+        ]);
+
+        $this->json('DELETE', $userToUnfollow->path() . '/unfollow')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'users',
+                'id'   => (string) $userToUnfollow->id,
+            ]]);
+
+
+        $this->assertDatabaseMissing('followers' ,[
+            'follower_id'  => auth()->id(),
+            'following_id' => $userToUnfollow->id,
+        ]);
+    }
+
     public function follow($user)
     {
         return $this->json('POST', $user->path() . '/follow');
     }
+
 }
