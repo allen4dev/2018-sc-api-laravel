@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use App\User;
+
 class DeleteUsersTest extends TestCase
 {
     use RefreshDatabase;
@@ -38,6 +40,22 @@ class DeleteUsersTest extends TestCase
                 'username' => $user->username,
             ]);
         });
+    }
 
+    /** @test */
+    public function only_the_owner_of_a_profile_can_delete_his_profile()
+    {
+        $this->signin();
+
+        $user = create(User::class);
+        
+        $this->json('DELETE', $user->path())
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'email' => $user->email,
+            'username' => $user->username,
+        ]);
     }
 }

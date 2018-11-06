@@ -8,10 +8,12 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use App\Policies\AlbumPolicy;
 use App\Policies\PlaylistPolicy;
 use App\Policies\TrackPolicy;
+use App\Policies\UserPolicy;
 
 use App\Album;
 use App\Playlist;
 use App\Track;
+use App\User;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         Album::class => AlbumPolicy::class,
         Track::class => TrackPolicy::class,
         Playlist::class => PlaylistPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**
