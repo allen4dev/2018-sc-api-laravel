@@ -20,6 +20,11 @@ class CreateTracksTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('album_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

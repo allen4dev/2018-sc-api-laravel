@@ -15,19 +15,22 @@ class DeleteUsersTest extends TestCase
     {
         $this->signin();
 
-        $this->assertDatabaseHas('users', [
-            'id' => auth()->id(),
-            'email' => auth()->user()->email,
-            'username' => auth()->user()->username,
-        ]);
+        tap(auth()->user(), function ($user) {
+            $this->assertDatabaseHas('users', [
+                'id' => auth()->id(),
+                'email' => $user->email,
+                'username' => $user->username,
+            ]);
+    
+            $this->json('DELETE', $user->path())
+                ->assertStatus(204);
+    
+            $this->assertDatabaseMissing('users', [
+                'id' => auth()->id(),
+                'email' => $user->email,
+                'username' => $user->username,
+            ]);
+        });
 
-        $this->json('DELETE', auth()->user()->path())
-            ->assertStatus(204);
-
-        $this->assertDatabaseMissing('users', [
-            'id' => auth()->id(),
-            'email' => auth()->user()->email,
-            'username' => auth()->user()->username,
-        ]);
     }
 }
