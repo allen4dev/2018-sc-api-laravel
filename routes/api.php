@@ -24,6 +24,8 @@ Route::prefix('/users')->group(function () {
     Route::get('/{user}/tracks', 'UserTracksController@index')->name('users.tracks');
     Route::get('/{user}/playlists', 'UserPlaylistsController@index')->name('users.playlists');
     Route::get('/{user}/albums', 'UserAlbumsController@index')->name('users.albums');
+
+Route::post('/{user}/follow', 'FollowersController@store');
 });
 
 Route::prefix('/tracks')->group(function () {

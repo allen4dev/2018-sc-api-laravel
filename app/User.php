@@ -69,6 +69,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Album::class);
     }
 
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id');
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id');
+    }
+
     public function createTrack($details)
     {
         return $this->tracks()->create($details);
