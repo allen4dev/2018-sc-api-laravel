@@ -23,7 +23,13 @@ class TrackController extends Controller
 
     public function show(Track $track)
     {
-        return new TrackResource($track);
+        $resource = new TrackResource($track);
+
+        if ($track->published) return $resource;
+
+        $this->authorize('view', $track);
+        
+        return $resource;
     }
 
     public function destroy(Track $track)

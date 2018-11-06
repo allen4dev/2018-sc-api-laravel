@@ -19,7 +19,7 @@ class TrackPolicy
      */
     public function view(User $user, Track $track)
     {
-        //
+        return $user->id === $track->user_id;
     }
 
     /**

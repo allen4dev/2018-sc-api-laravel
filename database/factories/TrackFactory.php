@@ -11,3 +11,7 @@ $factory->define(App\Track::class, function (Faker $faker) {
         'published' => false,
     ];
 });
+
+$factory->state(App\Track::class, 'published', [
+    'published' => true,
+]);

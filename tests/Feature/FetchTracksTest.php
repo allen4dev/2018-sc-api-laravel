@@ -14,9 +14,9 @@ class FetchTracksTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function guests_can_fetch_tracks()
+    public function guests_can_fetch_published_tracks()
     {
-        $track = create(Track::class);
+        $track = create(Track::class, [ 'published' => true ]);
 
         $this->json('GET', $track->path())
             ->assertStatus(200)
@@ -26,5 +26,31 @@ class FetchTracksTest extends TestCase
                     'id'   => (string) $track->id,
                 ]
             ]);
+    }
+
+    /** @test */
+    public function a_user_can_fetch_his_unpublished_tracks()
+    {
+        $this->signin();
+
+        $track = create(Track::class, [ 'user_id' => auth()->id() ]);
+
+        $this->json('GET', $track->path())
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'tracks',
+                'id'   => (string) $track->id,
+            ]]);
+    }
+
+    /** @test */
+    public function only_the_owner_of_a_track_can_fetch_his_unpublished_track()
+    {
+        $this->signin();
+
+        $track = create(Track::class);
+
+        $this->json('GET', $track->path())
+            ->assertStatus(403);
     }
 }
