@@ -25,11 +25,11 @@ class CreateAlbumsTest extends TestCase
     {
         $this->signin();
 
-        $album = raw(Album::class);
+        $details = raw(Album::class);
 
         $tracks = create(Track::class, [ 'user_id' => auth()->id() ], 2);
 
-        $this->json('POST', '/api/albums', [ 'details' => $album, 'tracks' => $tracks->pluck('id') ])
+        $this->createAlbum($details, $tracks)
             ->assertStatus(201)
             ->assertJson(['data' => [
                 'type' => 'albums',
@@ -38,8 +38,29 @@ class CreateAlbumsTest extends TestCase
 
         $this->assertDatabaseHas('albums', [
             'id'    => 1,
-            'title' => $album['title'],
+            'title' => $details['title'],
         ]);
+    }
+
+    /** @test */
+    public function a_user_cannot_add_unpublished_tracks_to_his_albums()
+    {
+        $this->signin();
+
+        $details = raw(Album::class);
+
+        $published = create(Track::class, [ 'user_id' => auth()->id(), 'published' => true ]);
+        $notPublished = create(Track::class, [ 'user_id' => auth()->id() ]);
+
+        $tracks = collect([ $published, $notPublished ]);
+
+        $response = $this->createAlbum($details, $tracks)
+            ->assertJson(['data' => [
+                'type' => 'albums',
+                'id'   => (string) $tracks->first()->id,
+            ]]);
+
+        $this->assertCount(1, $response->original->tracks);
     }
 
     /** @test */
@@ -49,7 +70,7 @@ class CreateAlbumsTest extends TestCase
 
         $album = raw(Album::class);
 
-        $tracks = create(Track::class, [ 'user_id' => auth()->id() ], 2);
+        $tracks = create(Track::class, [ 'user_id' => auth()->id(), 'published' => true ], 2);
 
         $this->json('POST', '/api/albums', [ 'details' => $album, 'tracks' => $tracks->pluck('id') ]);
 
@@ -60,5 +81,13 @@ class CreateAlbumsTest extends TestCase
                 'album_id' => 1,
             ]);
         });
+    }
+
+    public function createAlbum($details, $tracks)
+    {
+        return $this->json('POST', '/api/albums', [
+            'details' => $details,
+            'tracks' => $tracks->pluck('id')
+        ]);
     }
 }
