@@ -48,16 +48,28 @@ class FetchAlbumsTest extends TestCase
     }
 
     /** @test */
-    public function guests_cannot_fetch_unpublished_albums_from_a_user()
+    public function a_user_can_fetch_his_unpublished_albums()
     {
-        // Given we have a user and a unpublished album created by him
-        $user = create(User::class);
+        $this->signin();
 
-        $unpublishedAlbum = create(Album::class, [ 'user_id' => $user->id ]);
+        $album = create(Album::class, [ 'user_id' => auth()->id() ]);
 
-        // When someone tries to fetch the unpublished album
+        $this->json('GET', $album->path())
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'albums',
+                'id'   => (string) $album->id,
+            ]]);
+    }
+
+    /** @test */
+    public function only_the_owner_of_an_album_can_fetch_his_unpublished_album()
+    {
+        $this->signin();
+
+        $unpublishedAlbum = create(Album::class);
+
         $this->json('GET', $unpublishedAlbum->path())
-        // Then he should receive a 403 UNAUTHORIZED
             ->assertStatus(403);        
     }
 }
