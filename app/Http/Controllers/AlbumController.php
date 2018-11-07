@@ -12,9 +12,13 @@ class AlbumController extends Controller
 {
     public function show(Album $album)
     {
+        $resource = new AlbumResource($album);
+
+        if ($album->published) return $resource;
+
         $this->authorize('view', $album);
 
-        return new AlbumResource($album);
+        return $resource;
     }
 
     public function store(Request $request)

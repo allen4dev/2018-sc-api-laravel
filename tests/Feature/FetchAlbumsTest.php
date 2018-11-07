@@ -16,7 +16,7 @@ class FetchAlbumsTest extends TestCase
     /** @test */
     public function guests_can_fetch_albums()
     {
-        $album = create(Album::class);
+        $album = create(Album::class, [ 'published' => true ]);
 
         $this->json('GET', $album->path())
             ->assertStatus(200)

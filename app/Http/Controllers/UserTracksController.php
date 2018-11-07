@@ -14,7 +14,7 @@ class UserTracksController extends Controller
     {
         $route = route('users.tracks', [ 'id' => $user->id ]);
 
-        $tracks = $user->tracks()->where('published', true)->paginate();
+        $tracks = $user->tracks()->published()->paginate();
 
         return new TrackCollection($tracks, $route);
     }

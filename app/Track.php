@@ -44,4 +44,9 @@ class Track extends Model
             'body'   => $details['body'],
         ]);
     }
+
+    public function scopePublished($query)
+    {
+        return $query->where('published', true);
+    }
 }

@@ -27,4 +27,9 @@ class Album extends Model
     {
         return $this->hasMany(Track::class);
     }
+
+    public function scopePublished($query)
+    {
+        return $query->where('published', true);
+    }
 }

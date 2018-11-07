@@ -12,6 +12,8 @@ class UserAlbumsController extends Controller
 {
     public function index(User $user)
     {
-        return new AlbumCollection($user->albums()->paginate(), route('users.albums', [ 'id' => $user->id ]));
+        $albums = $user->albums()->published()->paginate();
+
+        return new AlbumCollection($albums, route('users.albums', [ 'id' => $user->id ]));
     }
 }

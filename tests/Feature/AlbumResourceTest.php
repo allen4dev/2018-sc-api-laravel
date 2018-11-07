@@ -16,7 +16,7 @@ class AlbumResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
     {
-        $album = create(Album::class);
+        $album = create(Album::class, [ 'published' => true ]);
 
         $this->fetchAlbum($album)
             ->assertJson([
@@ -34,7 +34,7 @@ class AlbumResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
     {
-        $album = create(Album::class);
+        $album = create(Album::class, [ 'published' => true ]);
 
         $this->fetchAlbum($album)
             ->assertJson(['data' => [
@@ -67,7 +67,7 @@ class AlbumResourceTest extends TestCase
     {
         $user = create(User::class);
 
-        create(Album::class, [ 'user_id' => $user->id ], 2);
+        create(Album::class, [ 'user_id' => $user->id, 'published' => true ], 2);
 
         $this->json('GET', $user->path() . '/albums')
             ->assertJson(['data' => [
