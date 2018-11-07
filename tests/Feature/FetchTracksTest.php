@@ -16,14 +16,15 @@ class FetchTracksTest extends TestCase
     /** @test */
     public function guests_can_fetch_published_tracks()
     {
-        $track = create(Track::class, [ 'published' => true ]);
+        $published = create(Track::class, [ 'published' => true ]);
+        $unpublished = create(Track::class);
 
-        $this->json('GET', $track->path())
+        $this->json('GET', $published->path())
             ->assertStatus(200)
             ->assertJson([
                 'data' => [
                     'type' => 'tracks',
-                    'id'   => (string) $track->id,
+                    'id'   => (string) $published->id,
                 ]
             ]);
     }

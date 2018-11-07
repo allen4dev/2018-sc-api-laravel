@@ -16,23 +16,6 @@ use App\User;
 class ProfileTest extends TestCase
 {
     use RefreshDatabase;
-    
-    /** @test */
-    public function guests_can_fetch_the_albums_from_a_user()
-    {
-        $user = create(User::class);
-
-        $albumByUser = create(Album::class, [ 'user_id' => $user->id ]);
-        $albumNotByUser = create(Album::class);
-
-        $this->json('GET', $user->path() . '/albums')
-            ->assertJson(['data' => [
-                [
-                    'type' => 'albums',
-                    'id' => $albumByUser->id,
-                ]
-        ]]);
-    }
 
     /** @test */
     public function guests_can_fetch_all_playlists_from_a_user()

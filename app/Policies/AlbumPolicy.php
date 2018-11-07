@@ -19,7 +19,7 @@ class AlbumPolicy
      */
     public function view(User $user, Album $album)
     {
-        //
+        return $user->id === $album->user_id;
     }
 
     /**

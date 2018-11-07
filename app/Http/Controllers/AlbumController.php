@@ -12,6 +12,8 @@ class AlbumController extends Controller
 {
     public function show(Album $album)
     {
+        $this->authorize('view', $album);
+
         return new AlbumResource($album);
     }
 
