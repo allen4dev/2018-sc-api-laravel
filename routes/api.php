@@ -50,6 +50,7 @@ Route::prefix('/tracks')->group(function () {
     Route::post('/{track}/replies', 'ReplyController@store')->middleware('auth:api');
     
     Route::post('/{track}/favorite', 'FavoriteTrackController@store')->middleware('auth:api');
+    Route::delete('/{track}/unfavorite', 'FavoriteTrackController@destroy')->middleware('auth:api');
 });
 
 Route::prefix('/replies')->group(function () {
@@ -62,6 +63,7 @@ Route::prefix('/playlists')->group(function () {
     Route::delete('/{playlist}', 'PlaylistController@destroy')->middleware('auth:api');
 
     Route::post('/{playlist}/favorite', 'FavoritePlaylistController@store')->middleware('auth:api');
+    Route::delete('/{playlist}/unfavorite', 'FavoritePlaylistController@destroy')->middleware('auth:api');
     
     Route::post('/{playlist}/tracks/{track}/add', 'PlaylistTrackController@store')->middleware('auth:api');
     Route::delete('/{playlist}/tracks/{track}/remove', 'PlaylistTrackController@remove')->middleware('auth:api');
@@ -75,4 +77,5 @@ Route::prefix('/albums')->group(function () {
     Route::patch('/{album}/publish', 'AlbumController@update')->middleware('auth:api');
 
     Route::post('/{album}/favorite', 'FavoriteAlbumController@store')->middleware('auth:api');
+    Route::delete('/{album}/unfavorite', 'FavoriteAlbumController@destroy')->middleware('auth:api');
 });

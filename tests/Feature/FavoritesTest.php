@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Album;
 use App\Playlist;
 use App\Track;
@@ -16,6 +18,13 @@ class FavoritesTest extends TestCase
 
     /** @test */
     public function guests_cannot_favorite_a_resource()
+    {
+        $this->json('POST', '/api/tracks/1/favorite')
+            ->assertStatus(401);
+    }
+
+    /** @test */
+    public function guests_cannot_unfavorite_a_resource()
     {
         $this->json('POST', '/api/tracks/1/favorite')
             ->assertStatus(401);
@@ -100,6 +109,93 @@ class FavoritesTest extends TestCase
         $this->assertDataBaseHas('favorites', [
             'user_id' => auth()->id(),
             'type'    => 'album',
+            'favorited_id'   => $album->id,
+            'favorited_type' => Album::class,
+        ]);
+    }
+
+    /** @test */
+    public function a_user_can_unfavorite_a_track()
+    {
+        $this->signin();
+
+        $track = create(Track::class);
+
+        Db::table('favorites')->insert([
+            'user_id' => auth()->id(),
+            'type' => 'track',
+            'favorited_id'   => $track->id,
+            'favorited_type' => Track::class,
+        ]);
+
+        $this->json('DELETE', $track->path() . '/unfavorite')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'tracks',
+                'id'   => (string) $track->id,
+            ]]);
+
+        $this->assertDatabaseMissing('favorites', [
+            'user_id' => auth()->id(),
+            'type' => 'track',
+            'favorited_id'   => $track->id,
+            'favorited_type' => Track::class,
+        ]);
+    }
+
+    /** @test */
+    public function a_user_can_unfavorite_a_playlist()
+    {
+        $this->signin();
+
+        $playlist = create(Playlist::class);
+
+        Db::table('favorites')->insert([
+            'user_id' => auth()->id(),
+            'type' => 'playlist',
+            'favorited_id'   => $playlist->id,
+            'favorited_type' => Playlist::class,
+        ]);
+
+        $this->json('DELETE', $playlist->path() . '/unfavorite')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'playlists',
+                'id'   => (string) $playlist->id,
+            ]]);
+
+        $this->assertDatabaseMissing('favorites', [
+            'user_id' => auth()->id(),
+            'type' => 'playlist',
+            'favorited_id'   => $playlist->id,
+            'favorited_type' => Playlist::class,
+        ]);
+    }
+
+    /** @test */
+    public function a_user_can_unfavorite_an_album()
+    {   
+        $this->signin();
+
+        $album = create(Album::class, [ 'published' => true ]);
+
+        Db::table('favorites')->insert([
+            'user_id' => auth()->id(),
+            'type' => 'albums',
+            'favorited_id'   => $album->id,
+            'favorited_type' => Album::class,
+        ]);
+
+        $this->json('DELETE', $album->path() . '/unfavorite')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'albums',
+                'id'   => (string) $album->id,
+            ]]);
+
+        $this->assertDatabaseMissing('favorites', [
+            'user_id' => auth()->id(),
+            'type' => 'albums',
             'favorited_id'   => $album->id,
             'favorited_type' => Album::class,
         ]);

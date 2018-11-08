@@ -16,4 +16,11 @@ class FavoritePlaylistController extends Controller
 
         return new PlaylistResource($playlist);
     }
+
+    public function destroy(Playlist $playlist)
+    {
+        $playlist->unfavorite();
+
+        return new PlaylistResource($playlist);
+    }
 }

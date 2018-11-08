@@ -16,4 +16,11 @@ class FavoriteTrackController extends Controller
 
         return new TrackResource($track);
     }
+
+    public function destroy(Track $track)
+    {
+        $track->unfavorite();
+
+        return new TrackResource($track);
+    }
 }

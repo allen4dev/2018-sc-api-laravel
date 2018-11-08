@@ -16,4 +16,11 @@ class FavoriteAlbumController extends Controller
 
         return new AlbumResource($album);
     }
+
+    public function destroy(Album $album)
+    {
+        $album->unfavorite();
+
+        return new AlbumResource($album);
+    }
 }
