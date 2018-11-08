@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Album;
 use App\Playlist;
 use App\Reply;
@@ -120,6 +122,30 @@ class DeleteUsersTest extends TestCase
         $this->assertDatabaseMissing('replies', [
             'id' => $reply->id,
             'user_id' => auth()->id(),
+        ]);
+    }
+
+    /** @test */
+    public function after_delete_a_user_the_playlist_track_table_should_also_delete_the_records_with_his_user_id()
+    {
+        $this->signin();
+
+        $track = create(Track::class, [ 'user_id' => auth()->id() ]);
+        
+        $playlist = create(Playlist::class, [ 'user_id' => auth()->id() ]);
+
+        Db::table('playlist_track')->insert([
+            'user_id' => auth()->id(),
+            'playlist_id' => $playlist->id,
+            'track_id' => $track->id,
+        ]);
+
+        $this->json('DELETE', auth()->user()->path());
+        
+        $this->assertDatabaseMissing('playlist_track', [
+            'user_id' => auth()->id(),
+            'playlist_id' => $playlist->id,
+            'track_id' => $track->id,
         ]);
     }
 }

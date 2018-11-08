@@ -64,7 +64,7 @@ class DeleteTracksTest extends TestCase
 
         $track = create(Track::class, [ 'user_id' => auth()->id() ]);
         
-        $playlist = create(Playlist::class);
+        $playlist = create(Playlist::class, [ 'user_id' => auth()->id() ]);
 
         Db::table('playlist_track')->insert([
             'user_id' => auth()->id(),
