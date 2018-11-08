@@ -22,6 +22,7 @@ Route::prefix('/me')->group(function () {
     Route::get('/', 'ProfileController@show')->middleware('auth:api');
     Route::get('/tracks', 'ProfileTracksController@index')->middleware('auth:api')->name('me.tracks');
     Route::get('/albums', 'ProfileAlbumsController@index')->middleware('auth:api')->name('me.albums');
+    Route::get('/playlists', 'ProfilePlaylistsController@index')->middleware('auth:api')->name('me.playlists');
 });
 
 Route::prefix('/users')->group(function () {

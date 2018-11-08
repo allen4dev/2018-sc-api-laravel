@@ -71,4 +71,25 @@ class ProfileTest extends TestCase
                 ],
             ]]);
     }
+
+    /** @test */
+    public function a_user_can_fetch_his_playlists()
+    {
+        $this->signin();
+
+        $playlists = create(Playlist::class, [ 'user_id' => auth()->id() ], 2);
+
+        $this->json('GET', '/api/me/playlists')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'playlists',
+                    'id'   => '1',
+                ],
+                [
+                    'type' => 'playlists',
+                    'id'   => '2',
+                ],
+            ]]);
+    }
 }
