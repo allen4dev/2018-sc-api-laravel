@@ -53,19 +53,4 @@ class DeleteTracksTest extends TestCase
             'title' => $track->title,
         ]);
     }
-
-    /** @test */
-    public function after_delete_a_user_his_tracks_should_also_be_deleted()
-    {
-        $this->signin();
-
-        $track = create(Track::class, [ 'user_id' => auth()->id() ]);
-
-        $this->json('DELETE', auth()->user()->path());
-
-        $this->assertDatabaseMissing('tracks', [
-            'id' => $track->id,
-            'user_id' => auth()->id(),
-        ]);
-    }
 }

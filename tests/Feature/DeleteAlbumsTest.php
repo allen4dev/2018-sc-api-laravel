@@ -53,7 +53,7 @@ class DeleteAlbumsTest extends TestCase
     }
 
     /** @test */
-    public function after_delete_an_album_the_related_tracks_should_not_be_related_to_him_anymore()
+    public function _an_album_the_related_tracks_should_not_be_related_to_him_anymore()
     {
         $this->signin();
 

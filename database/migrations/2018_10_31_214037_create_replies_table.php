@@ -21,9 +21,9 @@ class CreateRepliesTable extends Migration
             $table->timestamps();
 
             $table
-                ->foreign('track_id')
+                ->foreign('user_id')
                 ->references('id')
-                ->on('tracks')
+                ->on('users')
                 ->onDelete('cascade');
         });
     }

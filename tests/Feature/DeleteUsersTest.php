@@ -6,6 +6,10 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use App\Album;
+use App\Playlist;
+use App\Reply;
+use App\Track;
 use App\User;
 
 class DeleteUsersTest extends TestCase
@@ -56,6 +60,66 @@ class DeleteUsersTest extends TestCase
             'id' => $user->id,
             'email' => $user->email,
             'username' => $user->username,
+        ]);
+    }
+
+    /** @test */
+    public function after_delete_a_user_his_tracks_should_also_be_deleted()
+    {
+        $this->signin();
+
+        $track = create(Track::class, [ 'user_id' => auth()->id() ]);
+
+        $this->json('DELETE', auth()->user()->path());
+
+        $this->assertDatabaseMissing('tracks', [
+            'id' => $track->id,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /** @test */
+    public function after_delete_a_user_his_albums_should_also_be_deleted()
+    {
+        $this->signin();
+
+        $album = create(Album::class, [ 'user_id' => auth()->id() ]);
+
+        $this->json('DELETE', auth()->user()->path());
+
+        $this->assertDatabaseMissing('albums', [
+            'id' => $album->id,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /** @test */
+    public function after_delete_a_user_his_playlists_should_also_be_deleted()
+    {
+        $this->signin();
+
+        $reply = create(Reply::class, [ 'user_id' => auth()->id() ]);
+
+        $this->json('DELETE', auth()->user()->path());
+
+        $this->assertDatabaseMissing('playlists', [
+            'id' => $reply->id,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /** @test */
+    public function after_delete_a_user_his_replies_should_also_be_deleted()
+    {
+        $this->signin();
+
+        $reply = create(Reply::class, [ 'user_id' => auth()->id() ]);
+
+        $this->json('DELETE', auth()->user()->path());
+
+        $this->assertDatabaseMissing('replies', [
+            'id' => $reply->id,
+            'user_id' => auth()->id(),
         ]);
     }
 }

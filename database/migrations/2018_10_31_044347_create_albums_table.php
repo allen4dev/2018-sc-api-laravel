@@ -19,6 +19,11 @@ class CreateAlbumsTable extends Migration
             $table->boolean('published')->default(false);
             $table->unsignedInteger('user_id');
             $table->timestamps();
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 
