@@ -25,6 +25,11 @@ class CreatePlaylistTrackTable extends Migration
                 ->on('tracks')
                 ->onDelete('cascade');
             
+            $table->foreign('playlist_id')
+                ->references('id')
+                ->on('playlists')
+                ->onDelete('cascade');
+            
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
