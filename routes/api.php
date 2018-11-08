@@ -18,6 +18,10 @@ Route::prefix('/auth')->group(function () {
     Route::post('/login', 'AuthController@login');
 });
 
+Route::prefix('/me')->group(function () {
+    Route::get('/', 'ProfileController@show')->middleware('auth:api');
+});
+
 Route::prefix('/users')->group(function () {
     Route::get('/{user}', 'UserController@show')->name('users.show');
     Route::delete('/{user}', 'UserController@destroy')->middleware('auth:api');
