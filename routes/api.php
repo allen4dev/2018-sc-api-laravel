@@ -20,6 +20,7 @@ Route::prefix('/auth')->group(function () {
 
 Route::prefix('/me')->group(function () {
     Route::get('/', 'ProfileController@show')->middleware('auth:api');
+    Route::get('/tracks', 'ProfileTracksController@index')->middleware('auth:api')->name('me.tracks');
 });
 
 Route::prefix('/users')->group(function () {

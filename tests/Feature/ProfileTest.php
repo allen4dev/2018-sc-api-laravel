@@ -27,4 +27,26 @@ class ProfileTest extends TestCase
                 'id' => (string) auth()->id(),
             ]]);
     }
+
+    /** @test */
+    public function a_user_can_fetch_his_published_and_unpublished_tracks()
+    {
+        $this->signin();
+
+        $published   = create(Track::class, [ 'user_id' => auth()->id(), 'published' => true ]);
+        $unpublished = create(Track::class, [ 'user_id' => auth()->id() ]);
+
+        $this->json('GET', '/api/me/tracks')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'tracks',
+                    'id'   => (string) $published->id,
+                ],
+                [
+                    'type' => 'tracks',
+                    'id'   => (string) $unpublished->id,
+                ],
+            ]]);
+    }
 }
