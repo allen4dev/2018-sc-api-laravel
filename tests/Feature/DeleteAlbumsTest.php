@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Album;
+use App\Track;
 
 class DeleteAlbumsTest extends TestCase
 {
@@ -22,8 +23,6 @@ class DeleteAlbumsTest extends TestCase
     /** @test */
     public function a_user_can_delete_his_albums()
     {
-        $this->withoutExceptionHandling();
-
         $this->signin();
 
         $album = create(Album::class, [ 'user_id' => auth()->id() ]);
@@ -53,5 +52,23 @@ class DeleteAlbumsTest extends TestCase
         ]);
     }
 
-    
+    /** @test */
+    public function after_delete_an_album_the_related_tracks_should_not_be_related_to_him_anymore()
+    {
+        $this->signin();
+
+        $album = create(Album::class, [ 'user_id' => auth()->id() ]);
+
+        $tracks = create(Track::class, [
+            'user_id'   => auth()->id(),
+            'album_id'  => $album->id,
+            'published' => true,
+        ], 2);
+
+        $this->json('DELETE', $album->path());
+
+        $tracks->fresh()->each(function ($track) {
+            $this->assertNull($track->album_id);
+        });
+    }
 }

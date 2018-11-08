@@ -10,6 +10,15 @@ class Album extends Model
 {
     use Favoritable;
 
+    protected static function boot()
+    {
+        static::deleting(function ($model) {
+            $model->tracks()->update([ 'album_id' => null ]);
+        });
+
+        parent::boot();
+    }
+
     protected $fillable = [ 'title', 'published', 'user_id' ];
     protected $casts = [ 'user_id' => 'int' ];
 
