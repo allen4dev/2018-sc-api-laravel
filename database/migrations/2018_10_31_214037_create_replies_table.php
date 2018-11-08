@@ -25,6 +25,12 @@ class CreateRepliesTable extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
+
+            $table
+                ->foreign('track_id')
+                ->references('id')
+                ->on('tracks')
+                ->onDelete('cascade');
         });
     }
 

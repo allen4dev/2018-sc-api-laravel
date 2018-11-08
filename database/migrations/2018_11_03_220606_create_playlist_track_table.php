@@ -19,6 +19,11 @@ class CreatePlaylistTrackTable extends Migration
             $table->unsignedInteger('playlist_id');
             $table->unsignedInteger('track_id');
             $table->timestamps();
+
+            $table->foreign('track_id')
+                ->references('id')
+                ->on('tracks')
+                ->onDelete('cascade');
         });
     }
 
