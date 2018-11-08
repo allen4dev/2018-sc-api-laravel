@@ -56,6 +56,26 @@ class CreateAlbumsTest extends TestCase
     }
 
     /** @test */
+    public function a_user_cannot_add_the_same_track_to_multiple_albums()
+    {
+        $this->signin();
+
+        $album = create(Album::class, [ 'user_id' => auth()->id() ]);
+
+        $track = create(Track::class, [
+            'album_id' => $album->id,
+            'user_id'  => auth()->id(),
+            'published' => true,
+        ]);
+
+        $details = raw(Album::class);
+
+        $response = $this->createAlbum($details, $track);
+
+        $this->assertCount(0, $response->original->tracks);
+    }
+
+    /** @test */
     public function a_user_cannot_add_unpublished_tracks_to_his_albums()
     {
         $this->signin();

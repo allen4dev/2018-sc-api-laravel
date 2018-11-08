@@ -57,6 +57,7 @@ class Track extends Model
                 ->where([
                     'published' => true,
                     'user_id'   => auth()->id(),
+                    'album_id'  => null,
                 ]);
     }
 }
