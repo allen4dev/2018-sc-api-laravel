@@ -49,4 +49,26 @@ class ProfileTest extends TestCase
                 ],
             ]]);
     }
+
+    /** @test */
+    public function a_user_can_fetch_his_published_and_unpublished_albums()
+    {
+        $this->signin();
+
+        $published   = create(Album::class, [ 'user_id' => auth()->id(), 'published' => true ]);
+        $unpublished = create(Album::class, [ 'user_id' => auth()->id() ]);
+
+        $this->json('GET', '/api/me/albums')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'albums',
+                    'id'   => (string) $published->id,
+                ],
+                [
+                    'type' => 'albums',
+                    'id'   => (string) $unpublished->id,
+                ],
+            ]]);
+    }
 }
