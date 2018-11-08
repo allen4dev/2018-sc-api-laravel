@@ -52,6 +52,11 @@ class Track extends Model
 
     public function scopePublishedById($query, $ids)
     {
-        return $query->whereIn('id', $ids)->where('published', true);
+        return $query
+                ->whereIn('id', $ids)
+                ->where([
+                    'published' => true,
+                    'user_id'   => auth()->id(),
+                ]);
     }
 }

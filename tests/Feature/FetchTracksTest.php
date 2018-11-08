@@ -19,7 +19,7 @@ class FetchTracksTest extends TestCase
         $published = create(Track::class, [ 'published' => true ]);
         $unpublished = create(Track::class);
 
-        $this->json('GET', $published->path())
+        $response = $this->json('GET', $published->path())
             ->assertStatus(200)
             ->assertJson([
                 'data' => [

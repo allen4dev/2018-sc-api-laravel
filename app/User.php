@@ -91,6 +91,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function createAlbum($input)
     {
+        $input['details']['user_id'] = auth()->id();
+
         $album = $this->albums()->create($input['details']);
 
         $tracks = Track::publishedById($input['tracks'])->update([ 'album_id' => $album->id ]);

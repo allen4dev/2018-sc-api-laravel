@@ -43,6 +43,19 @@ class CreateAlbumsTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_only_add_his_tracks_to_a_playlist()
+    {
+        $this->signin();
+
+        $details = raw(Album::class);
+        $otherUserTrack = create(Track::class, [ 'published' => true ]);
+
+        $response = $this->createAlbum($details, $otherUserTrack);
+
+        $this->assertCount(0, $response->original->tracks);
+    }
+
+    /** @test */
     public function a_user_cannot_add_unpublished_tracks_to_his_albums()
     {
         $this->signin();
