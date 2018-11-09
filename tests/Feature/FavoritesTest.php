@@ -181,7 +181,7 @@ class FavoritesTest extends TestCase
 
         Db::table('favorites')->insert([
             'user_id' => auth()->id(),
-            'type' => 'albums',
+            'type' => 'album',
             'favorited_id'   => $album->id,
             'favorited_type' => Album::class,
         ]);

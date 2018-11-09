@@ -29,7 +29,7 @@ trait Favoritable
         if ($this->isFavorited($attributes)) {
             $this->favorites()->where($attributes)->delete();
         }
-
+        
         return $this;
     }
 
