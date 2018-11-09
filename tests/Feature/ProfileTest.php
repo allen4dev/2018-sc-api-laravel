@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Album;
 use App\Playlist;
 use App\Track;
@@ -89,6 +91,28 @@ class ProfileTest extends TestCase
                 [
                     'type' => 'playlists',
                     'id'   => '2',
+                ],
+            ]]);
+    }
+
+    /** @test */
+    public function a_user_can_fetch_all_his_followers()
+    {
+        $this->signin();
+
+        $follower = create(User::class);
+
+        Db::table('followers')->insert([
+            'follower_id'  => $follower->id,
+            'following_id' => auth()->id(),
+        ]);
+
+        $this->json('GET', '/api/me/followers')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'users',
+                    'id'   => (string) $follower->id,
                 ],
             ]]);
     }
