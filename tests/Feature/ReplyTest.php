@@ -36,8 +36,10 @@ class ReplyTest extends TestCase
             ]]);
 
         $this->assertDatabaseHas('replies', [
-            'track_id' => $track->id,
-            'body'     => $details['body']
+            'user_id' => auth()->id(),
+            'body' => $details['body'],
+            'replyable_id'   => $track->id,
+            'replyable_type' => Track::class,
         ]);
     }
 

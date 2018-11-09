@@ -83,6 +83,7 @@ class ReplyResourceTest extends TestCase
     /** @test */
     public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
     {
+        $this->withoutExceptionHandling();
         $track = create(Track::class);
 
         $this->fetchTrackReplies($track)

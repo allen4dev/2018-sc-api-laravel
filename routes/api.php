@@ -50,8 +50,8 @@ Route::prefix('/tracks')->group(function () {
     
     Route::patch('/{track}/publish', 'PublishTrackController@update');
 
-    Route::get('/{track}/replies', 'ReplyController@index')->name('replies.index');
-    Route::post('/{track}/replies', 'ReplyController@store')->middleware('auth:api');
+    Route::get('/{track}/replies', 'ReplyTracksController@index')->name('replies.index');
+    Route::post('/{track}/replies', 'ReplyTracksController@store')->middleware('auth:api');
     
     Route::post('/{track}/favorite', 'FavoriteTrackController@store')->middleware('auth:api');
     Route::delete('/{track}/unfavorite', 'FavoriteTrackController@destroy')->middleware('auth:api');

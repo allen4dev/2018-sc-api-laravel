@@ -29,7 +29,7 @@ class Track extends Model
 
     public function replies()
     {
-        return $this->hasMany(Reply::class);
+        return $this->morphMany(Reply::class, 'replyable');
     }
 
     public function playlists()
@@ -37,7 +37,7 @@ class Track extends Model
         return $this->belongsToMany(Playlist::class);
     }
 
-    public function reply($details)
+    public function comment($details)
     {
         return $this->replies()->create([
             'user_id' => auth()->id(),

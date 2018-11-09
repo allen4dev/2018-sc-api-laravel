@@ -66,38 +66,38 @@ class TrackResourceTest extends TestCase
     }
 
     /** @test */
-    public function a_track_identifier_should_contain_a_data_with_a_type_and_the_id_of_the_track()
-    {
-        $reply = create(Reply::class);
+    // public function a_track_identifier_should_contain_a_data_with_a_type_and_the_id_of_the_track()
+    // {
+    //     $reply = create(Reply::class);
 
-        $this->json('GET', $reply->path())
-            ->assertJson([
-                'data' => [
-                    'relationships' => [
-                        'track' => [
-                            'data' => [ 'type' => 'tracks', 'id' => (string) $reply->track_id ]
-                        ]
-                    ]
-                ]
-            ]);
-    }
+    //     $this->json('GET', $reply->path())
+    //         ->assertJson([
+    //             'data' => [
+    //                 'relationships' => [
+    //                     'track' => [
+    //                         'data' => [ 'type' => 'tracks', 'id' => (string) $reply->track_id ]
+    //                     ]
+    //                 ]
+    //             ]
+    //         ]);
+    // }
 
     /** @test */
-    public function a_track_identifier_should_contain_a_links_object_containing_a_url_to_the_track_path()
-    {
-        $reply = create(Reply::class);
+    // public function a_track_identifier_should_contain_a_links_object_containing_a_url_to_the_track_path()
+    // {
+    //     $reply = create(Reply::class);
 
-        $this->json('GET', $reply->path())
-            ->assertJson([
-                'data' => [
-                    'relationships' => [
-                        'track' => [
-                            'links' => [ 'self' => route('tracks.show', [ 'id' => $reply->id ]) ],
-                        ]
-                    ]
-                ]
-            ]);
-    }
+    //     $this->json('GET', $reply->path())
+    //         ->assertJson([
+    //             'data' => [
+    //                 'relationships' => [
+    //                     'track' => [
+    //                         'links' => [ 'self' => route('tracks.show', [ 'id' => $reply->id ]) ],
+    //                     ]
+    //                 ]
+    //             ]
+    //         ]);
+    // }
 
     /** @test */
     public function a_collection_should_contain_a_list_of_track_resources_under_a_data_object()
@@ -130,19 +130,19 @@ class TrackResourceTest extends TestCase
     }
 
     /** @test */
-    public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
-    {
-        $user = create(User::class);
+    // public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
+    // {
+    //     $user = create(User::class);
 
-        $tracks = create(Track::class, [ 'user_id' => $user->id ], 2);
+    //     $tracks = create(Track::class, [ 'user_id' => $user->id ], 2);
 
-        $this->json('GET', $user->path() . '/tracks')
-            ->assertJson([
-                'links' => [
-                    'self' => route('users.tracks', [ 'user_id' => $user->id ]),
-                ],
-            ]);
-    }
+    //     $this->json('GET', $user->path() . '/tracks')
+    //         ->assertJson([
+    //             'links' => [
+    //                 'self' => route('users.tracks', [ 'user_id' => $user->id ]),
+    //             ],
+    //         ]);
+    // }
 
     public function fetchTrack($track)
     {
