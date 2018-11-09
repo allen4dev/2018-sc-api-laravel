@@ -26,6 +26,7 @@ Route::prefix('/me')->group(function () {
     Route::get('/playlists', 'ProfilePlaylistsController@index')->middleware('auth:api')->name('me.playlists');
 
     Route::get('/followers', 'ProfileFollowersController@index')->middleware('auth:api')->name('me.followers');
+    Route::get('/followings', 'ProfileFollowingsController@index')->middleware('auth:api')->name('me.followings');
 });
 
 Route::prefix('/users')->group(function () {

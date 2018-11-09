@@ -116,4 +116,26 @@ class ProfileTest extends TestCase
                 ],
             ]]);
     }
+
+    /** @test */
+    public function a_user_can_fetch_all_users_who_he_is_following()
+    {
+        $this->signin();
+
+        $user = create(User::class);
+
+        Db::table('followers')->insert([
+            'follower_id'  => auth()->id(),
+            'following_id' => $user->id,
+        ]);
+
+        $this->json('GET', '/api/me/followings')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'users',
+                    'id'   => (string) $user->id,
+                ],
+            ]]);
+    }
 }
