@@ -59,6 +59,7 @@ Route::prefix('/tracks')->group(function () {
 
 Route::prefix('/replies')->group(function () {
     Route::get('/{reply}', 'ReplyController@show')->name('replies.show');
+    Route::post('/{reply}/reply', 'ReplyRepliesController@store');
 });
 
 Route::prefix('/playlists')->group(function () {

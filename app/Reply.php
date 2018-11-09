@@ -13,13 +13,26 @@ class Reply extends Model
         return '/api/replies/' . $this->id;
     }
 
-    public function track()
+    public function replyable()
     {
-        return $this->belongsTo(Track::class);
+        return $this->morphTo();
+    }
+
+    public function replies()
+    {
+        return $this->morphMany(Reply::class, 'replyable');
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function comment($details)
+    {
+        return $this->replies()->create([
+            'user_id' => auth()->id(),
+            'body' => $details['body'],
+        ]);
     }
 }

@@ -7,8 +7,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Track;
+use App\Reply;
 
-class ReplyTracksTest extends TestCase
+class ReplyTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -51,5 +52,29 @@ class ReplyTracksTest extends TestCase
         
         $this->json('POST', $track->path() . '/replies', $details)
             ->assertStatus(403);
+    }
+
+    /** @test */
+    public function a_user_can_reply_another_reply()
+    {
+        $this->signin();
+
+        $reply = create(Reply::class);
+
+        $details = raw(Reply::class);
+
+        $this->json('POST', $reply->path() . '/reply', $details)
+            ->assertStatus(201)
+            ->assertJson(['data' => [
+                'type' => 'replies',
+                'id'   => '2',
+            ]]);
+        
+        $this->assertDatabaseHas('replies', [
+            'replyable_id'   => $reply->id,
+            'replyable_type' => Reply::class,
+            'user_id' => auth()->id(),
+            'body'    => $details['body'],
+        ]);
     }
 }

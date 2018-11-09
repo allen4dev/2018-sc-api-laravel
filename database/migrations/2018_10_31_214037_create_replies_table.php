@@ -16,20 +16,15 @@ class CreateRepliesTable extends Migration
         Schema::create('replies', function (Blueprint $table) {
             $table->increments('id');
             $table->text('body');
-            $table->unsignedInteger('track_id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('replyable_id');
+            $table->string('replyable_type');
             $table->timestamps();
 
             $table
                 ->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('cascade');
-
-            $table
-                ->foreign('track_id')
-                ->references('id')
-                ->on('tracks')
                 ->onDelete('cascade');
         });
     }
