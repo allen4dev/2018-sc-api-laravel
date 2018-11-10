@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Db;
 
 use App\Album;
+use App\Reply;
 use App\Track;
 use App\User;
 
@@ -64,6 +65,20 @@ class NotificationsTest extends TestCase
         $this->json('PATCH', $album->path() . '/publish');
         
         $this->assertCount(1, $follower->unreadNotifications);
+    }
+
+    /** @test */
+    public function a_user_is_notified_after_other_user_replies_his_track()
+    {
+        $this->signin();
+        
+        $track = create(Track::class, [ 'published' => true ]);
+        
+        $details = raw(Reply::class);
+
+        $this->json('POST', $track->path() . '/replies', $details);
+
+        $this->assertCount(1, $track->user->unreadNotifications);
     }
 
     public function followUser($user)

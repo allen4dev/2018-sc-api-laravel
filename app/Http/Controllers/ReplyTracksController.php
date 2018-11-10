@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Resources\ReplyResource;
 use App\Http\Resources\ReplyCollection;
 
+use App\Notifications\TrackReplied;
+
 use App\Track;
 use App\Reply;
 
@@ -26,6 +28,8 @@ class ReplyTracksController extends Controller
         $this->authorize('reply', $track);
 
         $reply = $track->comment($values);
+
+        $track->user->notify(new TrackReplied);
 
         return new ReplyResource($reply);
     }
