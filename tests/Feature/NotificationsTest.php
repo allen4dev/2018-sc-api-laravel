@@ -95,6 +95,18 @@ class NotificationsTest extends TestCase
         $this->assertCount(1, $reply->user->unreadNotifications);
     }
 
+    /** @test */
+    public function a_user_is_notified_after_other_user_favorites_his_track()
+    {
+        $this->signin();
+
+        $track = create(Track::class, [ 'published' => true ]);
+
+        $this->json('POST', $track->path() . '/favorite');
+
+        $this->assertCount(1, $track->user->unreadNotifications);
+    }
+
     public function followUser($user)
     {
         return $this->json('POST', $user->path() . '/follow');
