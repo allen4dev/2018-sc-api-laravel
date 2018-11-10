@@ -59,15 +59,13 @@ class ReplyTest extends TestCase
     /** @test */
     public function a_user_can_reply_another_reply()
     {
-        $this->withoutExceptionHandling();
-
         $this->signin();
 
         $reply = create(Reply::class);
 
         $details = raw(Reply::class);
 
-        $this->json('POST', $reply->path() . '/reply', $details)
+        $this->json('POST', $reply->path() . '/replies', $details)
             ->assertStatus(201)
             ->assertJson(['data' => [
                 'type' => 'replies',

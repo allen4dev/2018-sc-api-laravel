@@ -81,6 +81,20 @@ class NotificationsTest extends TestCase
         $this->assertCount(1, $track->user->unreadNotifications);
     }
 
+    /** @test */
+    public function a_user_is_notified_after_other_user_replies_his_reply()
+    {
+        $this->signin();
+        
+        $reply = create(Reply::class);
+        
+        $details = raw(Reply::class);
+
+        $this->json('POST', $reply->path() . '/replies', $details);
+
+        $this->assertCount(1, $reply->user->unreadNotifications);
+    }
+
     public function followUser($user)
     {
         return $this->json('POST', $user->path() . '/follow');
