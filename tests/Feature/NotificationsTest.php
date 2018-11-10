@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Db;
 
 use App\Album;
+use App\Playlist;
 use App\Reply;
 use App\Track;
 use App\User;
@@ -24,7 +25,7 @@ class NotificationsTest extends TestCase
 
         $user = create(User::class);
 
-        $this->followUser($user);
+        $this->json('POST', $user->path() . '/follow');
 
         $this->assertCount(1, $user->unreadNotifications);
     }
@@ -107,8 +108,27 @@ class NotificationsTest extends TestCase
         $this->assertCount(1, $track->user->unreadNotifications);
     }
 
-    public function followUser($user)
+    /** @test */
+    public function a_user_is_notified_after_other_user_favorites_his_album()
     {
-        return $this->json('POST', $user->path() . '/follow');
+        $this->signin();
+
+        $album = create(Album::class, [ 'published' => true ]);
+
+        $this->json('POST', $album->path() . '/favorite');
+
+        $this->assertCount(1, $album->user->unreadNotifications);
+    }
+
+    /** @test */
+    public function a_user_is_notified_after_other_user_favorites_his_playlist()
+    {
+        $this->signin();
+
+        $playlist = create(Playlist::class);
+
+        $this->json('POST', $playlist->path() . '/favorite');
+
+        $this->assertCount(1, $playlist->user->unreadNotifications);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Notifications\ResourceFavorited;
+
 use App\Http\Resources\PlaylistResource;
 
 use App\Playlist;
@@ -13,6 +15,8 @@ class FavoritePlaylistController extends Controller
     public function store(Playlist $playlist)
     {
         $playlist->favorite();
+
+        $playlist->user->notify(new ResourceFavorited);
 
         return new PlaylistResource($playlist);
     }

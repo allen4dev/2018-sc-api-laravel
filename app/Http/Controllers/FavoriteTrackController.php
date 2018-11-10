@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Notifications\TrackFavorited;
+use App\Notifications\ResourceFavorited;
 
 use App\Http\Resources\TrackResource;
 
@@ -16,7 +16,7 @@ class FavoriteTrackController extends Controller
     {
         $track->favorite();
 
-        $track->user->notify(new TrackFavorited);
+        $track->user->notify(new ResourceFavorited);
         
         return new TrackResource($track);
     }
