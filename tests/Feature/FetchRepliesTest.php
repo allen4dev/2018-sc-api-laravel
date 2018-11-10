@@ -17,7 +17,7 @@ class FetchRepliesTest extends TestCase
     public function guests_can_fetch_track_replies()
     {
         $track = create(Track::class);
-        $reply = create(Reply::class, [ 'track_id' => $track->id ]);
+        $reply = create(Reply::class, [ 'replyable_id' => $track->id ]);
 
         $replyForOtherTrack = create(Reply::class);
 

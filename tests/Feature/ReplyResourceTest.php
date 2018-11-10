@@ -46,6 +46,8 @@ class ReplyResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_relationships_object_under_data_containing_a_user_and_track_identifiers()
     {
+        $this->withoutExceptionHandling();
+
         $this->signin();
 
         $reply = create(Reply::class);
@@ -54,9 +56,49 @@ class ReplyResourceTest extends TestCase
             ->assertJson(['data' => [
                 'relationships' => [
                     'user'  => [ 'data' => [ 'type' => 'users', 'id' => (string) $reply->user_id ] ],
-                    'track' => [ 'data' => [ 'type' => 'tracks', 'id' => (string) $reply->track_id ] ],
+                    'track' => [ 'data' => [ 'type' => 'tracks', 'id' => (string) $reply->replyable_id ] ],
                 ]
             ]]);
+    }
+
+    /** @test */
+    public function a_reply_identifier_should_contain_a_data_with_a_type_and_the_id_of_the_replied_reply()
+    {
+        $replied = create(Reply::class);
+
+        $reply = create(Reply::class, [ 'replyable_id' => $replied->id, 'replyable_type' => Reply::class ]);
+
+        $this->json('GET', $reply->path())
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        'reply' => [
+                            'data' => [ 'type' => 'replies', 'id' => (string) $replied->id ]
+                        ]
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function a_reply_identifier_should_contain_a_links_object_containing_a_url_to_the_replied_reply_path()
+    {
+        $replied = create(Reply::class);
+
+        $reply = create(Reply::class, [ 'replyable_id' => $replied->id, 'replyable_type' => Reply::class ]);
+
+        $this->json('GET', $reply->path())
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        'reply' => [
+                            'links' => [
+                                'self' => route('replies.show', $replied),
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
     }
 
     /** @test */
@@ -64,8 +106,8 @@ class ReplyResourceTest extends TestCase
     {
         $track = create(Track::class);
 
-        $replyOne = create(Reply::class, [ 'track_id' => $track->id ]);
-        $replyTwo = create(Reply::class, [ 'track_id' => $track->id ]);
+        $replyOne = create(Reply::class, [ 'replyable_id' => $track->id ]);
+        $replyTwo = create(Reply::class, [ 'replyable_id' => $track->id ]);
 
         $this->fetchTrackReplies($track)
             ->assertJson(['data' => [

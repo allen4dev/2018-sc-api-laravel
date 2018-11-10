@@ -87,13 +87,13 @@ class DeleteTracksTest extends TestCase
         $this->signin();
         
         $track = create(Track::class, [ 'user_id' => auth()->id() ]);
-        $reply = create(Reply::class, [ 'track_id' => $track->id ]);
+        $reply = create(Reply::class, [ 'replyable_id' => $track->id ]);
 
         $this->json('DELETE', $track->path());
         
         $this->assertDatabaseMissing('replies', [
             'id' => $reply->id,
-            'track_id' => $track->id,
+            'replyable_id' => $track->id,
         ]);
     }
 }

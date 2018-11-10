@@ -27,7 +27,20 @@ class ReplyTest extends TestCase
     {
         $reply = create(Reply::class);
 
-        $this->assertInstanceOf(Track::class, $reply->track);
+        $this->assertInstanceOf(Track::class, $reply->replyable);
+    }
+
+    /** @test */
+    public function it_belongs_to_a_reply()
+    {
+        $replied = create(Reply::class);
+
+        $reply = create(Reply::class, [
+            'replyable_id' => $replied->id,
+            'replyable_type' => Reply::class,
+        ]);
+
+        $this->assertInstanceOf(Reply::class, $reply->replyable);
     }
 
     /** @test */

@@ -10,6 +10,12 @@ use App\Reply;
 
 class ReplyRepliesController extends Controller
 {
+
+    public function show(Reply $reply)
+    {
+        return new ReplyResource($reply);
+    }
+
     public function store(Reply $reply)
     {
         $values = request()->validate([

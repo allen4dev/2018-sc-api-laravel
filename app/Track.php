@@ -10,6 +10,16 @@ class Track extends Model
 {
     use Favoritable;
 
+    protected static function boot()
+    {
+        static::deleting(function ($model) {
+            $model->replies()->delete();
+
+        });
+
+        parent::boot();
+    }
+
     protected $fillable = [ 'title', 'published' ];
 
     protected $casts = [

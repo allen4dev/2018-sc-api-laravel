@@ -17,11 +17,6 @@ class ReplyTracksController extends Controller
         return new ReplyCollection($track->replies()->paginate(), $track);
     }
 
-    public function show(Reply $reply)
-    {
-        return new ReplyResource($reply);
-    }
-
     public function store(Track $track)
     {
         $values = request()->validate([

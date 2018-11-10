@@ -59,6 +59,8 @@ class ReplyTest extends TestCase
     /** @test */
     public function a_user_can_reply_another_reply()
     {
+        $this->withoutExceptionHandling();
+
         $this->signin();
 
         $reply = create(Reply::class);
