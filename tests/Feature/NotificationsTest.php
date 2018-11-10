@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Illuminate\Support\Facades\Db;
 
+use App\Album;
 use App\Track;
 use App\User;
 
@@ -28,7 +29,7 @@ class NotificationsTest extends TestCase
     }
 
     /** @test */
-    public function a_user_is_be_notified_after_users_who_he_is_following_publish_a_track()
+    public function a_user_is_notified_after_users_who_he_is_following_publish_a_track()
     {
         $this->signin();
         
@@ -42,6 +43,25 @@ class NotificationsTest extends TestCase
         ]);
 
         $this->json('PATCH', $track->path() . '/publish');
+        
+        $this->assertCount(1, $follower->unreadNotifications);
+    }
+
+    /** @test */
+    public function a_user_is_notified_after_users_who_he_is_following_publish_an_album()
+    {
+        $this->signin();
+        
+        $album = create(Album::class, [ 'user_id' => auth()->id() ]);
+
+        $follower = create(User::class);
+
+        Db::table('followers')->insert([
+            'follower_id'  => $follower->id,
+            'following_id' => auth()->id(),
+        ]);
+
+        $this->json('PATCH', $album->path() . '/publish');
         
         $this->assertCount(1, $follower->unreadNotifications);
     }
