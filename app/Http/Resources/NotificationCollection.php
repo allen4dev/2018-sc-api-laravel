@@ -15,7 +15,10 @@ class NotificationCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => NotificationResource::collection($this->collection),
+            'data'  => NotificationResource::collection($this->collection),
+            'links' => [
+                'self' => route('notifications.unread'),
+            ]
         ];
     }
 }

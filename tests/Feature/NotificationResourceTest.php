@@ -16,18 +16,9 @@ class NotificationResourceTest extends TestCase
     public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
     {
         $user1 = create(User::class);
-
-        $this->signin($user1);
-
         $user2 = create(User::class);
 
-        $this->json('POST', $user2->path() . '/follow');
-
-        auth()->logout();
-
-        $this->signin($user2);
-
-        $notification = $user2->notifications()->first();
+        $notification = $this->followAndNotify($user1, $user2);
 
         $this->json('GET', '/api/me/notifications/' . $notification->id)
             ->assertJson(['data' => [
@@ -50,18 +41,9 @@ class NotificationResourceTest extends TestCase
     public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
     {
         $user1 = create(User::class);
-
-        $this->signin($user1);
-
         $user2 = create(User::class);
 
-        $this->json('POST', $user2->path() . '/follow');
-
-        auth()->logout();
-
-        $this->signin($user2);
-
-        $notification = $user2->notifications()->first();
+        $notification = $this->followAndNotify($user1, $user2);
 
         $this->json('GET', '/api/me/notifications/' . $notification->id)
             ->assertJson(['data' => [
@@ -75,18 +57,9 @@ class NotificationResourceTest extends TestCase
     public function a_collection_should_contain_a_list_of_notification_resources_under_a_data_object()
     {
         $user1 = create(User::class);
-
-        $this->signin($user1);
-
         $user2 = create(User::class);
 
-        $this->json('POST', $user2->path() . '/follow');
-
-        auth()->logout();
-
-        $this->signin($user2);
-
-        $notification = $user2->notifications()->first();
+        $notification = $this->followAndNotify($user1, $user2);
 
         $this->json('GET', '/api/me/notifications')
             ->assertJson(['data' => [
@@ -98,5 +71,32 @@ class NotificationResourceTest extends TestCase
                     ]
                 ]
             ]]);
+    }
+
+    /** @test */
+    public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
+    {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $this->followAndNotify($user1, $user2);
+
+        $this->json('GET', '/api/me/notifications')
+            ->assertJson(['links' => [
+                'self' => route('notifications.unread'),
+            ]]);
+    }
+
+    public function followAndNotify($user1, $user2)
+    {
+        $this->signin($user1);
+
+        $this->json('POST', $user2->path() . '/follow');
+
+        auth()->logout();
+
+        $this->signin($user2);
+
+        return $user2->notifications()->first();
     }
 }
