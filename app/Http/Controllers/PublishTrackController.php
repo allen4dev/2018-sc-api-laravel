@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Notification;
 
-use App\Notifications\TrackPublished;
+use App\Notifications\ResourcePublished;
 
 use App\Http\Resources\TrackResource;
 
@@ -20,8 +20,7 @@ class PublishTrackController extends Controller
 
         $track->update([ 'published' => true ]);
         
-        // notify authenticated user followers
-        Notification::send(auth()->user()->followers, new TrackPublished($track));
+        Notification::send(auth()->user()->followers, new ResourcePublished);
 
         return new TrackResource($track);
     }

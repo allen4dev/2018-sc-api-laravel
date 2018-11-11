@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Notification;
-
-use App\Notifications\AlbumPublished;
-
 use App\Http\Resources\AlbumResource;
 
 use App\Album;
@@ -33,17 +29,6 @@ class AlbumController extends Controller
         ]);
 
         $album = auth()->user()->createAlbum($request->only([ 'details', 'tracks' ]));
-
-        return new AlbumResource($album);
-    }
-
-    public function update(Album $album)
-    {
-        $this->authorize('update', $album);
-
-        $album->update([ 'published' => true ]);
-
-        Notification::send(auth()->user()->followers, new AlbumPublished($album));
 
         return new AlbumResource($album);
     }

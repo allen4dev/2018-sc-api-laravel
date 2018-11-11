@@ -82,7 +82,7 @@ Route::prefix('/albums')->group(function () {
     Route::get('/{album}', 'AlbumController@show')->name('albums.show');
     Route::delete('/{album}', 'AlbumController@destroy')->middleware('auth:api');
 
-    Route::patch('/{album}/publish', 'AlbumController@update')->middleware('auth:api');
+    Route::patch('/{album}/publish', 'PublishAlbumController@update')->middleware('auth:api');
 
     Route::post('/{album}/favorite', 'FavoriteAlbumController@store')->middleware('auth:api');
     Route::delete('/{album}/unfavorite', 'FavoriteAlbumController@destroy')->middleware('auth:api');
