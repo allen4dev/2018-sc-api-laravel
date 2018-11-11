@@ -18,7 +18,6 @@ class UserFollowed extends Notification
      */
     public function __construct()
     {
-        //
     }
 
     /**
@@ -54,8 +53,14 @@ class UserFollowed extends Notification
      */
     public function toArray($notifiable)
     {
+        $user = auth()->user();
+
         return [
-            //
+            'message' => "{$user->username} has followed you",
+            'additional' => [
+                'content' => $user->username,
+                'sender_username' => $user->username,
+            ]
         ];
     }
 }

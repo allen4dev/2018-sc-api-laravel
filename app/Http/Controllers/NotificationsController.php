@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Resources\NotificationResource;
+
 class NotificationsController extends Controller
 {
     public function index()
@@ -23,11 +25,6 @@ class NotificationsController extends Controller
     {
         $notification = auth()->user()->notifications()->findOrFail($id);
         
-        return response()->json([
-            'data' => [
-                'type' => 'notifications',
-                'id' => (string) $notification->id,
-            ]
-        ], 200);
+        return new NotificationResource($notification);
     }
 }
