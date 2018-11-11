@@ -5,20 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\NotificationResource;
+use App\Http\Resources\NotificationCollection;
 
 class NotificationsController extends Controller
 {
     public function index()
     {
-        // ToDo: use an API resource
-        $notification = auth()->user()->unreadNotifications()->first();
-        
-        return response()->json([
-            'data' => [[
-                'type' => 'notifications',
-                'id'   => (string) $notification->id,
-            ]]
-        ], 200);
+        return new NotificationCollection(auth()->user()->unreadNotifications);
     }
 
     public function show($id)
