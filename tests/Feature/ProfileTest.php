@@ -163,4 +163,27 @@ class ProfileTest extends TestCase
                 ]
             ]]);
     }
+
+    /** @test */
+    public function a_user_can_fetch_a_single_notification()
+    {
+        $this->signin();
+
+        $user = create(User::class);
+
+        $this->json('POST', $user->path() . '/follow');
+
+        auth()->logout();
+
+        $this->signin($user);
+
+        $notification = $user->unreadNotifications()->first();
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+            ]]);
+    }
 }

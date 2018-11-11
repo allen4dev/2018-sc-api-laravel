@@ -18,4 +18,16 @@ class NotificationsController extends Controller
             ]]
         ], 200);
     }
+
+    public function show($id)
+    {
+        $notification = auth()->user()->notifications()->findOrFail($id);
+        
+        return response()->json([
+            'data' => [
+                'type' => 'notifications',
+                'id' => (string) $notification->id,
+            ]
+        ], 200);
+    }
 }

@@ -29,6 +29,7 @@ Route::prefix('/me')->group(function () {
     Route::get('/followings', 'ProfileFollowingsController@index')->middleware('auth:api')->name('me.followings');
 
     Route::get('/notifications', 'NotificationsController@index');
+    Route::get('/notifications/{id}', 'NotificationsController@show');
 });
 
 Route::prefix('/users')->group(function () {
