@@ -20,21 +20,26 @@ class NotificationResourceTest extends TestCase
 
         $notification = $this->followAndNotify($user1, $user2);
 
-        $this->json('GET', '/api/me/notifications/' . $notification->id)
-            ->assertJson(['data' => [
-                'type' => 'notifications',
-                'id'   => (string) $notification->id,
-                'attributes' => [
-                    'message'     => "{$user1->username} has followed you",
-                    'additional'  => [
-                        'content' => $user1->username,
-                        'sender_username' => $user1->username,
-                    ],
-                    'action'     => 'UserFollowed',
-                    'created_at' => (string) $notification->created_at,
-                    'updated_at' => (string) $notification->updated_at
+        $response = $this->json('GET', '/api/me/notifications/' . $notification->id);
+            
+        
+        $response->assertJson(['data' => [
+            'type' => 'notifications',
+            'id'   => (string) $notification->id,
+        ]]);
+
+        $response->assertJsonStructure(['data' => [
+            'attributes' => [
+                'message',
+                'additional'  => [
+                    'content',
+                    'sender_username',
                 ],
-            ]]);
+                'action',
+                'created_at',
+                'updated_at',
+            ]
+        ]]);
     }
 
     /** @test */
@@ -84,6 +89,32 @@ class NotificationResourceTest extends TestCase
         $this->json('GET', '/api/me/notifications')
             ->assertJson(['links' => [
                 'self' => route('notifications.unread'),
+            ]]);
+    }
+
+    /** @test */
+    public function a_user_followed_notification_should_contain_a_custom_message_and_additional_data()
+    {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $notification = $this->followAndNotify($user1, $user2);
+
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+                'attributes' => [
+                    'message' => "{$user1->username} has followed you",
+                    'additional'  => [
+                        'content' => $user1->username,
+                        'sender_username' => $user1->username,
+                    ],
+                    'action' => 'UserFollowed',
+                    'created_at' => (string) $notification->created_at,
+                    'updated_at' => (string) $notification->updated_at,
+                ]
             ]]);
     }
 
