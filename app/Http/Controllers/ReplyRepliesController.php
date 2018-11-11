@@ -26,7 +26,7 @@ class ReplyRepliesController extends Controller
 
         $created = $reply->comment($values);
 
-        $reply->user->notify(new ResourceReplied);
+        $reply->user->notify(new ResourceReplied($reply));
 
         return new ReplyResource($created);
     }

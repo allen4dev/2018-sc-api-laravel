@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Illuminate\Support\Facades\Db;
 
+use App\Reply;
 use App\Track;
 use App\User;
 
@@ -179,6 +180,41 @@ class NotificationResourceTest extends TestCase
                     'message' => $user1->username . ' replied your track',
                     'additional' => [
                         'content' => $track->title,
+                        'sender_username' => $user1->username,
+                    ],
+                    'action'     => 'ResourceReplied',
+                    'created_at' => (string) $notification->created_at,
+                    'updated_at' => (string) $notification->updated_at,
+                    'time_since' => $notification->created_at->diffForHumans(),
+                ]
+            ]]);
+    }
+
+    /** @test */
+    public function a_replied_notification_should_contain_a_message_with_the_username_who_replied_your_reply_a_content_with_the_reply_body_and_additional_data()
+    {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $reply = create(Reply::class, [ 'user_id' => $user2->id ]);
+
+        Db::table('followers')->insert([
+            'follower_id'  => $user2->id,
+            'following_id' => $user1->id,
+        ]);
+
+        $details = [ 'body' => 'reply the reply' ];
+
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $reply->path() . '/replies', $details);
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+                'attributes' => [
+                    'message' => $user1->username . ' replied your reply',
+                    'additional' => [
+                        'content' => $reply->title,
                         'sender_username' => $user1->username,
                     ],
                     'action'     => 'ResourceReplied',
