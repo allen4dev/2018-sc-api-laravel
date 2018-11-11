@@ -11,14 +11,16 @@ class ResourcePublished extends Notification
 {
     use Queueable;
 
+    protected $resource;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($resource)
     {
-        //
+        $this->resource = $resource;
     }
 
     /**
@@ -54,8 +56,14 @@ class ResourcePublished extends Notification
      */
     public function toArray($notifiable)
     {
+        $user = auth()->user();
+
         return [
-            //
+            'message' => $user->username . ' has published a new track.',
+            'additional' => [
+                'content' => $this->resource->title,
+                'sender_username' => $user->username,
+            ]
         ];
     }
 }

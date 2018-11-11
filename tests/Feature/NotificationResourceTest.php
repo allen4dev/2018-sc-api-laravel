@@ -6,6 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
+use App\Track;
 use App\User;
 
 class NotificationResourceTest extends TestCase
@@ -18,10 +21,9 @@ class NotificationResourceTest extends TestCase
         $user1 = create(User::class);
         $user2 = create(User::class);
 
-        $notification = $this->followAndNotify($user1, $user2);
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $user2->path() . '/follow');
 
         $response = $this->json('GET', '/api/me/notifications/' . $notification->id);
-            
         
         $response->assertJson(['data' => [
             'type' => 'notifications',
@@ -38,6 +40,7 @@ class NotificationResourceTest extends TestCase
                 'action',
                 'created_at',
                 'updated_at',
+                'time_since',
             ]
         ]]);
     }
@@ -48,7 +51,7 @@ class NotificationResourceTest extends TestCase
         $user1 = create(User::class);
         $user2 = create(User::class);
 
-        $notification = $this->followAndNotify($user1, $user2);
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $user2->path() . '/follow');
 
         $this->json('GET', '/api/me/notifications/' . $notification->id)
             ->assertJson(['data' => [
@@ -64,7 +67,7 @@ class NotificationResourceTest extends TestCase
         $user1 = create(User::class);
         $user2 = create(User::class);
 
-        $notification = $this->followAndNotify($user1, $user2);
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $user2->path() . '/follow');
 
         $this->json('GET', '/api/me/notifications')
             ->assertJson(['data' => [
@@ -84,7 +87,7 @@ class NotificationResourceTest extends TestCase
         $user1 = create(User::class);
         $user2 = create(User::class);
 
-        $this->followAndNotify($user1, $user2);
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $user2->path() . '/follow');
 
         $this->json('GET', '/api/me/notifications')
             ->assertJson(['links' => [
@@ -93,12 +96,12 @@ class NotificationResourceTest extends TestCase
     }
 
     /** @test */
-    public function a_user_followed_notification_should_contain_a_custom_message_and_additional_data()
+    public function a_user_followed_notification_should_contain_a_message_with_the_name_who_followed_you_a_content_with_the_follower_username_and_additional_data()
     {
         $user1 = create(User::class);
         $user2 = create(User::class);
 
-        $notification = $this->followAndNotify($user1, $user2);
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $user2->path() . '/follow');
 
 
         $this->json('GET', '/api/me/notifications/' . $notification->id)
@@ -114,15 +117,51 @@ class NotificationResourceTest extends TestCase
                     'action' => 'UserFollowed',
                     'created_at' => (string) $notification->created_at,
                     'updated_at' => (string) $notification->updated_at,
+                    'time_since' => $notification->created_at->diffForHumans(),
                 ]
             ]]);
     }
 
-    public function followAndNotify($user1, $user2)
+    /** @test */
+    public function a_resource_published_notification_should_contain_a_message_with_the_user_who_published_a_content_with_the_publshed_track_name_under_the_additional_data()
     {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $track = create(Track::class, [ 'user_id' => $user1->id ]);
+
+        Db::table('followers')->insert([
+            'follower_id'  => $user2->id,
+            'following_id' => $user1->id,
+        ]);
+
+        $notification = $this->notifyUser($user1, $user2, 'PATCH,' . $track->path() . '/publish');
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+                'attributes' => [
+                    'message'    => $user1->username . ' has published a new track.',
+                    'additional' => [
+                        'content' => $track->title,
+                        'sender_username' => $user1->username,
+                    ],
+                    'action'     => 'ResourcePublished',
+                    'created_at' => (string) $notification->created_at,
+                    'updated_at' => (string) $notification->updated_at,
+                    'time_since' => $notification->created_at->diffForHumans(),
+                ],
+            ]]);
+    }
+
+    public function notifyUser($user1, $user2, $route)
+    {
+        $action = explode(',', $route);
+
         $this->signin($user1);
 
-        $this->json('POST', $user2->path() . '/follow');
+        $this->json($action[0], $action[1]);
 
         auth()->logout();
 

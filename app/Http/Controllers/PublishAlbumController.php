@@ -20,7 +20,7 @@ class PublishAlbumController extends Controller
 
         $album->update([ 'published' => true ]);
 
-        Notification::send(auth()->user()->followers, new ResourcePublished);
+        Notification::send(auth()->user()->followers, new ResourcePublished($album));
 
         return new AlbumResource($album);
     }

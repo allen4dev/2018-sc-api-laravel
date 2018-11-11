@@ -20,7 +20,7 @@ class PublishTrackController extends Controller
 
         $track->update([ 'published' => true ]);
         
-        Notification::send(auth()->user()->followers, new ResourcePublished);
+        Notification::send(auth()->user()->followers, new ResourcePublished($track));
 
         return new TrackResource($track);
     }
