@@ -75,7 +75,7 @@ class NotificationResourceTest extends TestCase
                     'type' => 'notifications',
                     'id'   => (string) $notification->id,
                     'attributes' => [
-                        'message' => "{$user1->username} has followed you",
+                        'message' => "{$user1->username} is following you.",
                     ]
                 ]
             ]]);
@@ -103,13 +103,12 @@ class NotificationResourceTest extends TestCase
 
         $notification = $this->notifyUser($user1, $user2, 'POST,' . $user2->path() . '/follow');
 
-
         $this->json('GET', '/api/me/notifications/' . $notification->id)
             ->assertJson(['data' => [
                 'type' => 'notifications',
                 'id'   => (string) $notification->id,
                 'attributes' => [
-                    'message' => "{$user1->username} has followed you",
+                    'message' => "{$user1->username} is following you.",
                     'additional'  => [
                         'content' => $user1->username,
                         'sender_username' => $user1->username,
@@ -155,13 +154,48 @@ class NotificationResourceTest extends TestCase
             ]]);
     }
 
-    public function notifyUser($user1, $user2, $route)
+    /** @test */
+    public function a_replied_notification_should_contain_a_message_with_the_username_who_replied_your_track_a_content_with_the_track_title_and_additional_data()
+    {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $track = create(Track::class, [ 'user_id' => $user2->id, 'published' => true ]);
+
+        Db::table('followers')->insert([
+            'follower_id'  => $user2->id,
+            'following_id' => $user1->id,
+        ]);
+
+        $details = [ 'body' => 'reply the track' ];
+
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $track->path() . '/replies', $details);
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+                'attributes' => [
+                    'message' => $user1->username . ' replied your track',
+                    'additional' => [
+                        'content' => $track->title,
+                        'sender_username' => $user1->username,
+                    ],
+                    'action'     => 'ResourceReplied',
+                    'created_at' => (string) $notification->created_at,
+                    'updated_at' => (string) $notification->updated_at,
+                    'time_since' => $notification->created_at->diffForHumans(),
+                ]
+            ]]);
+    }
+
+    public function notifyUser($user1, $user2, $route, $details = [])
     {
         $action = explode(',', $route);
 
         $this->signin($user1);
 
-        $this->json($action[0], $action[1]);
+        $this->json($action[0], $action[1], $details);
 
         auth()->logout();
 

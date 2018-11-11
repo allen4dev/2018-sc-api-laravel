@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Notifications\ReplyReplied;
+use App\Notifications\ResourceReplied;
 
 use App\Http\Resources\ReplyResource;
 
@@ -26,7 +26,7 @@ class ReplyRepliesController extends Controller
 
         $created = $reply->comment($values);
 
-        $reply->user->notify(new ReplyReplied);
+        $reply->user->notify(new ResourceReplied);
 
         return new ReplyResource($created);
     }

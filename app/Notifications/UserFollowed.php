@@ -56,7 +56,7 @@ class UserFollowed extends Notification
         $user = auth()->user();
 
         return [
-            'message' => "{$user->username} has followed you",
+            'message' => "{$user->username} is following you.",
             'additional' => [
                 'content' => $user->username,
                 'sender_username' => $user->username,
