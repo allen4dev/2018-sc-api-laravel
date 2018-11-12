@@ -16,7 +16,7 @@ class FavoritePlaylistController extends Controller
     {
         $playlist->favorite();
 
-        $playlist->user->notify(new ResourceFavorited);
+        $playlist->user->notify(new ResourceFavorited($playlist));
 
         return new PlaylistResource($playlist);
     }

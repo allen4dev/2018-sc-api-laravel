@@ -16,7 +16,7 @@ class FavoriteTrackController extends Controller
     {
         $track->favorite();
 
-        $track->user->notify(new ResourceFavorited);
+        $track->user->notify(new ResourceFavorited($track));
         
         return new TrackResource($track);
     }

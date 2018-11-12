@@ -16,7 +16,7 @@ class FavoriteAlbumController extends Controller
     {
         $album->favorite();
 
-        $album->user->notify(new ResourceFavorited);
+        $album->user->notify(new ResourceFavorited($album));
 
         return new AlbumResource($album);
     }

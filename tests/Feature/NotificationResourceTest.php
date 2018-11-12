@@ -97,7 +97,7 @@ class NotificationResourceTest extends TestCase
     }
 
     /** @test */
-    public function a_user_followed_notification_should_contain_a_message_with_the_name_who_followed_you_a_content_with_the_follower_username_and_additional_data()
+    public function a_user_followed_notification_should_contain_a_message_with_the_name_who_followed_you_a_content_with_the_follower_username_and_the_additional_data()
     {
         $user1 = create(User::class);
         $user2 = create(User::class);
@@ -156,17 +156,12 @@ class NotificationResourceTest extends TestCase
     }
 
     /** @test */
-    public function a_replied_notification_should_contain_a_message_with_the_username_who_replied_your_track_a_content_with_the_track_title_and_additional_data()
+    public function a_replied_notification_should_contain_a_message_with_the_username_who_replied_your_track_a_content_with_the_track_title_and_the_additional_data()
     {
         $user1 = create(User::class);
         $user2 = create(User::class);
 
         $track = create(Track::class, [ 'user_id' => $user2->id, 'published' => true ]);
-
-        Db::table('followers')->insert([
-            'follower_id'  => $user2->id,
-            'following_id' => $user1->id,
-        ]);
 
         $details = [ 'body' => 'reply the track' ];
 
@@ -191,17 +186,12 @@ class NotificationResourceTest extends TestCase
     }
 
     /** @test */
-    public function a_replied_notification_should_contain_a_message_with_the_username_who_replied_your_reply_a_content_with_the_reply_body_and_additional_data()
+    public function a_replied_notification_should_contain_a_message_with_the_username_who_replied_your_reply_a_content_with_the_reply_body_and_the_additional_data()
     {
         $user1 = create(User::class);
         $user2 = create(User::class);
 
         $reply = create(Reply::class, [ 'user_id' => $user2->id ]);
-
-        Db::table('followers')->insert([
-            'follower_id'  => $user2->id,
-            'following_id' => $user1->id,
-        ]);
 
         $details = [ 'body' => 'reply the reply' ];
 
@@ -222,6 +212,34 @@ class NotificationResourceTest extends TestCase
                     'updated_at' => (string) $notification->updated_at,
                     'time_since' => $notification->created_at->diffForHumans(),
                 ]
+            ]]);
+    }
+
+    /** @test */
+    public function a_resource_favorited_notification_should_contain_a_message_with_the_username_who_favorited_your_track_a_content_with_the_his_username_and_the_additional_data()
+    {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $track = create(Track::class, [ 'user_id' => $user2->id, 'published' => true ]);
+
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $track->path() . '/favorite');
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+                'attributes' => [
+                    'message' => $user1->username . ' favorited your track',
+                    'additional' => [
+                        'content' => $track->title,
+                        'sender_username' => $user1->username,
+                    ],
+                    'action' => 'ResourceFavorited',
+                    'created_at' => (string) $notification->created_at,
+                    'updated_at' => (string) $notification->updated_at,
+                    'time_since' => $notification->created_at->diffForHumans(),
+                ],
             ]]);
     }
 
