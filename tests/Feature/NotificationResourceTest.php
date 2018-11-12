@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Illuminate\Support\Facades\Db;
 
+use App\Album;
+use App\Playlist;
 use App\Reply;
 use App\Track;
 use App\User;
@@ -236,6 +238,90 @@ class NotificationResourceTest extends TestCase
                         'sender_username' => $user1->username,
                     ],
                     'action' => 'ResourceFavorited',
+                    'created_at' => (string) $notification->created_at,
+                    'updated_at' => (string) $notification->updated_at,
+                    'time_since' => $notification->created_at->diffForHumans(),
+                ],
+            ]]);
+    }
+
+    /** @test */
+    public function a_resource_shared_notification_should_contain_a_message_with_the_username_who_shared_your_track_a_content_with_the_track_title_and_the_additional_data()
+    {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $track = create(Track::class, [ 'user_id' => $user2->id, 'published' => true ]);
+
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $track->path() . '/share');
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+                'attributes' => [
+                    'message' => $user1->username . ' shared your track',
+                    'additional' => [
+                        'content' => $track->title,
+                        'sender_username' => $user1->username,
+                    ],
+                    'action' => 'ResourceShared',
+                    'created_at' => (string) $notification->created_at,
+                    'updated_at' => (string) $notification->updated_at,
+                    'time_since' => $notification->created_at->diffForHumans(),
+                ],
+            ]]);
+    }
+
+    /** @test */
+    public function a_resource_shared_notification_should_contain_a_message_with_the_username_who_shared_your_album_a_content_with_the_album_title_and_the_additional_data()
+    {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $album = create(Album::class, [ 'user_id' => $user2->id, 'published' => true ]);
+
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $album->path() . '/share');
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+                'attributes' => [
+                    'message' => $user1->username . ' shared your album',
+                    'additional' => [
+                        'content' => $album->title,
+                        'sender_username' => $user1->username,
+                    ],
+                    'action' => 'ResourceShared',
+                    'created_at' => (string) $notification->created_at,
+                    'updated_at' => (string) $notification->updated_at,
+                    'time_since' => $notification->created_at->diffForHumans(),
+                ],
+            ]]);
+    }
+
+    /** @test */
+    public function a_resource_shared_notification_should_contain_a_message_with_the_username_who_shared_your_playlist_a_content_with_the_playlist_title_and_the_additional_data()
+    {
+        $user1 = create(User::class);
+        $user2 = create(User::class);
+
+        $playlist = create(Playlist::class, [ 'user_id' => $user2->id ]);
+
+        $notification = $this->notifyUser($user1, $user2, 'POST,' . $playlist->path() . '/share');
+
+        $this->json('GET', '/api/me/notifications/' . $notification->id)
+            ->assertJson(['data' => [
+                'type' => 'notifications',
+                'id'   => (string) $notification->id,
+                'attributes' => [
+                    'message' => $user1->username . ' shared your playlist',
+                    'additional' => [
+                        'content' => $playlist->title,
+                        'sender_username' => $user1->username,
+                    ],
+                    'action' => 'ResourceShared',
                     'created_at' => (string) $notification->created_at,
                     'updated_at' => (string) $notification->updated_at,
                     'time_since' => $notification->created_at->diffForHumans(),
