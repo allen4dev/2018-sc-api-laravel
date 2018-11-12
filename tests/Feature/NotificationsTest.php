@@ -143,4 +143,16 @@ class NotificationsTest extends TestCase
 
         $this->assertCount(1, $track->user->unreadNotifications);
     }
+
+    /** @test */
+    public function a_user_is_notified_after_other_user_shares_his_album()
+    {
+        $this->signin();
+
+        $album = create(Album::class, [ 'published' => true ]);
+
+        $this->json('POST', $album->path() . '/share');
+
+        $this->assertCount(1, $album->user->unreadNotifications);
+    }
 }

@@ -88,4 +88,6 @@ Route::prefix('/albums')->group(function () {
 
     Route::post('/{album}/favorite', 'FavoriteAlbumController@store')->middleware('auth:api');
     Route::delete('/{album}/unfavorite', 'FavoriteAlbumController@destroy')->middleware('auth:api');
+
+    Route::post('/{album}/share', 'ShareAlbumsController@store');
 });
