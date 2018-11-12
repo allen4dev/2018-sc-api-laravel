@@ -22,7 +22,7 @@ class IncludeTransformer {
     public static function includeData($resource, $include)
     {
         $requestedRelationships = explode(',', $include);
-        
+
         $includes = collect();
 
         foreach ($requestedRelationships as $relationship)
@@ -31,7 +31,6 @@ class IncludeTransformer {
             {
                 continue;
             }
-
             tap($resource->$relationship, function ($relation) use ( & $includes )
             {
                 if ($relation instanceof Collection) {

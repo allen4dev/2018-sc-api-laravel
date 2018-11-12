@@ -36,6 +36,31 @@ class UserResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_also_contain_the_published_tracks_created_by_the_user_if_the_request_sends_a_include_query_parameter_with_value_albums()
+    {
+        $user  = create(User::class);
+
+        $publishedTrack = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
+        $unpublishedTrack = create(Track::class, [ 'user_id' => $user->id ]);
+
+        $response = $this->json('GET', $user->path() . '?include=tracks');
+            
+        $response->assertJson([
+            'included' => [
+                [
+                    'type' => 'tracks',
+                    'id'   => (string) $publishedTrack->id,
+                    'attributes' => [
+                        'title' => $publishedTrack->title,
+                    ]
+                ],
+            ]  
+        ]);
+
+        $this->assertEquals(1, ($response->original)->count());
+    }
+
+    /** @test */
     public function a_user_identifier_should_contain_a_data_with_a_type_and_the_id_of_the_user()
     {
         $this->signin();
