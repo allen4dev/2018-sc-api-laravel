@@ -66,6 +66,27 @@ class TrackResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_also_contain_the_author_if_the_request_sends_a_include_query_parameter_with_value_user()
+    {
+        $user  = create(User::class);
+        $track = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
+
+        $this->json('GET', $track->path() . '?include=user')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
     public function a_track_identifier_should_contain_a_data_with_a_type_and_the_id_of_the_track()
     {
         $reply = create(Reply::class);

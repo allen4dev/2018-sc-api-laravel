@@ -18,6 +18,8 @@ class UserResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
     {
+        $this->withoutExceptionHandling();
+
         $user = create(User::class);
 
         $this->json('GET', $user->path())

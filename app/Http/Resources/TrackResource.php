@@ -4,6 +4,12 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use Illuminate\Support\Collection;
+
+use App\Http\Transformers\IncludeTransformer;
+
+use App\User;
+
 class TrackResource extends JsonResource
 {
     /**
@@ -27,4 +33,25 @@ class TrackResource extends JsonResource
             'relationships' => new TrackRelationshipsResource($this),
         ];
     }
+
+    public function with($request)
+    {
+        if (! $request->include) return [];
+
+        $includes = IncludeTransformer::includeData($this->resource, $request->include);
+        
+        return [
+            'included' => $this->withIncluded($includes->unique()),
+        ];
+    }
+
+    public function withIncluded(Collection $included)
+    {
+        return $included->map(function ($include) {
+            if ($include instanceof User) {
+                return new UserResource($include);
+            }
+        });
+    }
+
 }

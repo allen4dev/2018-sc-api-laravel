@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Transformers\IncludeTransformer;
+
 use App\Http\Resources\TrackResource;
 
 use App\Track;
@@ -23,6 +25,8 @@ class TrackController extends Controller
 
     public function show(Track $track)
     {
+        IncludeTransformer::loadRelationships($track, request('include'));
+        
         $resource = new TrackResource($track);
 
         if ($track->published) return $resource;
