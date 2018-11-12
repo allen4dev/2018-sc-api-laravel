@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 
 use App\Http\Transformers\IncludeTransformer;
 
+use App\User;
 use App\Album;
 use App\Playlist;
 use App\Track;
@@ -46,16 +47,20 @@ class UserResource extends JsonResource
     public function withIncluded(Collection $included)
     {
         return $included->map(function ($include) {
-            if ($include instanceof Track) {
-                return new TrackResource($include);
-            }
-
             if ($include instanceof Album) {
                 return new AlbumResource($include);
             }
 
             if ($include instanceof Playlist) {
                 return new PlaylistResource($include);
+            }
+
+            if ($include instanceof Track) {
+                return new TrackResource($include);
+            }
+
+            if ($include instanceof User) {
+                return new UserResource($include);
             }
         });
     }

@@ -110,6 +110,60 @@ class UserResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_also_contain_the_user_followers_if_the_request_sends_a_include_query_parameter_with_value_followers()
+    {
+        $user = create(User::class);
+        $follower = create(User::class);
+        
+        Db::table('followers')->insert([
+            'follower_id'  => $follower->id,
+            'following_id' => $user->id,
+        ]);
+
+        $response = $this->json('GET', $user->path() . '?include=followers');
+            
+        $response->assertJson([
+            'included' => [
+                [
+                    'type' => 'users',
+                    'id'   => (string) $follower->id,
+                    'attributes' => [
+                        'username' => $follower->username,
+                        'email' => $follower->email,
+                    ]
+                ],
+            ]  
+        ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_users_followed_by_our_user_if_the_request_sends_a_include_query_parameter_with_value_followings()
+    {
+        $user = create(User::class);
+        $followed = create(User::class);
+        
+        Db::table('followers')->insert([
+            'follower_id'  => $user->id,
+            'following_id' => $followed->id,
+        ]);
+
+        $response = $this->json('GET', $user->path() . '?include=followings');
+            
+        $response->assertJson([
+            'included' => [
+                [
+                    'type' => 'users',
+                    'id'   => (string) $followed->id,
+                    'attributes' => [
+                        'username' => $followed->username,
+                        'email' => $followed->email,
+                    ]
+                ],
+            ]  
+        ]);
+    }
+
+    /** @test */
     public function a_user_identifier_should_contain_a_data_with_a_type_and_the_id_of_the_user()
     {
         $this->signin();
