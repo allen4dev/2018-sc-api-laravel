@@ -69,6 +69,13 @@ class NotificationsTest extends TestCase
     }
 
     /** @test */
+    public function guests_cannot_reply_a_resource()
+    {
+        $this->json('POST', '/api/tracks/1/replies')
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_is_notified_after_other_user_replies_his_track()
     {
         $this->signin();
@@ -94,6 +101,13 @@ class NotificationsTest extends TestCase
         $this->json('POST', $reply->path() . '/replies', $details);
 
         $this->assertCount(1, $reply->user->unreadNotifications);
+    }
+
+    /** @test */
+    public function guests_cannot_favorite_a_resource()
+    {
+        $this->json('POST', '/api/tracks/1/favorite')
+            ->assertStatus(401);
     }
 
     /** @test */
@@ -133,6 +147,13 @@ class NotificationsTest extends TestCase
     }
 
     /** @test */
+    public function guests_cannot_share_a_resource()
+    {
+        $this->json('POST', '/api/tracks/1/share')
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_is_notified_after_other_user_shares_his_track()
     {
         $this->signin();
@@ -154,5 +175,17 @@ class NotificationsTest extends TestCase
         $this->json('POST', $album->path() . '/share');
 
         $this->assertCount(1, $album->user->unreadNotifications);
+    }
+
+    /** @test */
+    public function a_user_is_notified_after_other_user_shares_his_playlist()
+    {
+        $this->signin();
+
+        $playlist = create(Playlist::class);
+
+        $this->json('POST', $playlist->path() . '/share');
+
+        $this->assertCount(1, $playlist->user->unreadNotifications);
     }
 }

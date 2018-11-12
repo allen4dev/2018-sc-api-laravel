@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Album;
+use App\Playlist;
 use App\Track;
 
 class SharesTest extends TestCase
@@ -40,6 +41,22 @@ class SharesTest extends TestCase
             ->assertJson(['data' => [
                 'type' => 'albums',
                 'id'   => (string) $album->id,
+            ]]);
+    }
+
+    /** @test */
+    public function a_user_can_share_a_playlist()
+    {
+        $this->withoutExceptionHandling();
+        $this->signin();
+
+        $playlist = create(Playlist::class);
+
+        $this->json('POST', $playlist->path() . '/share')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                'type' => 'playlists',
+                'id'   => (string) $playlist->id,
             ]]);
     }
 }

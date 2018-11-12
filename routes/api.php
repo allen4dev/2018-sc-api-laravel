@@ -28,8 +28,8 @@ Route::prefix('/me')->group(function () {
     Route::get('/followers', 'ProfileFollowersController@index')->middleware('auth:api')->name('me.followers');
     Route::get('/followings', 'ProfileFollowingsController@index')->middleware('auth:api')->name('me.followings');
 
-    Route::get('/notifications', 'NotificationsController@index')->name('notifications.unread');
-    Route::get('/notifications/{id}', 'NotificationsController@show')->name('notifications.show');
+    Route::get('/notifications', 'NotificationsController@index')->middleware('auth:api')->name('notifications.unread');
+    Route::get('/notifications/{id}', 'NotificationsController@show')->middleware('auth:api')->name('notifications.show');
 });
 
 Route::prefix('/users')->group(function () {
@@ -59,7 +59,7 @@ Route::prefix('/tracks')->group(function () {
     Route::post('/{track}/favorite', 'FavoriteTrackController@store')->middleware('auth:api');
     Route::delete('/{track}/unfavorite', 'FavoriteTrackController@destroy')->middleware('auth:api');
 
-    Route::post('/{track}/share', 'ShareTracksController@store');
+    Route::post('/{track}/share', 'ShareTracksController@store')->middleware('auth:api');
 });
 
 Route::prefix('/replies')->group(function () {
@@ -77,6 +77,8 @@ Route::prefix('/playlists')->group(function () {
     
     Route::post('/{playlist}/tracks/{track}/add', 'PlaylistTrackController@store')->middleware('auth:api');
     Route::delete('/{playlist}/tracks/{track}/remove', 'PlaylistTrackController@remove')->middleware('auth:api');
+
+    Route::post('/{playlist}/share', 'SharePlaylistsController@store')->middleware('auth:api');
 });
 
 Route::prefix('/albums')->group(function () {
@@ -89,5 +91,5 @@ Route::prefix('/albums')->group(function () {
     Route::post('/{album}/favorite', 'FavoriteAlbumController@store')->middleware('auth:api');
     Route::delete('/{album}/unfavorite', 'FavoriteAlbumController@destroy')->middleware('auth:api');
 
-    Route::post('/{album}/share', 'ShareAlbumsController@store');
+    Route::post('/{album}/share', 'ShareAlbumsController@store')->middleware('auth:api');
 });
