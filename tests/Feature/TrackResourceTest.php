@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Reply;
 use App\Track;
 use App\User;
@@ -68,6 +70,8 @@ class TrackResourceTest extends TestCase
     /** @test */
     public function it_should_also_contain_the_author_if_the_request_sends_a_include_query_parameter_with_value_user()
     {
+        $this->withoutExceptionHandling();
+
         $user  = create(User::class);
         $track = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
 
@@ -80,6 +84,36 @@ class TrackResourceTest extends TestCase
                         'attributes' => [
                             'username' => $user->username,
                             'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_users_who_favorited_the_track_if_the_request_sends_a_include_query_parameter_with_value_favorites()
+    {
+        $user  = create(User::class);
+        $track = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
+
+        $user2 = create(User::class);
+
+        Db::table('favorites')->insert([
+            'user_id' => $user2->id,
+            'type' => 'track',
+            'favorited_id' => $track->id,
+            'favorited_type' => Track::class,
+        ]);
+
+        $this->json('GET', $track->path() . '?include=favorites')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user2->id,
+                        'attributes' => [
+                            'username' => $user2->username,
+                            'email' => $user2->email,
                         ]
                     ],
                 ]  
@@ -135,7 +169,6 @@ class TrackResourceTest extends TestCase
                     'id'   => (string) $trackOne->id,
                     'attributes' => [
                         'title' => $trackOne->title,
-                        // more fields
                     ],
                 ],
                 [
@@ -143,7 +176,6 @@ class TrackResourceTest extends TestCase
                     'id'   => (string) $trackTwo->id,
                     'attributes' => [
                         'title' => $trackTwo->title,
-                        // more fields
                     ],
                 ],
             ]]);
