@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Illuminate\Support\Facades\Db;
 
+use App\Album;
+use App\Playlist;
 use App\Track;
 use App\User;
 
@@ -18,8 +20,6 @@ class UserResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
     {
-        $this->withoutExceptionHandling();
-
         $user = create(User::class);
 
         $this->json('GET', $user->path())
@@ -52,6 +52,55 @@ class UserResourceTest extends TestCase
                     'id'   => (string) $publishedTrack->id,
                     'attributes' => [
                         'title' => $publishedTrack->title,
+                    ]
+                ],
+            ]  
+        ]);
+
+        $this->assertEquals(1, ($response->original)->count());
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_published_albums_created_by_the_user_if_the_request_sends_a_include_query_parameter_with_value_albums()
+    {
+        $user = create(User::class);
+
+        $publishedAlbum = create(Album::class, [ 'user_id' => $user->id, 'published' => true ]);
+        $unpublishedAlbum = create(Album::class, [ 'user_id' => $user->id ]);
+
+        $response = $this->json('GET', $user->path() . '?include=albums');
+            
+        $response->assertJson([
+            'included' => [
+                [
+                    'type' => 'albums',
+                    'id'   => (string) $publishedAlbum->id,
+                    'attributes' => [
+                        'title' => $publishedAlbum->title,
+                    ]
+                ],
+            ]  
+        ]);
+
+        $this->assertEquals(1, ($response->original)->count());
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_playlists_created_by_the_user_if_the_request_sends_a_include_query_parameter_with_value_playlists()
+    {
+        $user = create(User::class);
+
+        $playlist = create(Playlist::class, [ 'user_id' => $user->id ]);
+
+        $response = $this->json('GET', $user->path() . '?include=playlists');
+            
+        $response->assertJson([
+            'included' => [
+                [
+                    'type' => 'playlists',
+                    'id'   => (string) $playlist->id,
+                    'attributes' => [
+                        'title' => $playlist->title,
                     ]
                 ],
             ]  

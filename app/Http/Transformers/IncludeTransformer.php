@@ -31,6 +31,7 @@ class IncludeTransformer {
             {
                 continue;
             }
+
             tap($resource->$relationship, function ($relation) use ( & $includes )
             {
                 if ($relation instanceof Collection) {
