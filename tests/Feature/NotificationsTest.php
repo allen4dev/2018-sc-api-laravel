@@ -131,4 +131,16 @@ class NotificationsTest extends TestCase
 
         $this->assertCount(1, $playlist->user->unreadNotifications);
     }
+
+    /** @test */
+    public function a_user_is_notified_after_other_user_shares_his_track()
+    {
+        $this->signin();
+
+        $track = create(Track::class, [ 'published' => true ]);
+
+        $this->json('POST', $track->path() . '/share');
+
+        $this->assertCount(1, $track->user->unreadNotifications);
+    }
 }

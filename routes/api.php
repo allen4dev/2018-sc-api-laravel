@@ -42,8 +42,8 @@ Route::prefix('/users')->group(function () {
     Route::get('/{user}/following', 'UserFollowingsController@index')->name('users.following');
     Route::get('/{user}/followers', 'UserFollowersController@index')->name('users.followers');
 
-    Route::post('/{user}/follow', 'FollowersController@store');
-    Route::delete('/{user}/unfollow', 'FollowersController@destroy');
+    Route::post('/{user}/follow', 'FollowersController@store')->middleware('auth:api');
+    Route::delete('/{user}/unfollow', 'FollowersController@destroy')->middleware('auth:api');
 });
 
 Route::prefix('/tracks')->group(function () {
@@ -51,18 +51,20 @@ Route::prefix('/tracks')->group(function () {
     Route::get('/{track}', 'TrackController@show')->name('tracks.show');
     Route::delete('/{track}', 'TrackController@destroy')->middleware('auth:api');
     
-    Route::patch('/{track}/publish', 'PublishTrackController@update');
+    Route::patch('/{track}/publish', 'PublishTrackController@update')->middleware('auth:api');
 
     Route::get('/{track}/replies', 'ReplyTracksController@index')->name('replies.index');
     Route::post('/{track}/replies', 'ReplyTracksController@store')->middleware('auth:api');
     
     Route::post('/{track}/favorite', 'FavoriteTrackController@store')->middleware('auth:api');
     Route::delete('/{track}/unfavorite', 'FavoriteTrackController@destroy')->middleware('auth:api');
+
+    Route::post('/{track}/share', 'ShareTracksController@store');
 });
 
 Route::prefix('/replies')->group(function () {
     Route::get('/{reply}', 'ReplyRepliesController@show')->name('replies.show');
-    Route::post('/{reply}/replies', 'ReplyRepliesController@store');
+    Route::post('/{reply}/replies', 'ReplyRepliesController@store')->middleware('auth:api');
 });
 
 Route::prefix('/playlists')->group(function () {
