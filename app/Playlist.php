@@ -30,6 +30,16 @@ class Playlist extends Model
         return $this->belongsToMany(Track::class);
     }
 
+    public function getFavoritedCountAttribute()
+    {
+        return $this->favorites()->count();
+    }
+
+    public function getTracksCountAttribute()
+    {
+        return $this->tracks()->count();
+    }
+
     public function addTrack(Track $track)
     {
         $this->tracks()->attach($track->id, [ 'user_id' => auth()->id() ]);

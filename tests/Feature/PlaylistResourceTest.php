@@ -37,6 +37,45 @@ class PlaylistResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_contain_the_favorited_and_tracks_count_in_his_attributes()
+    {
+        $playlist = create(Playlist::class);
+
+        $tracks = create(Track::class, [ 'published' => true ], 2);
+
+        $user = create(User::class);
+
+        $values = $tracks->map(function ($track) use ( $playlist ) {
+            return [
+                'user_id'     => $playlist->user->id,
+                'track_id'    => $track->id,
+                'playlist_id' => $playlist->id,
+            ];
+        });
+
+        Db::table('playlist_track')->insert($values->toArray());
+
+        Db::table('favorites')->insert([
+            'user_id' => $user->id,
+            'type'    => 'playlist',
+            'favorited_id'   => $playlist->id,
+            'favorited_type' => Playlist::class,
+        ]);
+
+        $this->fetchPlaylist($playlist)
+            ->assertJson([
+                'data' => [
+                    'type' => 'playlists',
+                    'id'   => (string) $playlist->id,
+                    'attributes' => [
+                        'favorited_count' => 1,
+                        'tracks_count'    => 2,
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
     public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
     {
         $playlist = create(Playlist::class);
