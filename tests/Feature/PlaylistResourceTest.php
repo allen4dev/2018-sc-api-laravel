@@ -64,8 +64,6 @@ class PlaylistResourceTest extends TestCase
     /** @test */
     public function it_should_also_contain_the_playlist_owner_if_the_request_sends_a_include_query_parameter_with_value_user()
     {
-        $this->withoutExceptionHandling();
-
         $user  = create(User::class);
         $playlist = create(Playlist::class, [ 'user_id' => $user->id ]);
 
@@ -106,6 +104,34 @@ class PlaylistResourceTest extends TestCase
                         'id'   => (string) $track->id,
                         'attributes' => [
                             'title' => $track->title,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_users_who_favorited_the_playlist_if_the_request_sends_a_include_query_parameter_with_value_favorites()
+    {
+        $user  = create(User::class);
+        $playlist = create(Playlist::class);
+
+        Db::table('favorites')->insert([
+            'user_id' => $user->id,
+            'type'    => 'playlist',
+            'favorited_id'   => $playlist->id,
+            'favorited_type' => Playlist::class,
+        ]);
+
+        $this->json('GET', $playlist->path() . '?include=favorites')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
                         ]
                     ],
                 ]  

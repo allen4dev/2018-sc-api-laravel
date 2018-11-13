@@ -8,6 +8,7 @@ use App\Http\Transformers\IncludeTransformer;
 
 use Illuminate\Support\Collection;
 
+use App\Favorite;
 use App\Track;
 use App\User;
 
@@ -54,6 +55,10 @@ class PlaylistResource extends JsonResource
 
             if ($include instanceof Track) {
                 return new TrackResource($include);
+            }
+
+            if ($include instanceof Favorite) {
+                return new UserResource($include->user);
             }
         });
     }
