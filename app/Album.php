@@ -37,6 +37,16 @@ class Album extends Model
         return $this->hasMany(Track::class);
     }
 
+    public function getFavoritedCountAttribute()
+    {
+        return $this->favorites()->count();
+    }
+
+    public function getTracksCountAttribute()
+    {
+        return $this->tracks()->count();
+    }
+
     public function scopePublished($query)
     {
         return $query->where('published', true);

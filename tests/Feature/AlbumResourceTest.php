@@ -35,6 +35,35 @@ class AlbumResourceTest extends TestCase
                 ]
             ]);
     }
+    
+    /** @test */
+    public function it_should_contain_the_favorited_and_tracks_count_in_his_attributes()
+    {
+        $album = create(Album::class, [ 'published' => true ]);
+
+        $tracks = create(Track::class, [ 'album_id' => $album->id, 'published' => true ], 2);
+
+        $user = create(User::class);
+
+        Db::table('favorites')->insert([
+            'user_id' => $user->id,
+            'type'    => 'album',
+            'favorited_id'   => $album->id,
+            'favorited_type' => Album::class,
+        ]);
+
+        $this->fetchAlbum($album)
+            ->assertJson([
+                'data' => [
+                    'type' => 'albums',
+                    'id'   => (string) $album->id,
+                    'attributes' => [
+                        'favorited_count' => 1,
+                        'tracks_count'    => 2,
+                    ]
+                ]
+            ]);
+    }
 
     /** @test */
     public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Transformers\IncludeTransformer;
+
 use App\Notifications\ResourceReplied;
 
 use App\Http\Resources\ReplyResource;
@@ -15,6 +17,8 @@ class ReplyRepliesController extends Controller
 
     public function show(Reply $reply)
     {
+        IncludeTransformer::loadRelationships($reply, request('include'));
+
         return new ReplyResource($reply);
     }
 

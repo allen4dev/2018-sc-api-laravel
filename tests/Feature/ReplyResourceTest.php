@@ -6,8 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\Track;
 use App\Reply;
+use App\Track;
+use App\User;
 
 class ReplyResourceTest extends TestCase
 {
@@ -33,6 +34,27 @@ class ReplyResourceTest extends TestCase
                     'time_since' => Reply::first()->created_at->diffForHumans(),
                 ]
             ]]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_reply_owner_if_the_request_sends_a_include_query_parameter_with_value_user()
+    {
+        $user  = create(User::class);
+        $reply = create(Reply::class, [ 'user_id' => $user->id ]);
+
+        $this->json('GET', $reply->path() . '?include=user')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
     }
 
     /** @test */
