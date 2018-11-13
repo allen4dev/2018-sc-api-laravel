@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Playlist;
 use App\Track;
 use App\User;
@@ -62,6 +64,8 @@ class PlaylistResourceTest extends TestCase
     /** @test */
     public function it_should_also_contain_the_playlist_owner_if_the_request_sends_a_include_query_parameter_with_value_user()
     {
+        $this->withoutExceptionHandling();
+
         $user  = create(User::class);
         $playlist = create(Playlist::class, [ 'user_id' => $user->id ]);
 
@@ -74,6 +78,34 @@ class PlaylistResourceTest extends TestCase
                         'attributes' => [
                             'username' => $user->username,
                             'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_playlist_tracks_if_the_request_sends_a_include_query_parameter_with_value_tracks()
+    {
+        $user  = create(User::class);
+        $playlist = create(Playlist::class, [ 'user_id' => $user->id ]);
+
+        $track = create(Track::class, [ 'published' => true ]);
+
+        Db::table('playlist_track')->insert([
+            'user_id' => $user->id,
+            'playlist_id' => $playlist->id,
+            'track_id' => $track->id,
+        ]);
+
+        $this->json('GET', $playlist->path() . '?include=tracks')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'tracks',
+                        'id'   => (string) $track->id,
+                        'attributes' => [
+                            'title' => $track->title,
                         ]
                     ],
                 ]  
