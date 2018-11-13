@@ -4,6 +4,12 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use Illuminate\Support\Collection;
+
+use App\Http\Transformers\IncludeTransformer;
+
+use App\Favorite;
+
 class AlbumResource extends JsonResource
 {
     /**
@@ -26,5 +32,25 @@ class AlbumResource extends JsonResource
             ],
             'relationships' => new AlbumRelationshipsResource($this),
         ];
+    }
+
+    public function with($request)
+    {
+        if (! $request->include) return [];
+
+        $includes = IncludeTransformer::includeData($this->resource, $request->include);
+        
+        return [
+            'included' => $this->withIncluded($includes->unique()),
+        ];
+    }
+
+    public function withIncluded(Collection $included)
+    {
+        return $included->map(function ($include) {
+            if ($include instanceof Favorite) {
+                return new UserResource($include->user);
+            }
+        });
     }
 }

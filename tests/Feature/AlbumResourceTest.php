@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Album;
 use App\User;
 
@@ -60,6 +62,34 @@ class AlbumResourceTest extends TestCase
                     ]
                 ]
             ]]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_users_who_favorited_the_album_if_the_request_sends_a_include_query_parameter_with_value_favorites()
+    {
+        $user  = create(User::class);
+        $album = create(Album::class, [ 'published' => true ]);
+
+        Db::table('favorites')->insert([
+            'user_id' => $user->id,
+            'type'    => 'album',
+            'favorited_id'   => $album->id,
+            'favorited_type' => Album::class,
+        ]);
+
+        $this->json('GET', $album->path() . '?include=favorites')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
     }
 
     /** @test */

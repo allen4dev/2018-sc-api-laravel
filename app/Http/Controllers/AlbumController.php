@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Transformers\IncludeTransformer;
+
 use App\Http\Resources\AlbumResource;
 
 use App\Album;
@@ -12,6 +14,8 @@ class AlbumController extends Controller
 {
     public function show(Album $album)
     {
+        IncludeTransformer::loadRelationships($album, request('include'));
+
         $resource = new AlbumResource($album);
 
         if ($album->published) return $resource;
