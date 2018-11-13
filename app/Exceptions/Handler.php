@@ -5,6 +5,10 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use Illuminate\Auth\AuthenticationException;
+
+use App\Http\Responses;
+
 class Handler extends ExceptionHandler
 {
     /**
@@ -46,6 +50,28 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->expectsJson()) {
+            // return response()->json(['error' => get_class($exception)]);
+            if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                return Responses::modelNotFound($exception);
+            }
+
+            if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                return Responses::unauthorized();
+            }
+
+            if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                return Responses::notFound();
+            }
+        }
+
         return parent::render($request, $exception);
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        return $request->expectsJson()
+            ? Responses::unauthenticated()
+            : redirect()->guest(route('login'));
     }
 }

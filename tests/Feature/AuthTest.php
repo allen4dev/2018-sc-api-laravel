@@ -13,6 +13,8 @@ class AuthTest extends TestCase
     /** @test */
     public function a_guest_can_register_to_the_app()
     {
+        $this->withoutExceptionHandling();
+
         $credentials = [
             "email" => "allen@example.test",
             "password" => "secret",
