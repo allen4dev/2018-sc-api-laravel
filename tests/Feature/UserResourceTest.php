@@ -20,7 +20,8 @@ class UserResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
     {
-        $user = create(User::class);
+        $this->withoutExceptionHandling();
+        $user = create(User::class, [ 'fullname' => 'Some name' ]);
 
         $this->json('GET', $user->path())
             ->assertJson([
@@ -28,8 +29,12 @@ class UserResourceTest extends TestCase
                     'type' => 'users',
                     'id'   => (string) $user->id,
                     'attributes' => [
-                        'username' => $user->username,
-                        'email'    => $user->email,
+                        'username'   => $user->username,
+                        'email'      => $user->email,
+                        'fullname'   => $user->fullname,
+                        'created_at' => (string) $user->created_at,
+                        'updated_at' => (string) $user->updated_at,
+                        'time_since' => $user->created_at->diffForHumans(),
                     ]
                 ]
             ]);
