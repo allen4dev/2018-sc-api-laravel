@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Db;
 
 use App\Album;
+use App\Track;
 use App\User;
 
 class AlbumResourceTest extends TestCase
@@ -107,6 +108,28 @@ class AlbumResourceTest extends TestCase
                         'attributes' => [
                             'username' => $user->username,
                             'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_album_tracks_if_the_request_sends_a_include_query_parameter_with_value_tracks()
+    {
+        $user  = create(User::class);
+        $album = create(Album::class, [ 'published' => true ]);
+
+        $track = create(Track::class, [ 'album_id' => $album->id ]);
+
+        $this->json('GET', $album->path() . '?include=tracks')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'tracks',
+                        'id'   => (string) $track->id,
+                        'attributes' => [
+                            'title' => $track->title,
                         ]
                     ],
                 ]  
