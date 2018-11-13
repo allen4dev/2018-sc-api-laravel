@@ -38,6 +38,35 @@ class TrackResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_contain_the_favorited_and_replies_count_in_his_attributes()
+    {
+        $track = create(Track::class, [ 'published' => true ]);
+
+        $replies = create(Reply::class, [ 'replyable_id' => $track->id ], 2);
+        
+        $user = $replies->first()->user;
+
+        Db::table('favorites')->insert([
+            'user_id' => $user->id,
+            'type'    => 'track',
+            'favorited_id'   => $track->id,
+            'favorited_type' => Track::class,
+        ]);
+
+        $this->fetchTrack($track)
+            ->assertJson([
+                'data' => [
+                    'type' => 'tracks',
+                    'id'   => (string) $track->id,
+                    'attributes' => [
+                        'favorited_count' => 1,
+                        'replies_count'   => 2,
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
     public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
     {
         $track = create(Track::class, [ 'published' => true ]);

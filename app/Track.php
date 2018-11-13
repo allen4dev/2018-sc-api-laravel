@@ -55,6 +55,15 @@ class Track extends Model
         ]);
     }
 
+    public function getFavoritedCountAttribute() {
+        return $this->favorites()->count();
+    }
+    
+    public function getRepliesCountAttribute() {
+        return $this->replies()->count();
+    }
+    
+
     public function scopePublished($query)
     {
         return $query->where('published', true);

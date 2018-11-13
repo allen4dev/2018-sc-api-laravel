@@ -40,7 +40,7 @@ class UserResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_should_contain_the_tracks_albums_playlists_followers_and_followings_count_in_her_attributes()
+    public function it_should_contain_the_tracks_albums_playlists_followers_and_followings_count_in_his_attributes()
     {
         $user = create(User::class);
 

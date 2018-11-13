@@ -30,6 +30,8 @@ class TrackResource extends JsonResource
                 'created_at' => (string) $this->created_at,
                 'updated_at' => (string) $this->updated_at,
                 'time_since' => $this->created_at->diffForHumans(),
+                'favorited_count' => $this->favorited_count,
+                'replies_count'   => $this->replies_count,
             ],
             'links' => [
                 'self' => route('tracks.show', [ 'id' => $this->id ]),
