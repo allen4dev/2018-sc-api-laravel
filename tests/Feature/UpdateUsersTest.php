@@ -13,6 +13,13 @@ class UpdateUsersTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_update_profiles()
+    {
+        $this->json('PATCH', '/api/me', [])
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_user_can_update_his_profile()
     {
         $oldFields = [ 'username' => 'Archer' ];

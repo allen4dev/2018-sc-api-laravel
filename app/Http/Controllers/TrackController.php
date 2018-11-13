@@ -36,6 +36,15 @@ class TrackController extends Controller
         return $resource;
     }
 
+    public function update(Track $track)
+    {
+        $validated = request()->validate([ 'title' => 'string|min:2' ]);
+
+        $track->update($validated);
+
+        return new TrackResource($track);
+    }
+
     public function destroy(Track $track)
     {
         $this->authorize('delete', $track);

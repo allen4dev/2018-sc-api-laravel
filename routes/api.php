@@ -20,7 +20,7 @@ Route::prefix('/auth')->group(function () {
 
 Route::prefix('/me')->group(function () {
     Route::get('/', 'ProfileController@show')->middleware('auth:api');
-    Route::patch('/', 'ProfileController@update');
+    Route::patch('/', 'ProfileController@update')->middleware('auth:api');
 
     Route::get('/tracks', 'ProfileTracksController@index')->middleware('auth:api')->name('me.tracks');
     Route::get('/albums', 'ProfileAlbumsController@index')->middleware('auth:api')->name('me.albums');
@@ -50,6 +50,7 @@ Route::prefix('/users')->group(function () {
 Route::prefix('/tracks')->group(function () {
     Route::post('/', 'TrackController@store')->middleware('auth:api');
     Route::get('/{track}', 'TrackController@show')->name('tracks.show');
+    Route::patch('/{track}', 'TrackController@update')->name('tracks.show');
     Route::delete('/{track}', 'TrackController@destroy')->middleware('auth:api');
     
     Route::patch('/{track}/publish', 'PublishTrackController@update')->middleware('auth:api');
