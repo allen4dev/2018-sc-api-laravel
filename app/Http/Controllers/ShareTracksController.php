@@ -14,6 +14,8 @@ class ShareTracksController extends Controller
 {
     public function store(Track $track)
     {
+        $track->share();
+
         $track->user->notify(new ResourceShared($track));
 
         return new TrackResource($track);

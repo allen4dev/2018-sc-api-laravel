@@ -39,4 +39,15 @@ class TrackTest extends TestCase
             $track->replies
         );
     }
+
+    /** @test */
+    public function it_can_be_shared_by_many_users()
+    {
+        $track = create(Track::class);
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $track->shared
+        );
+    }
 }

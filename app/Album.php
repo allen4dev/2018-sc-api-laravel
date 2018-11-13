@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\Favoritable;
+use App\Traits\Shareable;
 
 class Album extends Model
 {
     use Favoritable;
+    use Shareable;
 
     protected static function boot()
     {

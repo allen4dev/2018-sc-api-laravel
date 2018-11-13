@@ -14,6 +14,8 @@ class SharePlaylistsController extends Controller
 {
     public function store(Playlist $playlist)
     {
+    $playlist->share();
+
         $playlist->user->notify(new ResourceShared($playlist));
 
         return new PlaylistResource($playlist);

@@ -5,12 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\Favoritable;
+use App\Traits\Shareable;
 
 use App\Track;
 
 class Playlist extends Model
 {
     use Favoritable;
+    use Shareable;
 
     protected $fillable = [ 'title' ];
     protected $casts = [ 'user_id' => 'int' ];

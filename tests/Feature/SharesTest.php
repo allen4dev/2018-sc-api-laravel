@@ -27,11 +27,18 @@ class SharesTest extends TestCase
                 'type' => 'tracks',
                 'id'   => (string) $track->id,
             ]]);
+
+        $this->assertDatabaseHas('shareds', [
+            'user_id' => auth()->id(),
+            'shared_id'   => $track->id,
+            'shared_type' => Track::class,
+        ]);
     }
 
     /** @test */
     public function a_user_can_share_a_published_album()
     {
+        $this->withoutExceptionHandling();
         $this->signin();
 
         $album = create(Album::class, [ 'published' => true ]);
@@ -42,12 +49,17 @@ class SharesTest extends TestCase
                 'type' => 'albums',
                 'id'   => (string) $album->id,
             ]]);
+        
+            $this->assertDatabaseHas('shareds', [
+                'user_id' => auth()->id(),
+                'shared_id'   => $album->id,
+                'shared_type' => Album::class,
+            ]);
     }
 
     /** @test */
     public function a_user_can_share_a_playlist()
     {
-        $this->withoutExceptionHandling();
         $this->signin();
 
         $playlist = create(Playlist::class);
@@ -58,5 +70,11 @@ class SharesTest extends TestCase
                 'type' => 'playlists',
                 'id'   => (string) $playlist->id,
             ]]);
+
+            $this->assertDatabaseHas('shareds', [
+                'user_id' => auth()->id(),
+                'shared_id'   => $playlist->id,
+                'shared_type' => Playlist::class,
+            ]);
     }
 }

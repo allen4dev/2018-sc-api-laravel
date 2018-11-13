@@ -14,6 +14,8 @@ class ShareAlbumsController extends Controller
 {
     public function store(Album $album)
     {
+        $album->share();
+
         $album->user->notify(new ResourceShared($album));
 
         return new AlbumResource($album);
