@@ -93,6 +93,27 @@ class AlbumResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_also_contain_the_album_owner_if_the_request_sends_a_include_query_parameter_with_value_user()
+    {
+        $user  = create(User::class);
+        $album = create(Album::class, [ 'user_id' => $user->id, 'published' => true ]);
+
+        $this->json('GET', $album->path() . '?include=user')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
     public function a_collection_should_contain_a_list_of_album_resources_under_a_data_object()
     {
         $user = create(User::class);
