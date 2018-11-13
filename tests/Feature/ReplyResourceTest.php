@@ -28,6 +28,9 @@ class ReplyResourceTest extends TestCase
                 'id'   => '1',
                 'attributes' => [
                     'body' => $details['body'],
+                    'created_at' => (string) Reply::first()->created_at,
+                    'updated_at' => (string) Reply::first()->updated_at,
+                    'time_since' => Reply::first()->created_at->diffForHumans(),
                 ]
             ]]);
     }

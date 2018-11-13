@@ -19,6 +19,9 @@ class ReplyResource extends JsonResource
             'id'   => (string) $this->id,
             'attributes' => [
                 'body' => $this->body,
+                'created_at' => (string) $this->created_at,
+                'updated_at' => (string) $this->updated_at,
+                'time_since' => $this->created_at->diffForHumans(),
             ],
             'links' => [
                 'self' => route('replies.show', [ 'id' => $this->id ]),

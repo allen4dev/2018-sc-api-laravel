@@ -27,8 +27,11 @@ class TrackResourceTest extends TestCase
                     'type' => 'tracks',
                     'id'   => (string) $track->id,
                     'attributes' => [
-                        'title' => $track->title,
-                        'published' => $track->published,
+                        'title'      => $track->title,
+                        'published'  => $track->published,
+                        'created_at' => (string) $track->created_at,
+                        'updated_at' => (string) $track->updated_at,
+                        'time_since' => $track->created_at->diffForHumans(),
                     ]
                 ]
             ]);

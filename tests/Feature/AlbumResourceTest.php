@@ -28,8 +28,10 @@ class AlbumResourceTest extends TestCase
                     'id'   => (string) $album->id,
                     'attributes' => [
                         'title' => $album->title,
-                        'published' => $album->published,
-                    ]
+                        'created_at' => (string) $album->created_at,
+                        'updated_at' => (string) $album->updated_at,
+                        'time_since' => $album->created_at->diffForHumans(),
+                    ],
                 ]
             ]);
     }

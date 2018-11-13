@@ -27,7 +27,10 @@ class PlaylistResourceTest extends TestCase
                     'type' => 'playlists',
                     'id'   => (string) $playlist->id,
                     'attributes' => [
-                        'title' => $playlist->title
+                        'title' => $playlist->title,
+                        'created_at' => (string) $playlist->created_at,
+                        'updated_at' => (string) $playlist->updated_at,
+                        'time_since' => $playlist->created_at->diffForHumans(),
                     ]
                 ]
             ]);
