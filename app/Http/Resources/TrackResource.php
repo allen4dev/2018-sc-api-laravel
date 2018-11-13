@@ -57,5 +57,4 @@ class TrackResource extends JsonResource
             }
         });
     }
-
 }

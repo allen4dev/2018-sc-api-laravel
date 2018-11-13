@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Playlist;
+use App\Track;
 use App\User;
 
 class PlaylistResourceTest extends TestCase
@@ -59,10 +60,29 @@ class PlaylistResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_also_contain_the_playlist_owner_if_the_request_sends_a_include_query_parameter_with_value_user()
+    {
+        $user  = create(User::class);
+        $playlist = create(Playlist::class, [ 'user_id' => $user->id ]);
+
+        $this->json('GET', $playlist->path() . '?include=user')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
     public function a_collection_should_contain_a_list_of_playlist_resources_under_a_data_object()
     {
-        $this->withoutExceptionHandling();
-
         $user = create(User::class);
 
         create(Playlist::class, [ 'user_id' => $user->id ], 2);

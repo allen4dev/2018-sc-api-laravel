@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Transformers\IncludeTransformer;
+
 use App\Http\Resources\PlaylistResource;
 
 use App\Playlist;
@@ -12,6 +14,8 @@ class PlaylistController extends Controller
 {
     public function show(Playlist $playlist)
     {
+        IncludeTransformer::loadRelationships($playlist, request('include'));
+
         return new PlaylistResource($playlist);
     }
 
