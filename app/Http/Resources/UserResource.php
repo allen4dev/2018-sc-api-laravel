@@ -33,6 +33,11 @@ class UserResource extends JsonResource
                 'created_at' => (string) $this->created_at,
                 'updated_at' => (string) $this->updated_at,
                 'time_since' => $this->created_at->diffForHumans(),
+                'tracks_count'     => $this->tracks_count,
+                'playlists_count'  => $this->playlists_count,
+                'albums_count'     => $this->albums_count,
+                'followers_count'  => $this->followers_count,
+                'followings_count' => $this->followings_count,
             ]
         ];
     }

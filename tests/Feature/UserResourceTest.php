@@ -20,7 +20,6 @@ class UserResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
     {
-        $this->withoutExceptionHandling();
         $user = create(User::class, [ 'fullname' => 'Some name' ]);
 
         $this->json('GET', $user->path())
@@ -35,6 +34,46 @@ class UserResourceTest extends TestCase
                         'created_at' => (string) $user->created_at,
                         'updated_at' => (string) $user->updated_at,
                         'time_since' => $user->created_at->diffForHumans(),
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function it_should_contain_the_tracks_albums_playlists_followers_and_followings_count_in_her_attributes()
+    {
+        $user = create(User::class);
+
+        $follower = create(User::class);
+
+        $tracks = create(Track::class, [ 'user_id' => $user->id, 'published' => true ], 2);
+        $album  = create(Album::class, [ 'user_id' => $user->id, 'published' => true ], 2);
+        $playlist  = create(Playlist::class, [ 'user_id' => $user->id ]);
+
+        $followersData = [
+            [
+                'follower_id'  => $follower->id,
+                'following_id' => $user->id,
+            ],
+            [
+                'follower_id'  => $user->id,
+                'following_id' => $follower->id,
+            ],
+        ];
+
+        Db::table('followers')->insert($followersData);
+
+        $this->json('GET', $user->path())
+            ->assertJson([
+                'data' => [
+                    'type' => 'users',
+                    'id'   => (string) $user->id,
+                    'attributes' => [
+                        'tracks_count'     => 2,
+                        'playlists_count'  => 1,
+                        'albums_count'     => 2,
+                        'followers_count'  => 1,
+                        'followings_count' => 1,
                     ]
                 ]
             ]);

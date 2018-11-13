@@ -49,6 +49,31 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function getTracksCountAttribute()
+    {
+        return $this->tracks()->count();
+    }
+
+    public function getPlaylistsCountAttribute()
+    {
+        return $this->playlists()->count();
+    }
+
+    public function getAlbumsCountAttribute()
+    {
+        return $this->albums()->count();
+    }
+
+    public function getFollowersCountAttribute()
+    {
+        return $this->followers()->count();
+    }
+
+    public function getFollowingsCountAttribute()
+    {
+        return $this->followings()->count();
+    }
+
     public function path()
     {
         return '/api/users/' . $this->id;
