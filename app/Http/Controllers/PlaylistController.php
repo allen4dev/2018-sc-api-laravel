@@ -30,6 +30,19 @@ class PlaylistController extends Controller
         return new PlaylistResource($playlist);;
     }
 
+    public function update(Playlist $playlist)
+    {
+        $this->authorize('update', $playlist);
+
+        $validated = request()->validate([
+            'title' => 'string|min:2',
+        ]);
+
+        $playlist->update($validated);
+
+        return new PlaylistResource($playlist);
+    }
+
     public function destroy(Playlist $playlist)
     {
         $this->authorize('delete', $playlist);

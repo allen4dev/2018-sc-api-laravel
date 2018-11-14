@@ -50,7 +50,7 @@ Route::prefix('/users')->group(function () {
 Route::prefix('/tracks')->group(function () {
     Route::post('/', 'TrackController@store')->middleware('auth:api');
     Route::get('/{track}', 'TrackController@show')->name('tracks.show');
-    Route::patch('/{track}', 'TrackController@update')->name('tracks.show');
+    Route::patch('/{track}', 'TrackController@update')->middleware('auth:api')->name('tracks.show');
     Route::delete('/{track}', 'TrackController@destroy')->middleware('auth:api');
     
     Route::patch('/{track}/publish', 'PublishTrackController@update')->middleware('auth:api');
@@ -72,6 +72,7 @@ Route::prefix('/replies')->group(function () {
 Route::prefix('/playlists')->group(function () {
     Route::post('/', 'PlaylistController@store')->middleware('auth:api');
     Route::get('/{playlist}', 'PlaylistController@show')->name('playlists.show');
+    Route::patch('/{playlist}', 'PlaylistController@update')->middleware('auth:api');
     Route::delete('/{playlist}', 'PlaylistController@destroy')->middleware('auth:api');
 
     Route::post('/{playlist}/favorite', 'FavoritePlaylistController@store')->middleware('auth:api');

@@ -42,7 +42,7 @@ class PlaylistPolicy
      */
     public function update(User $user, Playlist $playlist)
     {
-        //
+        return $user->id === $playlist->user_id;
     }
 
     /**

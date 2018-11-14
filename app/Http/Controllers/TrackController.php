@@ -38,6 +38,8 @@ class TrackController extends Controller
 
     public function update(Track $track)
     {
+        $this->authorize('update', $track);
+
         $validated = request()->validate([ 'title' => 'string|min:2' ]);
 
         $track->update($validated);
