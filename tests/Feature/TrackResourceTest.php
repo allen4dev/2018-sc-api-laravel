@@ -28,6 +28,7 @@ class TrackResourceTest extends TestCase
                     'id'   => (string) $track->id,
                     'attributes' => [
                         'title'      => $track->title,
+                        'photo'      => $track->photo,
                         'published'  => $track->published,
                         'created_at' => (string) $track->created_at,
                         'updated_at' => (string) $track->updated_at,
@@ -38,7 +39,7 @@ class TrackResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_should_contain_the_favorited_and_replies_count_in_his_attributes()
+    public function it_should_contain_the_favorited_replies_and_shared_count_in_his_attributes()
     {
         $track = create(Track::class, [ 'published' => true ]);
 
@@ -53,6 +54,13 @@ class TrackResourceTest extends TestCase
             'favorited_type' => Track::class,
         ]);
 
+        Db::table('shareds')->insert([
+            'user_id' => $user->id,
+            'type'    => 'track',
+            'shared_id'   => $track->id,
+            'shared_type' => Track::class,
+        ]);
+
         $this->fetchTrack($track)
             ->assertJson([
                 'data' => [
@@ -61,6 +69,7 @@ class TrackResourceTest extends TestCase
                     'attributes' => [
                         'favorited_count' => 1,
                         'replies_count'   => 2,
+                        'shared_count'   => 1,
                     ]
                 ]
             ]);
@@ -102,8 +111,6 @@ class TrackResourceTest extends TestCase
     /** @test */
     public function it_should_also_contain_the_author_if_the_request_sends_a_include_query_parameter_with_value_user()
     {
-        $this->withoutExceptionHandling();
-
         $user  = create(User::class);
         $track = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
 
@@ -138,6 +145,36 @@ class TrackResourceTest extends TestCase
         ]);
 
         $this->json('GET', $track->path() . '?include=favorites')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user2->id,
+                        'attributes' => [
+                            'username' => $user2->username,
+                            'email' => $user2->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_users_who_shared_the_track_if_the_request_sends_a_include_query_parameter_with_value_shared()
+    {
+        $user  = create(User::class);
+        $track = create(Track::class, [ 'user_id' => $user->id, 'published' => true ]);
+
+        $user2 = create(User::class);
+
+        Db::table('shareds')->insert([
+            'user_id' => $user2->id,
+            'type' => 'track',
+            'shared_id' => $track->id,
+            'shared_type' => Track::class,
+        ]);
+
+        $this->json('GET', $track->path() . '?include=shared')
             ->assertJson([
                 'included' => [
                     [

@@ -60,6 +60,10 @@ class Track extends Model
     public function getFavoritedCountAttribute() {
         return $this->favorites()->count();
     }
+
+    public function getSharedCountAttribute() {
+        return $this->shared()->count();
+    }
     
     public function getRepliesCountAttribute() {
         return $this->replies()->count();

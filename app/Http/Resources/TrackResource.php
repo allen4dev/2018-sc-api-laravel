@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use App\Http\Transformers\IncludeTransformer;
 
 use App\Favorite;
+use App\Shared;
 use App\User;
 
 class TrackResource extends JsonResource
@@ -26,12 +27,14 @@ class TrackResource extends JsonResource
             'id'   => (string) $this->id,
             'attributes' => [
                 'title' => $this->title,
+                'photo' => $this->photo,
                 'published' => $this->published,
                 'created_at' => (string) $this->created_at,
                 'updated_at' => (string) $this->updated_at,
                 'time_since' => $this->created_at->diffForHumans(),
                 'favorited_count' => $this->favorited_count,
                 'replies_count'   => $this->replies_count,
+                'shared_count'   => $this->shared_count,
             ],
             'links' => [
                 'self' => route('tracks.show', [ 'id' => $this->id ]),
@@ -57,7 +60,12 @@ class TrackResource extends JsonResource
             if ($include instanceof User) {
                 return new UserResource($include);
             }
+
             if ($include instanceof Favorite) {
+                return new UserResource($include->user);
+            }
+
+            if ($include instanceof Shared) {
                 return new UserResource($include->user);
             }
         });

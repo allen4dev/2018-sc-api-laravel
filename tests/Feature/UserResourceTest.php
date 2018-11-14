@@ -31,6 +31,8 @@ class UserResourceTest extends TestCase
                         'username'   => $user->username,
                         'email'      => $user->email,
                         'fullname'   => $user->fullname,
+                        'avatar'   => $user->avatar,
+                        'profile_image'   => $user->profile_image,
                         'created_at' => (string) $user->created_at,
                         'updated_at' => (string) $user->updated_at,
                         'time_since' => $user->created_at->diffForHumans(),
