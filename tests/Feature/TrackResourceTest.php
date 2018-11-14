@@ -39,9 +39,9 @@ class TrackResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_should_contain_the_favorited_replies_and_shared_count_in_his_attributes()
+    public function it_should_contain_the_favorited_replies_reproduced_and_shared_count_in_his_attributes()
     {
-        $track = create(Track::class, [ 'published' => true ]);
+        $track = create(Track::class, [ 'published' => true, 'reproduced_count' => 5 ]);
 
         $replies = create(Reply::class, [ 'replyable_id' => $track->id ], 2);
         
@@ -67,9 +67,10 @@ class TrackResourceTest extends TestCase
                     'type' => 'tracks',
                     'id'   => (string) $track->id,
                     'attributes' => [
-                        'favorited_count' => 1,
-                        'replies_count'   => 2,
-                        'shared_count'   => 1,
+                        'favorited_count'  => 1,
+                        'replies_count'    => 2,
+                        'reproduced_count' => 5,
+                        'shared_count'     => 1,
                     ]
                 ]
             ]);

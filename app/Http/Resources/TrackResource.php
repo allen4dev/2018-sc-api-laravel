@@ -34,6 +34,7 @@ class TrackResource extends JsonResource
                 'time_since' => $this->created_at->diffForHumans(),
                 'favorited_count' => $this->favorited_count,
                 'replies_count'   => $this->replies_count,
+                'reproduced_count'   => $this->reproduced_count,
                 'shared_count'   => $this->shared_count,
             ],
             'links' => [
