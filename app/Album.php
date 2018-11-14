@@ -44,6 +44,11 @@ class Album extends Model
         return $this->favorites()->count();
     }
 
+    public function getSharedCountAttribute()
+    {
+        return $this->shared()->count();
+    }
+
     public function getTracksCountAttribute()
     {
         return $this->tracks()->count();

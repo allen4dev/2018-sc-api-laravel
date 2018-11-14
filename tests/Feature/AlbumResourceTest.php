@@ -28,6 +28,7 @@ class AlbumResourceTest extends TestCase
                     'id'   => (string) $album->id,
                     'attributes' => [
                         'title' => $album->title,
+                        'photo' => $album->photo,
                         'created_at' => (string) $album->created_at,
                         'updated_at' => (string) $album->updated_at,
                         'time_since' => $album->created_at->diffForHumans(),
@@ -37,7 +38,7 @@ class AlbumResourceTest extends TestCase
     }
     
     /** @test */
-    public function it_should_contain_the_favorited_and_tracks_count_in_his_attributes()
+    public function it_should_contain_the_favorited_shared_and_tracks_count_in_his_attributes()
     {
         $album = create(Album::class, [ 'published' => true ]);
 
@@ -52,6 +53,13 @@ class AlbumResourceTest extends TestCase
             'favorited_type' => Album::class,
         ]);
 
+        Db::table('shareds')->insert([
+            'user_id' => $user->id,
+            'type'    => 'album',
+            'shared_id'   => $album->id,
+            'shared_type' => Album::class,
+        ]);
+
         $this->fetchAlbum($album)
             ->assertJson([
                 'data' => [
@@ -60,6 +68,7 @@ class AlbumResourceTest extends TestCase
                     'attributes' => [
                         'favorited_count' => 1,
                         'tracks_count'    => 2,
+                        'shared_count'    => 1,
                     ]
                 ]
             ]);
@@ -110,6 +119,34 @@ class AlbumResourceTest extends TestCase
         ]);
 
         $this->json('GET', $album->path() . '?include=favorites')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_users_who_shared_the_album_if_the_request_sends_a_include_query_parameter_with_value_shared()
+    {
+        $user  = create(User::class);
+        $album = create(Album::class, [ 'published' => true ]);
+
+        Db::table('shareds')->insert([
+            'user_id' => $user->id,
+            'type'    => 'album',
+            'shared_id'   => $album->id,
+            'shared_type' => Album::class,
+        ]);
+
+        $this->json('GET', $album->path() . '?include=shared')
             ->assertJson([
                 'included' => [
                     [

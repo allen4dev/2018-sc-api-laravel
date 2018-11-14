@@ -11,6 +11,7 @@ use App\Http\Transformers\IncludeTransformer;
 use App\Favorite;
 use App\Track;
 use App\User;
+use App\Shared;
 
 class AlbumResource extends JsonResource
 {
@@ -27,12 +28,14 @@ class AlbumResource extends JsonResource
             'id' => (string) $this->id,
             'attributes' => [
                 'title' => $this->title,
+                'photo' => $this->photo,
                 'published' => $this->published,
                 'created_at' => (string) $this->created_at,
                 'updated_at' => (string) $this->updated_at,
                 'time_since' => $this->created_at->diffForHumans(),
                 'favorited_count' => $this->favorited_count,
                 'tracks_count'    => $this->tracks_count,
+                'shared_count'    => $this->shared_count,
             ],
             'links' => [
                 'self' => route('albums.show', ['id' => $this->id]),
@@ -65,6 +68,10 @@ class AlbumResource extends JsonResource
 
             if ($include instanceof User) {
                 return new UserResource($include);
+            }
+
+            if ($include instanceof Shared) {
+                return new UserResource($include->user);
             }
         });
     }

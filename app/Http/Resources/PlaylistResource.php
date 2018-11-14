@@ -9,6 +9,7 @@ use App\Http\Transformers\IncludeTransformer;
 use Illuminate\Support\Collection;
 
 use App\Favorite;
+use App\Shared;
 use App\Track;
 use App\User;
 
@@ -27,11 +28,13 @@ class PlaylistResource extends JsonResource
             'id'   => (string) $this->id,
             'attributes' => [
                 'title' => $this->title,
+                'photo' => $this->photo,
                 'created_at' => (string) $this->created_at,
                 'updated_at' => (string) $this->updated_at,
                 'time_since' => $this->created_at->diffForHumans(),
                 'favorited_count' => $this->favorited_count,
                 'tracks_count'    => $this->tracks_count,
+                'shared_count'    => $this->shared_count,
             ],
             'links' => [
                 'self' => route('playlists.show', [ 'id' => $this->id ]),
@@ -63,6 +66,10 @@ class PlaylistResource extends JsonResource
             }
 
             if ($include instanceof Favorite) {
+                return new UserResource($include->user);
+            }
+
+            if ($include instanceof Shared) {
                 return new UserResource($include->user);
             }
         });

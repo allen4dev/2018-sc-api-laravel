@@ -28,6 +28,7 @@ class PlaylistResourceTest extends TestCase
                     'id'   => (string) $playlist->id,
                     'attributes' => [
                         'title' => $playlist->title,
+                        'photo' => $playlist->photo,
                         'created_at' => (string) $playlist->created_at,
                         'updated_at' => (string) $playlist->updated_at,
                         'time_since' => $playlist->created_at->diffForHumans(),
@@ -37,7 +38,7 @@ class PlaylistResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_should_contain_the_favorited_and_tracks_count_in_his_attributes()
+    public function it_should_contain_the_favorited_shared__and_tracks_count_in_his_attributes()
     {
         $playlist = create(Playlist::class);
 
@@ -62,6 +63,13 @@ class PlaylistResourceTest extends TestCase
             'favorited_type' => Playlist::class,
         ]);
 
+        Db::table('shareds')->insert([
+            'user_id' => $user->id,
+            'type'    => 'playlist',
+            'shared_id'   => $playlist->id,
+            'shared_type' => Playlist::class,
+        ]);
+
         $this->fetchPlaylist($playlist)
             ->assertJson([
                 'data' => [
@@ -70,6 +78,7 @@ class PlaylistResourceTest extends TestCase
                     'attributes' => [
                         'favorited_count' => 1,
                         'tracks_count'    => 2,
+                        'shared_count'    => 1,
                     ]
                 ]
             ]);
@@ -166,6 +175,34 @@ class PlaylistResourceTest extends TestCase
         ]);
 
         $this->json('GET', $playlist->path() . '?include=favorites')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_users_who_shared_the_playlist_if_the_request_sends_a_include_query_parameter_with_value_shared()
+    {
+        $user  = create(User::class);
+        $playlist = create(Playlist::class);
+
+        Db::table('shareds')->insert([
+            'user_id' => $user->id,
+            'type'    => 'playlist',
+            'shared_id'   => $playlist->id,
+            'shared_type' => Playlist::class,
+        ]);
+
+        $this->json('GET', $playlist->path() . '?include=shared')
             ->assertJson([
                 'included' => [
                     [
