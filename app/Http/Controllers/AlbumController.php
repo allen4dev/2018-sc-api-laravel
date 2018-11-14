@@ -37,6 +37,17 @@ class AlbumController extends Controller
         return new AlbumResource($album);
     }
 
+    public function update(Album $album)
+    {
+        $this->authorize('update', $album);
+
+        $validated = request()->validate([ 'title' => 'string|min:2' ]);
+
+        $album->update($validated);
+
+        return new AlbumResource($album);
+    }
+
     public function destroy(Album $album)
     {
         $this->authorize('delete', $album);
