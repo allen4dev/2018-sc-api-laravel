@@ -19,13 +19,9 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request)
     {
-        $validated = $request->validated();
+        $updated = $request->updateProfile(auth()->user());
 
-        $user = auth()->user();
-
-        $user->update($validated);
-
-        return (new UserResource($user))
+        return (new UserResource($updated))
             ->response()
             ->setStatusCode(200);
     }

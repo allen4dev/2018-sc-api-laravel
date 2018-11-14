@@ -20,15 +20,34 @@ class UploadTest extends TestCase
 
         $this->signin();
 
-        $image = UploadedFile::fake()->image('avatar.jpg');
+        $avatar = UploadedFile::fake()->image('avatar.jpg');
 
-        $this->json('POST', '/api/me/avatar', compact('image'));
+        $this->json('PATCH', '/api/me', compact('avatar'));
         
-        Storage::disk('public')->assertExists('avatars/' . $image->hashName());
+        Storage::disk('public')->assertExists('avatars/' . $avatar->hashName());
 
         $this->assertDatabaseHas('users', [
             'id' => auth()->id(),
-            'avatar_url' => 'avatars/' . $image->hashName(),
+            'avatar_url' => 'avatars/' . $avatar->hashName(),
+        ]);
+    }
+
+    /** @test */
+    public function a_user_can_upload_a_profile_image()
+    {
+        Storage::fake();
+
+        $this->signin();
+
+        $profile = UploadedFile::fake()->image('profile_image.jpg');
+
+        $this->json('PATCH', '/api/me', compact('profile'));
+        
+        Storage::disk('public')->assertExists('profile/' . $profile->hashName());
+
+        $this->assertDatabaseHas('users', [
+            'id' => auth()->id(),
+            'profile_image' => 'profile/' . $profile->hashName(),
         ]);
     }
 }

@@ -25,7 +25,40 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'fullname' => 'string|min:4',
-            'username' => 'string|min:2'
+            'username' => 'string|min:2',
+            'avatar'   => 'image',
+            'profile'   => 'image',
         ];
+    }
+
+    public function updateProfile($user)
+    {
+        $fields = $this->only(['fullname', 'username']);
+
+        $newFields = $this->addImageFields($fields);
+        
+        $user->update($newFields);
+
+        return $user;
+    }
+
+    private function addImageFields($fields)
+    {
+        $newFields = $fields;
+
+        // ToDo: Refactor
+        if ($this->file('avatar')) {
+            $avatarPath = $this->file('avatar')->store('avatars', 'public');
+
+            $newFields['avatar_url'] = $avatarPath;
+        }
+
+        if ($this->file('profile')) {
+            $profilePath = $this->file('profile')->store('profile', 'public');
+
+            $newFields['profile_image'] = $profilePath;
+        }
+
+        return $newFields;
     }
 }
