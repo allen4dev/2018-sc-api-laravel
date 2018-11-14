@@ -8,6 +8,7 @@ $factory->define(App\Track::class, function (Faker $faker) {
             return create(App\User::class)->id;
         },
         'title' => $faker->sentence,
+        'photo' => $faker->imageUrl,
         'published' => false,
     ];
 });

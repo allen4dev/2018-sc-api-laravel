@@ -50,4 +50,28 @@ class UploadTest extends TestCase
             'profile_image' => 'profile/' . $profile->hashName(),
         ]);
     }
+
+    /** @test */
+    public function a_user_should_also_send_a_photo_for_the_track()
+    {
+        Storage::fake();
+
+        $this->signin();
+
+        $photo = UploadedFile::fake()->image('my_track.jpg');
+
+        $details = [
+            'title' => 'My awesome track',
+            'photo' => $photo,
+        ];
+
+        $this->json('POST', '/api/tracks', $details);
+        
+        Storage::disk('public')->assertExists('tracks/' . $photo->hashName());
+
+        $this->assertDatabaseHas('tracks', [
+            'user_id' => auth()->id(),
+            'photo'   => 'tracks/' . $photo->hashName(),
+        ]);
+    }
 }
