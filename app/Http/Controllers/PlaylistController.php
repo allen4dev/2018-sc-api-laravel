@@ -21,11 +21,12 @@ class PlaylistController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|min:2',
+            'photo' => 'required|image',
         ]);
 
-        $playlist = auth()->user()->createPlaylist($request->only('title'));
+        $playlist = auth()->user()->createPlaylist($validated);
 
         return new PlaylistResource($playlist);;
     }

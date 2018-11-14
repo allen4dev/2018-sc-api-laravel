@@ -99,4 +99,28 @@ class UploadTest extends TestCase
             'photo'   => 'albums/' . $photo->hashName(),
         ]);
     }
+
+    /** @test */
+    public function a_user_should_also_send_a_photo_for_the_playlist()
+    {
+        Storage::fake();
+
+        $this->signin();
+
+        $photo = UploadedFile::fake()->image('my_playlist.jpg');
+
+        $details = [
+            'title' => 'My awesome playlist',
+            'photo' => $photo,
+        ];
+
+        $this->json('POST', '/api/playlists', $details);
+        
+        Storage::disk('public')->assertExists('playlists/' . $photo->hashName());
+
+        $this->assertDatabaseHas('playlists', [
+            'user_id' => auth()->id(),
+            'photo'   => 'playlists/' . $photo->hashName(),
+        ]);
+    }
 }

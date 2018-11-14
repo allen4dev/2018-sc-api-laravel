@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Http\UploadedFile;
+
 use App\Playlist;
 
 class CreatePlaylistsTest extends TestCase
@@ -24,7 +26,12 @@ class CreatePlaylistsTest extends TestCase
     {
         $this->signin();
 
-        $details = raw(Playlist::class, [ 'user_id' => auth()->id() ]);
+        $photo = UploadedFile::fake()->image('photo.jpg');
+
+        $details = raw(Playlist::class, [
+            'user_id' => auth()->id(),
+            'photo' => $photo
+        ]);
 
         $this->json('POST', '/api/playlists', $details)
             ->assertStatus(201)

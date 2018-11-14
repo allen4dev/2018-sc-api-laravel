@@ -14,7 +14,7 @@ class Playlist extends Model
     use Favoritable;
     use Shareable;
 
-    protected $fillable = [ 'title' ];
+    protected $fillable = [ 'title', 'photo' ];
     protected $casts = [ 'user_id' => 'int' ];
 
     public function path()

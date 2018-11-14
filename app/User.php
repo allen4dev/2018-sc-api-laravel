@@ -126,7 +126,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function createPlaylist($details)
     {
-        return $this->playlists()->create($details);
+        $photoPath = $details['photo']->store('playlists', 'public');
+
+        return $this->playlists()->create([
+            'title' => $details['title'],
+            'photo' => $photoPath,
+        ]);
     }
 
     public function createAlbum($input)

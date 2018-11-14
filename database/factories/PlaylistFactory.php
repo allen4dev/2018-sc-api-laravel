@@ -8,5 +8,6 @@ $factory->define(App\Playlist::class, function (Faker $faker) {
             return create(App\User::class)->id;
         },
         'title' => $faker->sentence,
+        'photo' => $faker->imageUrl,
     ];
 });
