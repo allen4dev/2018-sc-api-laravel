@@ -64,6 +64,8 @@ Route::prefix('/tracks')->group(function () {
     Route::delete('/{track}/unfavorite', 'FavoriteTrackController@destroy')->middleware('auth:api');
 
     Route::post('/{track}/share', 'ShareTracksController@store')->middleware('auth:api');
+
+    Route::post('/{track}/increment', 'ReproducedTracksController@store');
 });
 
 Route::prefix('/replies')->group(function () {
