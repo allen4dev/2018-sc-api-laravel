@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Http\UploadedFile;
+
 use App\Album;
 use App\Track;
 
@@ -25,7 +27,9 @@ class CreateAlbumsTest extends TestCase
     {
         $this->signin();
 
-        $details = raw(Album::class);
+        $photo = UploadedFile::fake()->image('photo.jpg');
+
+        $details = raw(Album::class, compact('photo'));
 
         $tracks = create(Track::class, [ 'user_id' => auth()->id() ], 2);
 
@@ -47,7 +51,9 @@ class CreateAlbumsTest extends TestCase
     {
         $this->signin();
 
-        $details = raw(Album::class);
+        $photo = UploadedFile::fake()->image('photo.jpg');
+
+        $details = raw(Album::class, compact('photo'));
         $otherUserTrack = create(Track::class, [ 'published' => true ]);
 
         $response = $this->createAlbum($details, $otherUserTrack);
@@ -57,10 +63,12 @@ class CreateAlbumsTest extends TestCase
 
     /** @test */
     public function a_user_cannot_add_the_same_track_to_multiple_albums()
-    {
+    {        
         $this->signin();
+        
+        $photo = UploadedFile::fake()->image('photo.jpg');
 
-        $album = create(Album::class, [ 'user_id' => auth()->id() ]);
+        $album = create(Album::class, [ 'user_id' => auth()->id(), 'photo' => $photo ]);
 
         $track = create(Track::class, [
             'album_id' => $album->id,
@@ -68,7 +76,7 @@ class CreateAlbumsTest extends TestCase
             'published' => true,
         ]);
 
-        $details = raw(Album::class);
+        $details = raw(Album::class, compact('photo'));
 
         $response = $this->createAlbum($details, $track);
 
@@ -80,7 +88,9 @@ class CreateAlbumsTest extends TestCase
     {
         $this->signin();
 
-        $details = raw(Album::class);
+        $photo = UploadedFile::fake()->image('photo.jpg');
+
+        $details = raw(Album::class, compact('photo'));
 
         $published = create(Track::class, [ 'user_id' => auth()->id(), 'published' => true ]);
         $notPublished = create(Track::class, [ 'user_id' => auth()->id() ]);
@@ -101,11 +111,13 @@ class CreateAlbumsTest extends TestCase
     {
         $this->signin();
 
+        $photo = UploadedFile::fake()->image('photo.jpg');
+
         $album = raw(Album::class);
 
         $tracks = create(Track::class, [ 'user_id' => auth()->id(), 'published' => true ], 2);
 
-        $this->json('POST', '/api/albums', [ 'details' => $album, 'tracks' => $tracks->pluck('id') ]);
+        $this->json('POST', '/api/albums', [ 'details' => $album, 'tracks' => $tracks->pluck('id'), 'photo' => $photo ]);
 
         $tracks->map(function ($track) {
             $this->assertDatabaseHas('tracks', [
@@ -116,11 +128,12 @@ class CreateAlbumsTest extends TestCase
         });
     }
 
-    public function createAlbum($details, $tracks)
+    public function createAlbum($input, $tracks)
     {
         return $this->json('POST', '/api/albums', [
-            'details' => $details,
-            'tracks' => $tracks->pluck('id')
+            'details' => [ 'title' => $input['title'] ],
+            'tracks'  => $tracks->pluck('id'),
+            'photo' => $input['photo'],
         ]);
     }
 }

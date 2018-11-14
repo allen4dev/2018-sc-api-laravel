@@ -74,4 +74,29 @@ class UploadTest extends TestCase
             'photo'   => 'tracks/' . $photo->hashName(),
         ]);
     }
+
+    /** @test */
+    public function a_user_should_also_send_a_photo_for_the_album()
+    {
+        Storage::fake();
+
+        $this->signin();
+
+        $photo = UploadedFile::fake()->image('my_album.png');
+
+        $input = [
+            'details' => [ 'title' => 'My awesome album' ],
+            'photo' => $photo,
+            'tracks' => [ 1, 2, 4 ],
+        ];
+
+        $this->json('POST', '/api/albums', $input);
+        
+        Storage::disk('public')->assertExists('albums/' . $photo->hashName());
+
+        $this->assertDatabaseHas('albums', [
+            'user_id' => auth()->id(),
+            'photo'   => 'albums/' . $photo->hashName(),
+        ]);
+    }
 }

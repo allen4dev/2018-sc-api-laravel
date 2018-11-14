@@ -131,7 +131,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function createAlbum($input)
     {
+        $photoPath = $input['photo']->store('albums', 'public');
+
         $input['details']['user_id'] = auth()->id();
+        $input['details']['photo'] = $photoPath;
 
         $album = $this->albums()->create($input['details']);
 

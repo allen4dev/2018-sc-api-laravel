@@ -12,6 +12,9 @@ class Album extends Model
     use Favoritable;
     use Shareable;
 
+    protected $fillable = [ 'title', 'published', 'user_id', 'photo' ];
+    protected $casts = [ 'user_id' => 'int' ];
+
     protected static function boot()
     {
         static::deleting(function ($model) {
@@ -20,9 +23,6 @@ class Album extends Model
 
         parent::boot();
     }
-
-    protected $fillable = [ 'title', 'published', 'user_id' ];
-    protected $casts = [ 'user_id' => 'int' ];
 
     public function path()
     {

@@ -27,12 +27,13 @@ class AlbumController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'details.title' => 'required|string',
-            'tracks.*'  => 'required||integer',
+            'tracks.*' => 'required|integer',
+            'photo'    => 'required|image',
         ]);
 
-        $album = auth()->user()->createAlbum($request->only([ 'details', 'tracks' ]));
+        $album = auth()->user()->createAlbum($validated);
 
         return new AlbumResource($album);
     }
