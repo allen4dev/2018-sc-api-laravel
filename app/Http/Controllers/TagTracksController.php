@@ -12,6 +12,6 @@ class TagTracksController extends Controller
 {
     public function index(Tag $tag)
     {
-        return new TrackCollection($tag->tracks, route('tags.tracks', $tag));
+        return new TrackCollection($tag->tracks()->paginate(), route('tags.tracks', $tag));
     }
 }

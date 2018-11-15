@@ -17,4 +17,9 @@ class Tag extends Model
     {
         return $this->morphedByMany(Track::class, 'taggable');
     }
+
+    public function albums()
+    {
+        return $this->morphedByMany(Album::class, 'taggable');
+    }
 }

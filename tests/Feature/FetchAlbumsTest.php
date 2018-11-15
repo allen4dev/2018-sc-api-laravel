@@ -6,7 +6,10 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Album;
+use App\Tag;
 use App\User;
 
 class FetchAlbumsTest extends TestCase
@@ -71,5 +74,29 @@ class FetchAlbumsTest extends TestCase
 
         $this->json('GET', $unpublishedAlbum->path())
             ->assertStatus(403);        
+    }
+
+    /** @test */
+    public function guests_can_fetch_all_published_albums_related_to_a_tag()
+    {
+        $tag = create(Tag::class);
+
+        $album = create(Album::class, [ 'published' => true ]);
+        $notRelatedAlbum = create(Album::class, [ 'published' => true ]);
+
+        Db::table('taggables')->insert([
+            'tag_id' => $tag->id,
+            'taggable_id'   => $album->id,
+            'taggable_type' => Album::class,
+        ]);
+
+        $this->json('GET', $tag->path() . '/albums')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'albums',
+                    'id'   => (string) $album->id,
+                ],
+            ]]);
     }
 }

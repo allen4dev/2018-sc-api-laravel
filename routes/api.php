@@ -104,4 +104,5 @@ Route::prefix('/albums')->group(function () {
 
 Route::prefix('/tags')->group(function () {
     Route::get('/{tag}/tracks', 'TagTracksController@index')->name('tags.tracks');
+    Route::get('/{tag}/albums', 'TagAlbumsController@index')->name('tags.albums');
 });

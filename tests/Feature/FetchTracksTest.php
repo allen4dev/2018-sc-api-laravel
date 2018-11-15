@@ -77,12 +77,12 @@ class FetchTracksTest extends TestCase
     }
 
     /** @test */
-    public function guests_can_fetch_all_tracks_related_to_a_tag()
+    public function guests_can_fetch_all_published_tracks_related_to_a_tag()
     {
         $tag = create(Tag::class);
 
         $track = create(Track::class, [ 'published' => true ]);
-        $notRelatedTrack = create(Track::class);
+        $notRelatedTrack = create(Track::class, [ 'published' => true ]);
 
         Db::table('taggables')->insert([
             'tag_id' => $tag->id,
