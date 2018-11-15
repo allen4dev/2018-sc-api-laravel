@@ -101,3 +101,7 @@ Route::prefix('/albums')->group(function () {
 
     Route::post('/{album}/share', 'ShareAlbumsController@store')->middleware('auth:api');
 });
+
+Route::prefix('/tags')->group(function () {
+    Route::get('/{tag}/tracks', 'TagTracksController@index')->name('tags.tracks');
+});

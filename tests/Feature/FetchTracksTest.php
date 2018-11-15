@@ -6,6 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\Db;
+
+use App\Tag;
 use App\Track;
 use App\User;
 
@@ -69,6 +72,30 @@ class FetchTracksTest extends TestCase
                 [
                     'type' => 'tracks',
                     'id'   => '1',
+                ],
+            ]]);
+    }
+
+    /** @test */
+    public function guests_can_fetch_all_tracks_related_to_a_tag()
+    {
+        $tag = create(Tag::class);
+
+        $track = create(Track::class, [ 'published' => true ]);
+        $notRelatedTrack = create(Track::class);
+
+        Db::table('taggables')->insert([
+            'tag_id' => $tag->id,
+            'taggable_id'   => $track->id,
+            'taggable_type' => Track::class,
+        ]);
+
+        $this->json('GET', $tag->path() . '/tracks')
+            ->assertStatus(200)
+            ->assertJson(['data' => [
+                [
+                    'type' => 'tracks',
+                    'id'   => (string) $track->id,
                 ],
             ]]);
     }
