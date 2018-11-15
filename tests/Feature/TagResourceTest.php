@@ -72,4 +72,18 @@ class TagResourceTest extends TestCase
                 ]
             ]);
     }
+
+    /** @test */
+    public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
+    {
+        $tag = create(Tag::class);
+
+        $this->json('GET', $tag->path())
+            ->assertJson([ 'data' => [
+                'links' => [
+                    'self' => route('tags.show', $tag)
+                ]
+            ]]);
+    }
+
 }
