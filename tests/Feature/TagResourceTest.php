@@ -86,4 +86,62 @@ class TagResourceTest extends TestCase
             ]]);
     }
 
+    /** @test */
+    public function a_tag_identifier_should_contain_a_data_with_a_type_and_the_id_of_the_tag()
+    {
+        $tag = create(Tag::class);
+
+        $track = create(Track::class, [ 'published' => true ]);
+
+        Db::table('taggables')->insert([
+            'tag_id' => $tag->id,
+            'taggable_id' => $track->id,
+            'taggable_type' => Track::class,
+        ]);
+
+        $this->json('GET', $track->path())
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        'tags' => [
+                            [
+                                'data' => [
+                                    'type' => 'tags',
+                                    'id'   => (string) $tag->id,
+                                ],
+                            ]
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
+    /** @test */
+    public function a_tag_identifier_should_contain_a_links_object_containing_a_url_to_the_tag_path()
+    {
+        $tag = create(Tag::class);
+
+        $track = create(Track::class, [ 'published' => true ]);
+
+        Db::table('taggables')->insert([
+            'tag_id' => $tag->id,
+            'taggable_id' => $track->id,
+            'taggable_type' => Track::class,
+        ]);
+
+        $this->json('GET', $track->path())
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        'tags' => [
+                            [
+                                'links' => [
+                                    'self' => route('tags.show', $tag)
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+    }
 }
