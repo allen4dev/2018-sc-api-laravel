@@ -8,7 +8,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Illuminate\Http\UploadedFile;
 
+use Illuminate\Support\Facades\Db;
+
 use App\Album;
+use App\Tag;
 use App\Track;
 
 class CreateAlbumsTest extends TestCase
@@ -28,12 +31,22 @@ class CreateAlbumsTest extends TestCase
         $this->signin();
 
         $photo = UploadedFile::fake()->image('photo.jpg');
+        
+        $tag   = create(Tag::class);
+        
+        $tags[] = $tag->id;
 
-        $details = raw(Album::class, compact('photo'));
+        $values = [
+            'details' => [
+                'title' => 'My new Album',
+            ],
+            'photo' => $photo,
+            'tags'  => $tags,
+        ];
 
         $tracks = create(Track::class, [ 'user_id' => auth()->id() ], 2);
 
-        $this->createAlbum($details, $tracks)
+        $this->createAlbum($values, $tracks)
             ->assertStatus(201)
             ->assertJson(['data' => [
                 'type' => 'albums',
@@ -42,7 +55,13 @@ class CreateAlbumsTest extends TestCase
 
         $this->assertDatabaseHas('albums', [
             'id'    => 1,
-            'title' => $details['title'],
+            'title' => $values['details']['title'],
+        ]);
+
+        $this->assertDatabaseHas('taggables', [
+            'tag_id' => $tag->id,
+            'taggable_id'   => 1,
+            'taggable_type' => Album::class,
         ]);
     }
 
@@ -53,10 +72,21 @@ class CreateAlbumsTest extends TestCase
 
         $photo = UploadedFile::fake()->image('photo.jpg');
 
-        $details = raw(Album::class, compact('photo'));
+        $tag   = create(Tag::class);
+        
+        $tags[] = $tag->id;
+
+        $values = [
+            'details' => [
+                'title' => 'My new Album',
+            ],
+            'photo' => $photo,
+            'tags'  => $tags,
+        ];
+
         $otherUserTrack = create(Track::class, [ 'published' => true ]);
 
-        $response = $this->createAlbum($details, $otherUserTrack);
+        $response = $this->createAlbum($values, $otherUserTrack);
 
         $this->assertCount(0, $response->original->tracks);
     }
@@ -76,9 +106,19 @@ class CreateAlbumsTest extends TestCase
             'published' => true,
         ]);
 
-        $details = raw(Album::class, compact('photo'));
+        $tag   = create(Tag::class);
+        
+        $tags[] = $tag->id;
 
-        $response = $this->createAlbum($details, $track);
+        $values = [
+            'details' => [
+                'title' => 'My new Album',
+            ],
+            'photo' => $photo,
+            'tags'  => $tags,
+        ];
+
+        $response = $this->createAlbum($values, $track);
 
         $this->assertCount(0, $response->original->tracks);
     }
@@ -90,14 +130,24 @@ class CreateAlbumsTest extends TestCase
 
         $photo = UploadedFile::fake()->image('photo.jpg');
 
-        $details = raw(Album::class, compact('photo'));
+        $tag   = create(Tag::class);
+        
+        $tags[] = $tag->id;
+
+        $values = [
+            'details' => [
+                'title' => 'My new Album',
+            ],
+            'photo' => $photo,
+            'tags'  => $tags,
+        ];
 
         $published = create(Track::class, [ 'user_id' => auth()->id(), 'published' => true ]);
         $notPublished = create(Track::class, [ 'user_id' => auth()->id() ]);
 
         $tracks = collect([ $published, $notPublished ]);
 
-        $response = $this->createAlbum($details, $tracks)
+        $response = $this->createAlbum($values, $tracks)
             ->assertJson(['data' => [
                 'type' => 'albums',
                 'id'   => (string) $tracks->first()->id,
@@ -113,11 +163,21 @@ class CreateAlbumsTest extends TestCase
 
         $photo = UploadedFile::fake()->image('photo.jpg');
 
-        $album = raw(Album::class);
+        $tag   = create(Tag::class);
+        
+        $tags[] = $tag->id;
+
+        $values = [
+            'details' => [
+                'title' => 'My new Album',
+            ],
+            'photo' => $photo,
+            'tags'  => $tags,
+        ];
 
         $tracks = create(Track::class, [ 'user_id' => auth()->id(), 'published' => true ], 2);
 
-        $this->json('POST', '/api/albums', [ 'details' => $album, 'tracks' => $tracks->pluck('id'), 'photo' => $photo ]);
+        $this->createAlbum($values, $tracks);
 
         $tracks->map(function ($track) {
             $this->assertDatabaseHas('tracks', [
@@ -128,12 +188,13 @@ class CreateAlbumsTest extends TestCase
         });
     }
 
-    public function createAlbum($input, $tracks)
+    public function createAlbum($values, $tracks)
     {
         return $this->json('POST', '/api/albums', [
-            'details' => [ 'title' => $input['title'] ],
+            'details' => $values['details'],
             'tracks'  => $tracks->pluck('id'),
-            'photo' => $input['photo'],
+            'tags'  => $values['tags'],
+            'photo' => $values['photo'],
         ]);
     }
 }
