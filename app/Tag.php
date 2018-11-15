@@ -22,4 +22,9 @@ class Tag extends Model
     {
         return $this->morphedByMany(Album::class, 'taggable');
     }
+
+    public function playlists()
+    {
+        return $this->morphedByMany(Playlist::class, 'taggable');
+    }
 }

@@ -32,6 +32,11 @@ class Playlist extends Model
         return $this->belongsToMany(Track::class);
     }
 
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
+
     public function getFavoritedCountAttribute()
     {
         return $this->favorites()->count();
