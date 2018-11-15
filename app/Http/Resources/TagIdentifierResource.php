@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TrackRelationshipsResource extends JsonResource
+class TagIdentifierResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,8 +15,11 @@ class TrackRelationshipsResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'user' => new UserIdentifierResource($this->user),
-            'tags' => TagIdentifierResource::collection($this->tags),
+            'data' => [
+                'type' => 'tags',
+                'id'   => (string) $this->id,
+            ],
+            'links' => [ 'self' => route('tags.show', [ 'id' => $this->id ]) ],
         ];
     }
 }

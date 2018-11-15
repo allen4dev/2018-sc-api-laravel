@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Db;
 
 use App\Reply;
+use App\Tag;
 use App\Track;
 use App\User;
 
@@ -96,6 +97,14 @@ class TrackResourceTest extends TestCase
 
         $track = create(Track::class, [ 'user_id' => auth()->id() ]);
 
+        $tag = create(Tag::class);
+
+        Db::table('taggables')->insert([
+            'tag_id' => $tag->id,
+            'taggable_id'  => $track->id,
+            'taggable_type' => Track::class,
+        ]);
+
         $this->fetchTrack($track)
             ->assertJson(['data' => [
                 'relationships' => [
@@ -103,6 +112,14 @@ class TrackResourceTest extends TestCase
                         'data' => [
                             'type' => 'users',
                             'id' => (string) auth()->id()
+                        ]
+                    ],
+                    'tags' => [
+                        [
+                            'data' => [
+                                'type' => 'tags',
+                                'id'   => (string) $tag->id,
+                            ]
                         ]
                     ]
                 ]
