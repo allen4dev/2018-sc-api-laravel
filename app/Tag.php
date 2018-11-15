@@ -27,4 +27,20 @@ class Tag extends Model
     {
         return $this->morphedByMany(Playlist::class, 'taggable');
     }
+
+    public function getAlbumsCountAttribute()
+    {
+        return $this->albums()->count();
+    }
+
+    public function getPlaylistsCountAttribute()
+    {
+        return $this->playlists()->count();
+    }
+    
+    public function getTracksCountAttribute()
+    {
+        return $this->tracks()->count();
+    }
+
 }
