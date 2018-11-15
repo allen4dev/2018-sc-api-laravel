@@ -49,6 +49,11 @@ class Track extends Model
         return $this->belongsToMany(Playlist::class);
     }
 
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
+
     public function comment($details)
     {
         return $this->replies()->create([

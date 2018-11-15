@@ -17,6 +17,7 @@ class TrackController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|min:2',
             'photo' => 'required|image',
+            'tags.*' => 'required|int'
         ]);
 
         $track = auth()->user()->createTrack($validated);

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Illuminate\Http\UploadedFile;
 
+use App\Tag;
 use App\Track;
 
 class CreateTracksTest extends TestCase
@@ -26,11 +27,15 @@ class CreateTracksTest extends TestCase
     {
         $this->signin();
 
+        $tag = create(Tag::class, [ 'name' => 'jpop' ]);
+
         $photo = UploadedFile::fake()->image('my_track.jpg');
 
-        $track = raw(Track::class, compact('photo'));
+        $tags = [ $tag->id ];
 
-        $this->json('POST', '/api/tracks', $track)
+        $details = [ 'title' => 'My new Track', 'photo' => $photo, 'tags' => $tags ];
+
+        $this->json('POST', '/api/tracks', $details)
             ->assertStatus(201)
             ->assertJson([
                 'data' => [
@@ -40,8 +45,14 @@ class CreateTracksTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('tracks', [
-            'title' => $track['title'],
+            'title' => $details['title'],
             'user_id' => auth()->id(),
+        ]);
+
+        $this->assertDatabaseHas('taggables', [
+            'tag_id' => $tag->id,
+            'taggable_id'   => 1,
+            'taggable_type' => Track::class,
         ]);
     }
 }
