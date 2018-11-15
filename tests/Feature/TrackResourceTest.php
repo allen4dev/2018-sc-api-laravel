@@ -148,6 +148,32 @@ class TrackResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_also_contain_the_tags_if_the_request_sends_a_include_query_parameter_with_value_tags()
+    {
+        $tag   = create(Tag::class);
+        $track = create(Track::class, [ 'published' => true ]);
+
+        Db::table('taggables')->insert([
+            'tag_id' => $tag->id,
+            'taggable_id'   => $track->id,
+            'taggable_type' => Track::class,
+        ]);
+
+        $this->json('GET', $track->path() . '?include=tags')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'tags',
+                        'id'   => (string) $tag->id,
+                        'attributes' => [
+                            'name' => $tag->name,
+                        ]
+                    ],
+                ]  
+            ]);
+    }
+
+    /** @test */
     public function it_should_also_contain_the_users_who_favorited_the_track_if_the_request_sends_a_include_query_parameter_with_value_favorites()
     {
         $user  = create(User::class);

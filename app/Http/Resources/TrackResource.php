@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use App\Http\Transformers\IncludeTransformer;
 
 use App\Favorite;
+use App\Tag;
 use App\Shared;
 use App\User;
 
@@ -64,6 +65,10 @@ class TrackResource extends JsonResource
 
             if ($include instanceof Favorite) {
                 return new UserResource($include->user);
+            }
+
+            if ($include instanceof Tag) {
+                return new TagResource($include);
             }
 
             if ($include instanceof Shared) {
