@@ -6,8 +6,11 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\Track;
+use Illuminate\Support\Facades\Db;
+
 use App\Playlist;
+use App\Tag;
+use App\Track;
 
 class AddTracksToPlaylistTest extends TestCase
 {
@@ -39,6 +42,32 @@ class AddTracksToPlaylistTest extends TestCase
             'playlist_id' => $playlist->id,
             'track_id' => $track->id,
             'user_id'  => auth()->id(),
+        ]);
+    }
+
+    /** @test */
+    public function after_add_a_track_his_tags_should_also_being_added_as_a_playlist_tags()
+    {
+        $this->signin();
+
+        $playlist = create(Playlist::class, [ 'user_id' => auth()->id() ]);
+        
+        $tag = create(Tag::class);
+
+        $track = create(Track::class, [ 'published' => true ]);
+
+        Db::table('taggables')->insert([
+            'tag_id' => $tag->id,
+            'taggable_id'   => $track->id,
+            'taggable_type' => Track::class,
+        ]);
+
+        $this->json('POST', $playlist->path() . '/tracks/' . $track->id . '/add');
+
+        $this->assertDatabaseHas('taggables', [
+            'tag_id' => $tag->id,
+            'taggable_id'   => $playlist->id,
+            'taggable_type' => Playlist::class,
         ]);
     }
 }

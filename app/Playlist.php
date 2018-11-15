@@ -56,6 +56,8 @@ class Playlist extends Model
     {
         $this->tracks()->attach($track->id, [ 'user_id' => auth()->id() ]);
 
+        $this->tags()->attach($track->id);
+
         return $this;
     }
 }

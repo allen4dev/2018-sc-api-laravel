@@ -24,13 +24,15 @@ class CreatePlaylistsTest extends TestCase
     /** @test */
     public function a_user_can_create_playlists()
     {
+        $this->withoutExceptionHandling();
+
         $this->signin();
 
         $photo = UploadedFile::fake()->image('photo.jpg');
 
         $details = raw(Playlist::class, [
             'user_id' => auth()->id(),
-            'photo' => $photo
+            'photo' => $photo,
         ]);
 
         $this->json('POST', '/api/playlists', $details)

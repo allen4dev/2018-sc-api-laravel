@@ -22,6 +22,8 @@ class PlaylistTrackController extends Controller
     {
         $playlist->tracks()->detach($track->id);
 
+        $playlist->tags()->detach($track->id);
+
         return response()->json([], 204);
     }
 }
