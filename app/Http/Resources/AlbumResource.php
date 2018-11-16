@@ -9,9 +9,10 @@ use Illuminate\Support\Collection;
 use App\Http\Transformers\IncludeTransformer;
 
 use App\Favorite;
+use App\Shared;
+use App\Tag;
 use App\Track;
 use App\User;
-use App\Shared;
 
 class AlbumResource extends JsonResource
 {
@@ -62,16 +63,20 @@ class AlbumResource extends JsonResource
                 return new UserResource($include->user);
             }
 
+            if ($include instanceof Shared) {
+                return new UserResource($include->user);
+            }
+
+            if ($include instanceof Tag) {
+                return new TagResource($include);
+            }
+
             if ($include instanceof Track) {
                 return new TrackResource($include);
             }
 
             if ($include instanceof User) {
                 return new UserResource($include);
-            }
-
-            if ($include instanceof Shared) {
-                return new UserResource($include->user);
             }
         });
     }

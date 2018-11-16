@@ -16,6 +16,7 @@ class AlbumRelationshipsResource extends JsonResource
     {
         return [
             'user' => new UserIdentifierResource($this->user),
+            'tags' => TagIdentifierResource::collection($this->tags),
         ];
     }
 }
