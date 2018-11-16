@@ -9,6 +9,7 @@ $factory->define(App\Track::class, function (Faker $faker) {
         },
         'title' => $faker->sentence,
         'photo' => $faker->imageUrl,
+        'src' => 'http://example.test/tracks/audio/song.mp3',
         'published' => false,
     ];
 });

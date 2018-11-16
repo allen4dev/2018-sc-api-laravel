@@ -9,6 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
+use App\Tag;
+
 class UploadTest extends TestCase
 {
     use RefreshDatabase;
@@ -58,20 +60,58 @@ class UploadTest extends TestCase
 
         $this->signin();
 
+        $tag = create(Tag::class);
+        
         $photo = UploadedFile::fake()->image('my_track.jpg');
+        $src = UploadedFile::fake()->create('song.mp3');
+
+        $tags[] = $tag->id;
 
         $details = [
             'title' => 'My awesome track',
             'photo' => $photo,
+            'src'   => $src,
+            'tags'  => $tags,
         ];
 
         $this->json('POST', '/api/tracks', $details);
         
-        Storage::disk('public')->assertExists('tracks/' . $photo->hashName());
+        Storage::disk('public')->assertExists('tracks/images/' . $photo->hashName());
 
         $this->assertDatabaseHas('tracks', [
             'user_id' => auth()->id(),
-            'photo'   => 'tracks/' . $photo->hashName(),
+            'photo'   => 'tracks/images/' . $photo->hashName(),
+        ]);
+    }
+
+    /** @test */
+    public function a_user_should_send_an_audio_file_for_the_track()
+    {
+        Storage::fake();
+
+        $this->signin();
+
+        $tag = create(Tag::class);
+        
+        $photo = UploadedFile::fake()->image('my_track.jpg');
+        $src = UploadedFile::fake()->create('song.mp3');
+
+        $tags[] = $tag->id;
+
+        $details = [
+            'title' => 'My awesome track',
+            'photo' => $photo,
+            'src'   => $src,
+            'tags'  => $tags,
+        ];
+
+        $this->json('POST', '/api/tracks', $details);
+        
+        Storage::disk('public')->assertExists('tracks/audio/' . $src->hashName());
+
+        $this->assertDatabaseHas('tracks', [
+            'user_id' => auth()->id(),
+            'src'   => 'tracks/audio/' . $src->hashName(),
         ]);
     }
 

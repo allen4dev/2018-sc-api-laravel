@@ -116,11 +116,13 @@ class User extends Authenticatable implements JWTSubject
 
     public function createTrack($details)
     {
-        $photoPath = $details['photo']->store('tracks', 'public');
+        $photoPath = $details['photo']->store('tracks/images', 'public');
+        $audioPath = $details['src']->store('tracks/audio', 'public');
 
         $track = $this->tracks()->create([
             'title' => $details['title'],
-            'photo' => $photoPath
+            'photo' => $photoPath,
+            'src' => $audioPath,
         ]);
 
         $track->tags()->attach($details['tags']);

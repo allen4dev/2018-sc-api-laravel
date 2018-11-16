@@ -25,15 +25,24 @@ class CreateTracksTest extends TestCase
     /** @test */
     public function a_user_can_create_tracks()
     {
+        $this->withoutExceptionHandling();
+
         $this->signin();
 
         $tag = create(Tag::class, [ 'name' => 'jpop' ]);
 
         $photo = UploadedFile::fake()->image('my_track.jpg');
 
+        $src = UploadedFile::fake()->create('song.mp3');
+
         $tags = [ $tag->id ];
 
-        $details = [ 'title' => 'My new Track', 'photo' => $photo, 'tags' => $tags ];
+        $details = [
+            'title' => 'My new Track',
+            'photo' => $photo,
+            'src'   => $src,
+            'tags'  => $tags
+        ];
 
         $this->json('POST', '/api/tracks', $details)
             ->assertStatus(201)

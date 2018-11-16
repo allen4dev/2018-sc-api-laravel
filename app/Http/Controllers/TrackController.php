@@ -15,8 +15,9 @@ class TrackController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|min:2',
-            'photo' => 'required|image',
+            'title'  => 'required|string|min:2',
+            'photo'  => 'required|image',
+            'src'    => 'required|mimes:mpga',
             'tags.*' => 'required|int'
         ]);
 

@@ -17,6 +17,7 @@ class CreateTracksTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('photo');
+            $table->string('src');
             $table->boolean('published')->default(false);
             $table->unsignedInteger('reproduced_count')->default(0);
             $table->unsignedInteger('user_id');

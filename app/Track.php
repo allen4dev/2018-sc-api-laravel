@@ -22,7 +22,7 @@ class Track extends Model
         parent::boot();
     }
 
-    protected $fillable = [ 'title', 'published', 'photo' ];
+    protected $fillable = [ 'title', 'published', 'photo', 'src' ];
 
     protected $casts = [
         'user_id'   => 'int',
