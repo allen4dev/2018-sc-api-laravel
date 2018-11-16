@@ -26,11 +26,13 @@ class UploadTest extends TestCase
 
         $this->json('PATCH', '/api/me', compact('avatar'));
         
-        Storage::disk('public')->assertExists('avatars/' . $avatar->hashName());
+        $uploadedPath = 'users/avatars/' . $avatar->hashName();
+
+        Storage::disk('public')->assertExists($uploadedPath);
 
         $this->assertDatabaseHas('users', [
             'id' => auth()->id(),
-            'avatar_url' => 'avatars/' . $avatar->hashName(),
+            'avatar_url' => $uploadedPath,
         ]);
     }
 
@@ -45,11 +47,13 @@ class UploadTest extends TestCase
 
         $this->json('PATCH', '/api/me', compact('profile'));
         
-        Storage::disk('public')->assertExists('profile/' . $profile->hashName());
+        $uploadedPath = 'users/profile/' . $profile->hashName();
+
+        Storage::disk('public')->assertExists($uploadedPath);
 
         $this->assertDatabaseHas('users', [
             'id' => auth()->id(),
-            'profile_image' => 'profile/' . $profile->hashName(),
+            'profile_image' => $uploadedPath,
         ]);
     }
 
@@ -76,11 +80,13 @@ class UploadTest extends TestCase
 
         $this->json('POST', '/api/tracks', $details);
         
-        Storage::disk('public')->assertExists('tracks/images/' . $photo->hashName());
+        $uploadedPath = 'tracks/photos/' . $photo->hashName();
+
+        Storage::disk('public')->assertExists($uploadedPath);
 
         $this->assertDatabaseHas('tracks', [
             'user_id' => auth()->id(),
-            'photo'   => 'tracks/images/' . $photo->hashName(),
+            'photo'   => $uploadedPath,
         ]);
     }
 
@@ -107,11 +113,13 @@ class UploadTest extends TestCase
 
         $this->json('POST', '/api/tracks', $details);
         
-        Storage::disk('public')->assertExists('tracks/audio/' . $src->hashName());
+        $uploadedPath = 'tracks/audio/' . $src->hashName();
+
+        Storage::disk('public')->assertExists($uploadedPath);
 
         $this->assertDatabaseHas('tracks', [
             'user_id' => auth()->id(),
-            'src'   => 'tracks/audio/' . $src->hashName(),
+            'src'   => $uploadedPath,
         ]);
     }
 
@@ -132,11 +140,13 @@ class UploadTest extends TestCase
 
         $this->json('POST', '/api/albums', $input);
         
-        Storage::disk('public')->assertExists('albums/' . $photo->hashName());
+        $uploadedPath = 'albums/photos/' . $photo->hashName();
+
+        Storage::disk('public')->assertExists($uploadedPath);
 
         $this->assertDatabaseHas('albums', [
             'user_id' => auth()->id(),
-            'photo'   => 'albums/' . $photo->hashName(),
+            'photo'   => $uploadedPath,
         ]);
     }
 
@@ -156,11 +166,13 @@ class UploadTest extends TestCase
 
         $this->json('POST', '/api/playlists', $details);
         
-        Storage::disk('public')->assertExists('playlists/' . $photo->hashName());
+        $uploadedPath = 'playlists/photos/' . $photo->hashName();
+
+        Storage::disk('public')->assertExists($uploadedPath);
 
         $this->assertDatabaseHas('playlists', [
             'user_id' => auth()->id(),
-            'photo'   => 'playlists/' . $photo->hashName(),
+            'photo'   => $uploadedPath,
         ]);
     }
 }

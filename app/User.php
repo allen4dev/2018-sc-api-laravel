@@ -116,7 +116,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function createTrack($details)
     {
-        $photoPath = $details['photo']->store('tracks/images', 'public');
+        $photoPath = $details['photo']->store('tracks/photos', 'public');
         $audioPath = $details['src']->store('tracks/audio', 'public');
 
         $track = $this->tracks()->create([
@@ -132,7 +132,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function createPlaylist($details)
     {
-        $photoPath = $details['photo']->store('playlists', 'public');
+        $photoPath = $details['photo']->store('playlists/photos', 'public');
 
         return $this->playlists()->create([
             'title' => $details['title'],
@@ -142,7 +142,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function createAlbum($input)
     {
-        $photoPath = $input['photo']->store('albums', 'public');
+        $photoPath = $input['photo']->store('albums/photos', 'public');
 
         $input['details']['user_id'] = auth()->id();
         $input['details']['photo'] = $photoPath;

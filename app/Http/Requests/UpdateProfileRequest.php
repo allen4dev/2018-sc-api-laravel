@@ -48,13 +48,13 @@ class UpdateProfileRequest extends FormRequest
 
         // ToDo: Refactor
         if ($this->file('avatar')) {
-            $avatarPath = $this->file('avatar')->store('avatars', 'public');
+            $avatarPath = $this->file('avatar')->store('users/avatars', 'public');
 
             $newFields['avatar_url'] = $avatarPath;
         }
 
         if ($this->file('profile')) {
-            $profilePath = $this->file('profile')->store('profile', 'public');
+            $profilePath = $this->file('profile')->store('users/profile', 'public');
 
             $newFields['profile_image'] = $profilePath;
         }
