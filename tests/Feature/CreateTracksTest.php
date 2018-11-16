@@ -25,8 +25,6 @@ class CreateTracksTest extends TestCase
     /** @test */
     public function a_user_can_create_tracks()
     {
-        $this->withoutExceptionHandling();
-
         $this->signin();
 
         $tag = create(Tag::class, [ 'name' => 'jpop' ]);
@@ -35,7 +33,7 @@ class CreateTracksTest extends TestCase
 
         $src = UploadedFile::fake()->create('song.mp3');
 
-        $tags = [ $tag->id ];
+        $tags[] = $tag->id;
 
         $details = [
             'title' => 'My new Track',

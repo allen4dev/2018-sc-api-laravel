@@ -18,7 +18,8 @@ class TrackController extends Controller
             'title'  => 'required|string|min:2',
             'photo'  => 'required|image',
             'src'    => 'required|mimes:mpga',
-            'tags.*' => 'required|int'
+            'tags'   => 'required|array',
+            'tags.*' => 'required|integer|distinct|exists:tags,id'
         ]);
 
         $track = auth()->user()->createTrack($validated);
