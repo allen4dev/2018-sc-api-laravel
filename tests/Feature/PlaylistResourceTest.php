@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Db;
 
 use App\Playlist;
+use App\Tag;
 use App\Track;
 use App\User;
 
@@ -109,6 +110,32 @@ class PlaylistResourceTest extends TestCase
                         'data' => [ 'type' => 'users', 'id' => (string) auth()->id() ]
                     ]
                 ]]
+            ]);
+    }
+
+    /** @test */
+    public function it_should_also_contain_the_tags_if_the_request_sends_a_include_query_parameter_with_value_tags()
+    {
+        $tag      = create(Tag::class);
+        $playlist = create(Playlist::class);
+
+        Db::table('taggables')->insert([
+            'tag_id' => $tag->id,
+            'taggable_id'   => $playlist->id,
+            'taggable_type' => Playlist::class,
+        ]);
+
+        $this->json('GET', $playlist->path() . '?include=tags')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'tags',
+                        'id'   => (string) $tag->id,
+                        'attributes' => [
+                            'name' => $tag->name,
+                        ]
+                    ],
+                ]  
             ]);
     }
 

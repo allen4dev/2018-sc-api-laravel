@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 
 use App\Favorite;
 use App\Shared;
+use App\Tag;
 use App\Track;
 use App\User;
 
@@ -59,6 +60,10 @@ class PlaylistResource extends JsonResource
         return $included->map(function ($include) {
             if ($include instanceof User) {
                 return new UserResource($include);
+            }
+
+            if ($include instanceof Tag) {
+                return new TagResource($include);
             }
 
             if ($include instanceof Track) {
