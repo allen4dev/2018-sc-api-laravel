@@ -27,13 +27,14 @@ class CreateTracksTest extends TestCase
     {
         $this->signin();
 
-        $tag = create(Tag::class, [ 'name' => 'jpop' ]);
+        $tag1 = create(Tag::class, [ 'name' => 'jpop' ]);
+        $tag2 = create(Tag::class, [ 'name' => 'kpop' ]);
 
         $photo = UploadedFile::fake()->image('my_track.jpg');
 
         $src = UploadedFile::fake()->create('song.mp3');
 
-        $tags[] = $tag->id;
+        $tags = "{$tag1->id},{$tag2->id},3";
 
         $details = [
             'title' => 'My new Track',
@@ -57,7 +58,13 @@ class CreateTracksTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('taggables', [
-            'tag_id' => $tag->id,
+            'tag_id' => $tag1->id,
+            'taggable_id'   => 1,
+            'taggable_type' => Track::class,
+        ]);
+
+        $this->assertDatabaseHas('taggables', [
+            'tag_id' => $tag2->id,
             'taggable_id'   => 1,
             'taggable_type' => Track::class,
         ]);
