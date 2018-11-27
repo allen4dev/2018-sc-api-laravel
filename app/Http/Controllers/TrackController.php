@@ -14,10 +14,12 @@ class TrackController extends Controller
 {
     public function store(Request $request)
     {
+        var_dump($request->all());
+
         $validated = $request->validate([
             'title'  => 'required|string|min:2',
             'photo'  => 'required|image',
-            'src'    => 'required|mimes:mpga',
+            'src'    => 'required|mimes:mpga,mpeg,mp3,wav',
             'tags'   => 'required|array',
             'tags.*' => 'required|integer|distinct|exists:tags,id'
         ]);
