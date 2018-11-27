@@ -30,6 +30,7 @@ class TrackResourceTest extends TestCase
                     'attributes' => [
                         'title'      => $track->title,
                         'photo'      => $track->photo,
+                        'src'      => $track->src,
                         'published'  => $track->published,
                         'created_at' => (string) $track->created_at,
                         'updated_at' => (string) $track->updated_at,

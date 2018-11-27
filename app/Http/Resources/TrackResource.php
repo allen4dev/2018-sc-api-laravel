@@ -29,6 +29,7 @@ class TrackResource extends JsonResource
             'attributes' => [
                 'title' => $this->title,
                 'photo' => $this->photo,
+                'src' => $this->src,
                 'published' => $this->published,
                 'created_at' => (string) $this->created_at,
                 'updated_at' => (string) $this->updated_at,
