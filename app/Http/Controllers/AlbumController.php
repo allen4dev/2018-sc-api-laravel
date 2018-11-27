@@ -31,8 +31,7 @@ class AlbumController extends Controller
             'details.title' => 'required|string',
             'tracks.*' => 'required|integer',
             'photo'    => 'required|image',
-            'tags'     => 'required|array',
-            'tags.*'   => 'required|integer|distinct|exists:tags,id',
+            'tags'     => 'required|string',
         ]);
 
         $album = auth()->user()->createAlbum($validated);

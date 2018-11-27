@@ -34,7 +34,7 @@ class CreateAlbumsTest extends TestCase
         
         $tag   = create(Tag::class);
         
-        $tags[] = $tag->id;
+        $tags = (string) $tag->id;
 
         $values = [
             'details' => [
@@ -74,7 +74,7 @@ class CreateAlbumsTest extends TestCase
 
         $tag   = create(Tag::class);
         
-        $tags[] = $tag->id;
+        $tags = (string) $tag->id;
 
         $values = [
             'details' => [
@@ -108,7 +108,7 @@ class CreateAlbumsTest extends TestCase
 
         $tag   = create(Tag::class);
         
-        $tags[] = $tag->id;
+        $tags = (string) $tag->id;
 
         $values = [
             'details' => [
@@ -132,7 +132,7 @@ class CreateAlbumsTest extends TestCase
 
         $tag   = create(Tag::class);
         
-        $tags[] = $tag->id;
+        $tags = (string) $tag->id;
 
         $values = [
             'details' => [
@@ -165,7 +165,7 @@ class CreateAlbumsTest extends TestCase
 
         $tag   = create(Tag::class);
         
-        $tags[] = $tag->id;
+        $tags = (string) $tag->id;
 
         $values = [
             'details' => [

@@ -69,7 +69,7 @@ class UploadTest extends TestCase
         $photo = UploadedFile::fake()->image('my_track.jpg');
         $src = UploadedFile::fake()->create('song.mp3');
 
-        $tags[] = $tag->id;
+        $tags = (string) $tag->id;
 
         $details = [
             'title' => 'My awesome track',
@@ -102,7 +102,7 @@ class UploadTest extends TestCase
         $photo = UploadedFile::fake()->image('my_track.jpg');
         $src = UploadedFile::fake()->create('song.mp3');
 
-        $tags[] = $tag->id;
+        $tags = (string) $tag->id;
 
         $details = [
             'title' => 'My awesome track',
@@ -126,16 +126,20 @@ class UploadTest extends TestCase
     /** @test */
     public function a_user_should_also_send_a_photo_for_the_album()
     {
+        $this->withoutExceptionHandling();
         Storage::fake();
 
         $this->signin();
 
         $photo = UploadedFile::fake()->image('my_album.png');
 
+        $tag = (string) create(Tag::class)->id;
+
         $input = [
             'details' => [ 'title' => 'My awesome album' ],
             'photo' => $photo,
             'tracks' => [ 1, 2, 4 ],
+            'tags' => $tag,
         ];
 
         $this->json('POST', '/api/albums', $input);
