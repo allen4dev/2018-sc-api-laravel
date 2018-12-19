@@ -38,6 +38,8 @@ class RegisterRequest extends FormRequest
             'username' => $this->username,
             'email' => $this->email,
             'password' => bcrypt($this->password),
+            'avatar_image' => 'https://sc-api/users/avatars/default.png',
+            'profile_image' => 'https://sc-api/users/profile/default.png',
         ]);
     }
 }
