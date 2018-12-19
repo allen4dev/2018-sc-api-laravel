@@ -20,6 +20,8 @@ class UserResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
     {
+        $this->withoutExceptionHandling();
+
         $user = create(User::class, [ 'fullname' => 'Some name' ]);
 
         $this->json('GET', $user->path())
@@ -31,7 +33,7 @@ class UserResourceTest extends TestCase
                         'username'   => $user->username,
                         'email'      => $user->email,
                         'fullname'   => $user->fullname,
-                        'avatar'   => $user->avatar,
+                        'avatar'   => $user->avatar_url,
                         'profile_image'   => $user->profile_image,
                         'created_at' => (string) $user->created_at,
                         'updated_at' => (string) $user->updated_at,
