@@ -8,7 +8,10 @@ use App\Http\Requests\RegisterRequest;
 
 use App\Http\Responses;
 
+use App\Http\Resources\AuthResource;
+
 use JWTAuth;
+
 use App\User;
 
 class AuthController extends Controller
@@ -19,11 +22,7 @@ class AuthController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
-        $type = 'auth';
-        $attributes = [ 'id' => (string) $user->id, 'token' => $token ];
-        $status = 201;
-
-        return Responses::format($type, $attributes, $status);
+        return new AuthResource($user, $token);
     }
 
     public function login(Request $request)
