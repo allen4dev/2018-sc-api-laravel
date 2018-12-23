@@ -13,7 +13,6 @@ class AuthTest extends TestCase
     /** @test */
     public function a_guest_can_register_to_the_app()
     {
-        // ToDo: make it pass
         $this->withoutExceptionHandling();
 
         $credentials = [
@@ -22,15 +21,15 @@ class AuthTest extends TestCase
             'username' => 'Allen'
         ];
 
-        $response = $this->json('POST', '/api/auth/register', $credentials);
-
-        $response
+        $this->json('POST', '/api/auth/register', $credentials)
             ->assertJsonStructure([ 'data' => [
+                'type',
+                'id',
                 'attributes' => [
                     'token'
                 ]
             ]]);
-        
+
         $this->assertDatabaseHas('users', [
             "username" => $credentials['username'],
             "email" => $credentials['email'],
@@ -40,6 +39,8 @@ class AuthTest extends TestCase
     /** @test */
     public function a_user_can_be_logged_in_with_his_credentials()
     {
+        $this->withoutExceptionHandling();
+
         $credentials = [
             'email' => 'allen@example.test',
             'password' => 'secret',
@@ -54,7 +55,9 @@ class AuthTest extends TestCase
         ])
         ->assertStatus(200)
         ->assertJsonStructure([ 'data' => [
-            'attributes' => [ 'id', 'token' ]
+            'type',
+            'id',
+            'attributes' => [ 'token' ]
         ]]);
     }
 }
