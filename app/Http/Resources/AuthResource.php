@@ -32,4 +32,13 @@ class AuthResource extends JsonResource
             'relationships' => new AuthRelationshipsResource($this)
         ];
     }
+
+    public function with($request)
+    {
+        return [
+            'included' => [
+                new UserResource($this)
+            ]
+        ];
+    }
 }

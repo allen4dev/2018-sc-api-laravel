@@ -64,4 +64,28 @@ class AuthResourceTest extends TestCase
                 ]
             ]]);
     }
+
+    /** @test */
+    public function it_should_also_contain_the_registered_user_under_a_included_object_at_the_same_level_of_data_object()
+    {
+        $credentials = [
+            'email' => 'allen@example.test',
+            'password' => 'secret',
+            'username' => 'Allen'
+        ];
+
+        $this->json('POST', '/api/auth/register', $credentials)
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => '1',
+                        'attributes' => [
+                            'username' => $credentials['username'],
+                            'email' => $credentials['email'],
+                        ]
+                    ]
+                ]
+            ]);
+    }
 }
