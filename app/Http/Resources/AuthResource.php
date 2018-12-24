@@ -28,7 +28,8 @@ class AuthResource extends JsonResource
             'id'  => (string) $this->id,
             'attributes' => [
                 'token' => $this->token
-            ]
+            ],
+            'relationships' => new AuthRelationshipsResource($this)
         ];
     }
 }

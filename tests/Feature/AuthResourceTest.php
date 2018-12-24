@@ -42,4 +42,26 @@ class AuthResourceTest extends TestCase
             'id'   => (string) $user->id,
         ]]);
     }
+
+    /** @test */
+    public function it_should_contain_a_relationships_object_under_data_containing_identifiers_for_his_related_information()
+    {
+        $credentials = [
+            'email' => 'allen@example.test',
+            'password' => 'secret',
+            'username' => 'Allen'
+        ];
+
+        $this->json('POST', '/api/auth/register', $credentials)
+            ->assertJson(['data' => [
+                'relationships' => [
+                    'user' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id'   => '1',
+                        ]
+                    ]
+                ]
+            ]]);
+    }
 }
